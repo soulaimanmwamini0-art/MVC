@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Secure Admin Terminal | Mwamini</title>
+  
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: #f8fafc;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .login-container {
+      max-width: 400px;
+      width: 100%;
+      padding: 2.5rem 2rem;
+      background: #ffffff;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      box-sizing: border-box;
+    }
+    h2 {
+      text-align: center;
+      margin: 0 0 0.5rem 0;
+      font-weight: 700;
+      color: #1e3a8a;
+    }
+    p {
+      text-align: center;
+      font-size: 13px;
+      color: #64748b;
+      margin: 0 0 1.5rem 0;
+      line-height: 1.4;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+    .input-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    label {
+      font-weight: 600;
+      font-size: 14px;
+      color: #334155;
+    }
+    input[type="password"], input[type="email"] {
+      padding: 0.75rem 1rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 14px;
+      width: 100%;
+      box-sizing: border-box;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus {
+      border-color: #1e3a8a;
+    }
+    button {
+      padding: 0.75rem;
+      border-radius: 6px;
+      border: none;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      background-color: #1e3a8a;
+      color: #ffffff;
+      transition: background-color 0.2s ease;
+      width: 100%;
+      margin-top: 0.5rem;
+    }
+    button:hover {
+      background-color: #1d4ed8;
+    }
+    button:disabled {
+      background-color: #94a3b8;
+      cursor: not-allowed;
+    }
+    .error-text {
+      color: #ef4444;
+      font-size: 13px;
+      margin-top: 0.75rem;
+      min-height: 20px;
+      text-align: center;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+
+<div class="login-container" id="auth-flow-container">
+  <h2>Admin Mainframe</h2>
+  <p>Authorized operations only. Please complete the verification steps.</p>
+  <form id="auth-steps-form"></form>
+  <div id="auth-error" class="error-text"></div>
+</div>
+
+<script>
+/* ==========================================================================
+   CONFIGURED LIVE TARGET ENVIRONMENT
+   ========================================================================== */
+const SUPABASE_URL = "https://bkyyenirpeznjkmmcutf.supabase.co"; 
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJreXllbmlycGV6bmprbW1jdXRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUwMTE0NjcsImV4cCI6MjEwMDU4NzQ2N30.eO3D4_s3FgHM8Be1FSyhIGNGK7WPWJKpRNPp99kNyTc";
+
+// Passphrases
+const PASSWORDS = {
+  phase1: "Password@4321",
+  phase2: "Mwamini@321",
+  final:  "Mwamini@9023"
+};
+
+/* ==========================================================================
+   ENGINE PLATFORM LOGIC
+   ========================================================================== */
+let supabaseClient = null;
+if (window.supabase && typeof window.supabase.createClient === 'function') {
+  supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+} else {
+  console.error("Supabase SDK failed to load from CDN.");
+}
+
+// Cryptographic Hashing Engine
+async function hashInput(text) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(text);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  return Array.from(new Uint8Array(hashBuffer))
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
+}
+
+const STEPS = {
+  1: { prompt: "Enter Phase 1 Passphrase" },
+  2: { prompt: "Enter Phase 2 Passphrase" },
+  3: { prompt: "Database Verification Pipeline" },
+  4: { prompt: "Enter Final Phase Passphrase" }
+};
+
+let currentStep = 1;
+let pendingVerificationData = null;
+
+const formEl = document.getElementById('auth-steps-form');
+const errorEl = document.getElementById('auth-error');
+
+function showMessage(message) {
+  errorEl.innerText = message;
+}
+
+// Dynamic UI Rendering Engine
+function renderStep() {
+  formEl.innerHTML = "";
+  errorEl.innerText = "";
+  const step = STEPS[currentStep];
+
+  if (currentStep === 1 || currentStep === 2 || currentStep === 4) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'input-wrapper';
+
+    const label = document.createElement('label');
+    label.innerText = step.prompt;
+    
+    const input = document.createElement('input');
+    input.type = 'password';
+    input.id = 'step-input';
+    input.required = true;
+    input.placeholder = "••••••••";
+    
+    wrapper.appendChild(label);
+    wrapper.appendChild(input);
+    formEl.appendChild(wrapper);
+  } else if (currentStep === 3) {
+    const wrapperEmail = document.createElement('div');
+    wrapperEmail.className = 'input-wrapper';
+    const labelEmail = document.createElement('label');
+    labelEmail.innerText = "Admin Account Email";
+    const inputEmail = document.createElement('input');
+    inputEmail.type = 'email';
+    inputEmail.id = 'email-input';
+    inputEmail.required = true;
+    inputEmail.value = "soulaimanmwamini0@gmail.com"; 
+    wrapperEmail.appendChild(labelEmail);
+    wrapperEmail.appendChild(inputEmail);
+
+    const wrapperPass = document.createElement('div');
+    wrapperPass.className = 'input-wrapper';
+    const labelPass = document.createElement('label');
+    labelPass.innerText = "Admin Account Password";
+    const inputPass = document.createElement('input');
+    inputPass.type = 'password';
+    inputPass.id = 'pass-input';
+    inputPass.required = true;
+    inputPass.placeholder = "Enter Supabase User Password";
+    wrapperPass.appendChild(labelPass);
+    wrapperPass.appendChild(inputPass);
+
+    formEl.appendChild(wrapperEmail);
+    formEl.appendChild(wrapperPass);
+  }
+
+  const btn = document.createElement('button');
+  btn.type = 'submit';
+  btn.id = 'submit-btn';
+  btn.innerText = "Verify Phase " + currentStep;
+  formEl.appendChild(btn);
+}
+
+// Form Interceptor & Logic Pipeline
+async function handleStepSubmission(e) {
+  e.preventDefault();
+  errorEl.innerText = "";
+  
+  const btn = document.getElementById('submit-btn');
+  if (btn) btn.disabled = true;
+
+  try {
+    if (currentStep === 1 || currentStep === 2 || currentStep === 4) {
+      const inputEl = document.getElementById('step-input');
+      const val = inputEl.value; 
+      const hashedVal = await hashInput(val);
+
+      if (currentStep === 1) {
+        const targetHash = await hashInput(PASSWORDS.phase1);
+        if (hashedVal !== targetHash) {
+          showMessage("Verification failed for Phase 1. Access Denied.");
+          if (btn) btn.disabled = false;
+          return;
+        }
+        currentStep = 2;
+      } 
+      else if (currentStep === 2) {
+        const targetHash = await hashInput(PASSWORDS.phase2);
+        if (hashedVal !== targetHash) {
+          showMessage("Verification failed for Phase 2. Access Denied.");
+          if (btn) btn.disabled = false;
+          return;
+        }
+        currentStep = 3;
+      } 
+      else if (currentStep === 4) {
+        const targetHash = await hashInput(PASSWORDS.final);
+        if (hashedVal !== targetHash) {
+          showMessage("Verification failed for Final Phase. Access Denied.");
+          if (btn) btn.disabled = false;
+          return;
+        }
+        grantAdminAccess();
+        return;
+      }
+      renderStep();
+    } 
+    else if (currentStep === 3) {
+      const emailVal = document.getElementById('email-input').value.trim();
+      const passVal = document.getElementById('pass-input').value;
+
+      if (emailVal !== "soulaimanmwamini0@gmail.com") {
+        showMessage("Unauthorized email profile address entry.");
+        if (btn) btn.disabled = false;
+        return;
+      }
+
+      if (!supabaseClient) {
+        showMessage("Database instance error: Client could not be found.");
+        if (btn) btn.disabled = false;
+        return;
+      }
+
+      if (btn) btn.innerText = "Querying Database...";
+      
+      // Perform database call
+      const { data, error } = await supabaseClient.auth.signInWithPassword({ 
+        email: emailVal, 
+        password: passVal 
+      });
+
+      // FIXED: If Supabase throws an error, catch it here explicitly, show the error message, and do NOT reset back to step 1.
+      if (error) {
+        showMessage("Supabase Error: " + error.message);
+        if (btn) {
+          btn.disabled = false;
+          btn.innerText = "Verify Phase 3";
+        }
+        return; 
+      }
+
+      if (!data || !data.user) {
+        showMessage("Database Account verification failed. Missing identity token.");
+        if (btn) {
+          btn.disabled = false;
+          btn.innerText = "Verify Phase 3";
+        }
+        return;
+      }
+
+      // If validation succeeds, advance forward cleanly
+      pendingVerificationData = { email: emailVal };
+      currentStep = 4;
+      renderStep();
+    }
+  } catch (err) {
+    showMessage("System Error: " + err.message);
+    if (btn) {
+      btn.disabled = false;
+      btn.innerText = "Verify Phase " + currentStep;
+    }
+  }
+}
+
+function grantAdminAccess() {
+  sessionStorage.setItem("admin_matrix_clearance", "authorized");
+  sessionStorage.setItem("admin_clearance_timestamp", Date.now().toString());
+  sessionStorage.setItem("admin_authenticated_user", pendingVerificationData ? pendingVerificationData.email : "admin");
+  window.location.replace("admin.html");
+}
+
+formEl.addEventListener('submit', handleStepSubmission);
+renderStep();
+</script>
+
+</body>
+</html>
