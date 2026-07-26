@@ -3,3197 +3,749 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Mwamini Complex Services & Trading Portal - Trusted Global Supply Chain, we love you for life.">
-    <meta name="theme-color" content="#1e3a8a">
-    <title>Mwamini Complex Services & Trading Portal</title>
-
-    <link rel="stylesheet" href="style.css">
+    <title>Mwamini Ecosystem - Innovation & Commodity Hub</title>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* ==========================================================================
-           1. Base Variables & Theme Context Injection
-           ========================================================================== */
         :root {
-            /* Light Theme Primitives */
-            --border-color: #e2e8f0;
-            --bg-surface: #ffffff;
-            --bg-primary: #f8fafc;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
+            --color-white: #ffffff;
+            --color-slate-50: #f8fafc;
+            --color-slate-100: #f1f5f9;
+            --color-slate-200: #e2e8f0;
+            --color-slate-300: #cbd5e1;
+            --color-slate-400: #94a3b8;
+            --color-slate-500: #64748b;
+            --color-slate-600: #475569;
+            --color-slate-700: #334155;
+            --color-slate-800: #1e293b;
+            --color-slate-900: #0f172a;
             
-            /* Semantic Colors */
-            --accent: #1e3a8a;
-            --accent-hover: #1e40af;
-            --accent-light: #eff6ff;
-            --danger: #ef4444;
-            --danger-hover: #dc2626;
-            --warning: #f59e0b;
-            --success: #10b981;
+            --color-blue-500: #3b82f6;
+            --color-blue-600: #2563eb;
+            --color-blue-700: #1d4ed8;
+            --color-emerald-500: #10b981;
+            --color-amber-500: #f59e0b;
+            --color-red-500: #ef4444;
+
+            --bg-primary: var(--color-white);
+            --bg-surface: var(--color-slate-50);
+            --bg-surface-hover: var(--color-slate-100);
+            --text-main: var(--color-slate-900);
+            --text-muted: var(--color-slate-500);
+            --border-color: var(--color-slate-200);
+            --accent: var(--color-blue-600);
+            --accent-hover: var(--color-blue-700);
+            --success: var(--color-emerald-500);
+            --danger: var(--color-red-500);
             
-            /* Typography & Sizing */
-            --font-family-base: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            --radius-md: 8px;
-            --radius-lg: 12px;
-            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            --transition-base: 0.3s ease;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            
+            --radius-md: 0.5rem;
+            --radius-lg: 0.75rem;
+            --radius-xl: 1rem;
+            --transition-speed: 0.25s;
         }
 
         [data-theme="dark"] {
-            /* Dark Theme Primitives */
-            --border-color: #334155;
-            --bg-surface: #1e293b;
-            --bg-primary: #0f172a;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            
-            /* Semantic Colors for Dark Mode */
-            --accent: #3b82f6;
-            --accent-hover: #60a5fa;
-            --accent-light: rgba(59, 130, 246, 0.1);
-            --danger: #f87171;
-            --danger-hover: #fca5a5;
-            --warning: #fbbf24;
-            --success: #34d399;
-            
-            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.5);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.5);
+            --bg-primary: var(--color-slate-900);
+            --bg-surface: var(--color-slate-800);
+            --bg-surface-hover: var(--color-slate-700);
+            --text-main: var(--color-slate-50);
+            --text-muted: var(--color-slate-400);
+            --border-color: var(--color-slate-700);
+            --accent: var(--color-blue-500);
+            --accent-hover: var(--color-blue-600);
         }
 
-        /* ==========================================================================
-           2. Global Resets & Typography
-           ========================================================================== */
-        *, *::before, *::after { box-sizing: border-box; }
-        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { font-size: 16px; scroll-behavior: smooth; }
         body {
-            margin: 0;
-            font-family: var(--font-family-base);
-            background: var(--bg-primary);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-primary);
             color: var(--text-main);
-            transition: background-color var(--transition-base), color var(--transition-base);
             line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
+            transition: background-color var(--transition-speed), color var(--transition-speed);
         }
 
-        h1, h2, h3, h4, h5, h6 {
-            margin-top: 0;
-            color: var(--text-main);
-            font-weight: 700;
+        a { color: var(--accent); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
         }
 
-        /* Global Justify Rule per requirements */
-        p, .justified-text, .info-card p, .announcement-banner {
-            text-align: justify !important;
-            line-height: 1.6;
-            margin-top: 0;
-            margin-bottom: 1rem;
-        }
-
-        a {
-            color: var(--accent);
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-        
-        a:hover { color: var(--accent-hover); }
-
-        /* ==========================================================================
-           3. Layout Components
-           ========================================================================== */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 5%;
-            background: var(--bg-surface);
-            border-bottom: 1px solid var(--border-color);
+        /* Navbar */
+        .navbar {
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: var(--shadow-sm);
+            background-color: var(--bg-surface);
+            border-bottom: 1px solid var(--border-color);
             backdrop-filter: blur(10px);
-            background-color: rgba(var(--bg-surface), 0.95);
         }
-
-        .brand-container {
+        .nav-container {
             display: flex;
             align-items: center;
-            gap: 12px;
-            cursor: pointer;
+            justify-content: space-between;
+            height: 72px;
         }
-
-        .brand-logo {
-            height: 45px;
-            width: auto;
-            object-fit: contain;
-            border-radius: var(--radius-md);
-            box-shadow: var(--shadow-sm);
-        }
-
-        .brand-title {
-            font-size: 1.35rem;
-            font-weight: 800;
-            color: var(--accent);
-            letter-spacing: -0.025em;
-        }
-
-        .nav-group {
+        .brand {
             display: flex;
+            align-items: center;
             gap: 0.75rem;
-            align-items: center;
-            flex-wrap: wrap;
+            font-weight: 800;
+            font-size: 1.25rem;
+            color: var(--text-main);
+            text-decoration: none;
         }
-
-        .user-nav-group {
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--accent);
+            color: white;
+            border-radius: var(--radius-md);
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding-left: 1rem;
-            border-left: 2px solid var(--border-color);
+            justify-content: center;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            list-style: none;
+        }
+        .nav-link {
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color var(--transition-speed);
+        }
+        .nav-link:hover, .nav-link.active {
+            color: var(--accent);
+            text-decoration: none;
         }
 
-        /* ==========================================================================
-           4. Buttons & Interactive Elements
-           ========================================================================== */
         .btn {
-            padding: 0.5rem 1.25rem;
-            border-radius: var(--radius-md);
-            border: 1px solid transparent;
-            font-weight: 600;
-            font-size: 0.875rem;
-            cursor: pointer;
-            transition: all var(--transition-base);
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
-            user-select: none;
-        }
-
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .btn-primary {
-            background: var(--accent);
-            color: white;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .btn-primary:hover:not(:disabled) {
-            background: var(--accent-hover);
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-        }
-
-        .btn-outline:hover:not(:disabled) {
-            background: var(--bg-primary);
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-
-        .btn-danger {
-            background: var(--danger);
-            color: white;
-        }
-        
-        .btn-danger:hover:not(:disabled) {
-            background: var(--danger-hover);
-        }
-
-        .btn-danger-outline {
-            background: transparent;
-            border: 1px solid var(--danger);
-            color: var(--danger);
-        }
-
-        .btn-danger-outline:hover:not(:disabled) {
-            background: var(--danger);
-            color: white;
-        }
-
-        /* ==========================================================================
-           5. Forms, Inputs & Filters
-           ========================================================================== */
-        .search-filter-bar {
-            display: flex;
-            gap: 1rem;
-            padding: 1.5rem 5%;
-            background: var(--bg-surface);
-            border-bottom: 1px solid var(--border-color);
-            flex-wrap: wrap;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .search-input, .filter-select, .form-control {
-            padding: 0.75rem 1rem;
-            border: 1px solid var(--border-color);
+            padding: 0.625rem 1.25rem;
             border-radius: var(--radius-md);
-            background: var(--bg-surface);
-            color: var(--text-main);
-            outline: none;
-            font-size: 0.875rem;
-            font-family: inherit;
-            transition: border-color 0.2s, box-shadow 0.2s;
-            width: 100%;
-        }
-
-        .search-input:focus, .filter-select:focus, .form-control:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px var(--accent-light);
-        }
-
-        .form-label {
-            display: block;
-            margin: 1rem 0 0.5rem;
             font-weight: 600;
             font-size: 0.875rem;
-            color: var(--text-main);
-        }
-
-        .error-text {
-            color: var(--danger);
-            font-size: 0.75rem;
-            display: block;
-            margin-top: 0.25rem;
-            font-weight: 600;
-        }
-
-        /* ==========================================================================
-           6. Modals & Dialogs (Smooth Scrolling Upgraded)
-           ========================================================================== */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(4px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-            z-index: 1000;
-            padding: 1rem;
-            box-sizing: border-box;
-        }
-
-        .modal.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .modal-content {
-            background: var(--bg-surface);
-            padding: 2.5rem;
-            border-radius: var(--radius-lg);
-            max-width: 500px;
-            width: 100%;
-            position: relative;
-            box-shadow: var(--shadow-lg);
-            max-height: 90vh; /* Prevents overflow off screen */
-            overflow-y: auto; /* Enables vertical scrolling globally */
-            box-sizing: border-box;
-            transform: translateY(20px);
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            scroll-behavior: smooth;
-        }
-
-        .modal.active .modal-content {
-            transform: translateY(0);
-        }
-
-        .close-modal-btn {
-            position: absolute;
-            top: 1.25rem;
-            right: 1.25rem;
-            background: var(--bg-primary);
-            border: 1px solid var(--border-color);
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-            color: var(--text-muted);
             cursor: pointer;
-            transition: all 0.2s;
-            z-index: 50; /* Ensuring close button stays above scrolling content */
+            border: 1px solid transparent;
+            transition: all var(--transition-speed) ease;
         }
+        .btn-primary { background-color: var(--accent); color: white; }
+        .btn-primary:hover { background-color: var(--accent-hover); text-decoration: none; }
+        .btn-outline { border-color: var(--border-color); color: var(--text-main); background: transparent; }
+        .btn-outline:hover { background-color: var(--bg-surface-hover); text-decoration: none; }
+        .btn-danger { background-color: var(--danger); color: white; }
 
-        .close-modal-btn:hover {
-            color: var(--danger);
-            border-color: var(--danger);
-            background: rgba(239, 68, 68, 0.1);
+        /* Hero */
+        .hero {
+            padding: 5rem 0 4rem;
+            background: linear-gradient(135deg, var(--bg-surface) 0%, var(--bg-primary) 100%);
+            border-bottom: 1px solid var(--border-color);
         }
-
-        /* Custom Scrollbar for better UI */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--bg-primary);
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--border-color);
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--text-muted);
-        }
-
-        /* ==========================================================================
-           7. Product Grid & Cards
-           ========================================================================== */
-        .products-grid {
+        .hero-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 2rem;
-            padding: 3rem 5%;
-            max-width: 1400px;
-            margin: 0 auto;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1.15;
+            margin-bottom: 1.25rem;
+        }
+        .hero-subtitle {
+            font-size: 1.125rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
         }
 
-        .product-card {
-            display: flex;
-            flex-direction: column;
+        /* Section Layouts */
+        .section {
+            padding: 4.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .section-header {
+            text-align: center;
+            max-width: 650px;
+            margin: 0 auto 3rem;
+        }
+        .section-title {
+            font-size: 2.25rem;
+            font-weight: 800;
+            margin-bottom: 0.75rem;
+        }
+        .section-subtitle {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        /* Card Grids */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.75rem;
+        }
+        .card {
+            background: var(--bg-surface);
             border: 1px solid var(--border-color);
             border-radius: var(--radius-lg);
             overflow: hidden;
-            background: var(--bg-surface);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            position: relative;
-        }
-
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .product-media-container {
-            position: relative;
-            height: 200px;
-            background: var(--bg-primary);
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .product-media-container img, .product-media-container video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .stock-badge {
-            position: absolute;
-            top: 12px;
-            left: 12px;
-            padding: 4px 10px;
-            border-radius: var(--radius-md);
-            font-size: 0.65rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            z-index: 10;
             box-shadow: var(--shadow-sm);
+            transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+        }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+        .card-body {
+            padding: 1.5rem;
+        }
+        .card-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .card-text {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            margin-bottom: 1.25rem;
         }
 
-        .bg-danger { background: var(--danger); color: white; }
-        .bg-warning { background: var(--warning); color: black; }
-        .bg-update { background: var(--accent); color: white; }
-        .bg-success { background: var(--success); color: white; }
-
-        .product-content {
-            padding: 1.25rem;
-            flex-grow: 1;
+        /* Order Project Specific Styles */
+        .order-project-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 2.5rem;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-xl);
+            padding: 2.5rem;
+            box-shadow: var(--shadow-md);
+        }
+        .project-form {
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            gap: 1rem;
         }
-
-        .product-title {
-            font-size: 1.1rem;
-            margin: 0 0 0.5rem 0;
-            color: var(--text-main);
-            font-weight: 700;
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        .form-group {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 0.5rem;
+            flex-direction: column;
+            gap: 0.375rem;
         }
-
-        .product-actions {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .product-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-top: 1px solid var(--border-color);
-            padding-top: 1rem;
-            margin-top: auto;
-        }
-
-        .product-price {
-            font-size: 1.25rem;
-            font-weight: 800;
-            color: var(--success);
-        }
-
-        /* ==========================================================================
-           8. Dashboard & Tables
-           ========================================================================== */
-        .dashboard-table-container {
-            overflow-x: auto;
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-lg);
-            background: var(--bg-surface);
-            box-shadow: var(--shadow-sm);
-        }
-
-        .dashboard-table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-            font-size: 0.875rem;
-        }
-
-        .dashboard-table th {
-            padding: 1rem;
+        .form-label {
+            font-size: 0.85rem;
             font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 0.05em;
-            background: var(--bg-primary);
-            color: var(--text-muted);
-            border-bottom: 2px solid var(--border-color);
-            position: sticky;
-            top: 0;
-            z-index: 10;
         }
-
-        .dashboard-table td {
-            padding: 1rem;
-            border-bottom: 1px solid var(--border-color);
+        .form-control {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background: var(--bg-primary);
             color: var(--text-main);
-            vertical-align: middle;
+            font-family: inherit;
+            font-size: 0.875rem;
+            width: 100%;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent);
         }
 
-        .dashboard-table tbody tr:hover {
-            background: var(--bg-primary);
-        }
-
-        .dashboard-table tbody tr:last-child td {
-            border-bottom: none;
-        }
-
+        /* Badge */
         .badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
             display: inline-flex;
             align-items: center;
-            gap: 0.25rem;
-        }
-
-        .badge-pending { background: rgba(245, 158, 11, 0.1); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.2); }
-        .badge-processing { background: rgba(59, 130, 246, 0.1); color: var(--accent); border: 1px solid rgba(59, 130, 246, 0.2); }
-        .badge-shipped { background: rgba(16, 185, 129, 0.1); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.2); }
-        .badge-delivered { background: var(--success); color: white; }
-        .badge-cancelled { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2); }
-
-        .user-avatar-preview {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 4px solid var(--bg-primary);
-            box-shadow: 0 0 0 2px var(--accent);
-            display: block;
-            margin: 0 auto 1rem;
-        }
-
-        /* ==========================================================================
-           9. Announcements & Notifications
-           ========================================================================== */
-        .announcement-banner {
-            background: var(--warning);
-            color: #78350f;
-            padding: 0.75rem 5%;
+            padding: 0.25rem 0.625rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
             font-weight: 600;
-            font-size: 0.875rem;
-            display: none;
-            border-bottom: 1px solid rgba(0,0,0,0.1);
-            text-align: center !important;
-            justify-content: center;
-            align-items: center;
-            gap: 0.5rem;
         }
+        .badge-success { background: rgba(16, 185, 129, 0.15); color: var(--success); }
+        .badge-info { background: rgba(59, 130, 246, 0.15); color: var(--accent); }
 
-        .announcement-banner.active {
-            display: flex;
+        /* Modal & Toast */
+        .modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+            z-index: 1000; padding: 1rem;
+        }
+        .modal.active { opacity: 1; pointer-events: auto; }
+        .modal-content {
+            background: var(--bg-surface);
+            padding: 2rem;
+            border-radius: var(--radius-lg);
+            width: 100%; max-width: 600px;
+            max-height: 90vh; overflow-y: auto;
+            position: relative;
         }
 
         .toast-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+            position: fixed; bottom: 2rem; right: 2rem;
+            z-index: 9999; display: flex; flex-direction: column; gap: 0.75rem;
+        }
+        .toast {
+            background: var(--text-main); color: var(--bg-primary);
+            padding: 0.875rem 1.25rem; border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 0.75rem;
+            font-size: 0.875rem; font-weight: 500;
         }
 
-        .toast-ui {
-            padding: 1rem 1.5rem;
+        /* Footer */
+        .footer {
             background: var(--bg-surface);
-            color: var(--text-main);
-            border-left: 4px solid var(--accent);
-            border-radius: var(--radius-md);
-            box-shadow: var(--shadow-lg);
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-weight: 500;
-            font-size: 0.875rem;
-            transform: translateX(120%);
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            min-width: 250px;
-        }
-
-        .toast-ui.success { border-left-color: var(--success); }
-        .toast-ui.error { border-left-color: var(--danger); }
-        .toast-ui.show { transform: translateX(0); }
-
-        /* ==========================================================================
-           10. Content Sections (Home, About, Contact)
-           ========================================================================== */
-        .view-section {
-            display: none;
-            min-height: 70vh;
-            animation: fadeIn 0.4s ease forwards;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .view-section.active {
-            display: block;
-        }
-
-        .hero-banner {
-            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
-            color: white;
-            padding: 4rem 5%;
-            text-align: center;
-            border-bottom: 4px solid var(--success);
-            box-shadow: var(--shadow-md);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .hero-banner::after {
-            content: '';
-            position: absolute;
-            top: 0; right: 0; bottom: 0; left: 0;
-            background: url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="40" fill="rgba(255,255,255,0.05)"/></svg>') repeat;
-            opacity: 0.5;
-            pointer-events: none;
-        }
-
-        .hero-title {
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin-bottom: 1.5rem;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            position: relative;
-            z-index: 1;
-        }
-
-        .hero-subtitle {
-            font-size: 1.25rem;
-            max-width: 800px;
-            margin: 0 auto;
-            opacity: 0.95;
-            line-height: 1.8;
-            font-weight: 400;
-            text-align: center !important; /* Override global justify for hero */
-            position: relative;
-            z-index: 1;
-        }
-
-        .content-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 3rem 5%;
-        }
-
-        .info-card {
-            background: var(--bg-surface);
-            padding: 2.5rem;
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--border-color);
-            box-shadow: var(--shadow-sm);
-            transition: transform 0.2s ease;
-        }
-
-        .info-card:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-md);
-        }
-        
-        .info-card h3 {
-            color: var(--accent);
-            margin-bottom: 1.5rem;
-            font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .info-card ul {
-            color: var(--text-muted);
-            padding-left: 1.5rem;
-            line-height: 1.8;
-            text-align: left;
-        }
-
-        .info-card li {
-            margin-bottom: 0.5rem;
-        }
-
-        /* Contact Details Styles */
-        .contact-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .contact-list li {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1rem;
-            border-bottom: 1px solid var(--border-color);
-            color: var(--text-main);
-            font-size: 1.1rem;
-        }
-
-        .contact-list li:last-child {
-            border-bottom: none;
-        }
-
-        .contact-list i {
-            font-size: 1.5rem;
-            width: 30px;
-            text-align: center;
-        }
-
-        /* ==========================================================================
-           11. Feedback & Star Rating
-           ========================================================================== */
-        .feedback-section {
-            padding: 4rem 5%;
-            background: var(--bg-surface);
+            padding: 3rem 0;
             border-top: 1px solid var(--border-color);
-        }
-
-        .star-rating {
-            display: flex;
-            flex-direction: row-reverse;
-            justify-content: flex-end;
-            gap: 8px;
-        }
-
-        .star-rating input { display: none; }
-        .star-rating label {
-            cursor: pointer;
-            font-size: 32px;
-            color: var(--border-color);
-            transition: color 0.2s, transform 0.1s;
-        }
-
-        .star-rating input:checked ~ label,
-        .star-rating label:hover,
-        .star-rating label:hover ~ label {
-            color: var(--warning);
-            transform: scale(1.1);
-        }
-
-        /* ==========================================================================
-           12. Live Chat System
-           ========================================================================== */
-        #chat-toggle-btn {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            background: var(--accent);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            padding: 14px 28px;
-            font-weight: 700;
-            font-size: 1rem;
-            box-shadow: 0 4px 15px rgba(30, 58, 138, 0.3);
-            cursor: pointer;
-            z-index: 999;
-            display: none; 
-            transition: transform 0.2s, background 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        #chat-toggle-btn:hover {
-            transform: translateY(-2px);
-            background: var(--accent-hover);
-        }
-
-        #chat-widget {
-            position: fixed;
-            bottom: 85px;
-            right: 24px;
-            width: 380px;
-            height: 550px;
-            background: var(--bg-surface);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-lg);
-            display: none;
-            flex-direction: column;
-            z-index: 1000;
-            overflow: hidden;
-            animation: slideUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        #chat-header {
-            background: var(--accent);
-            color: white;
-            padding: 1rem;
-            font-weight: 700;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        #chat-messages {
-            flex: 1;
-            padding: 1rem;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            background: var(--bg-primary);
-        }
-
-        .chat-msg-wrapper {
-            display: flex;
-            flex-direction: column;
-            max-width: 85%;
-        }
-
-        .chat-msg-wrapper.self {
-            align-self: flex-end;
-            align-items: flex-end;
-        }
-
-        .chat-msg-wrapper.admin {
-            align-self: flex-start;
-            align-items: flex-start;
-        }
-
-        .chat-msg {
-            padding: 0.75rem 1rem;
-            border-radius: var(--radius-md);
-            font-size: 0.875rem;
-            word-wrap: break-word;
-            line-height: 1.5;
-            position: relative;
-        }
-
-        .chat-msg p { margin: 0 0 0.5rem 0; text-align: left !important; }
-        .chat-msg p:last-child { margin: 0; }
-
-        .chat-msg.self {
-            background: var(--accent);
-            color: white;
-            border-bottom-right-radius: 0;
-        }
-
-        .chat-msg.admin {
-            background: var(--bg-surface);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            border-bottom-left-radius: 0;
-        }
-
-        .chat-delete-btn {
-            background: rgba(255,255,255,0.2);
-            border: none;
-            color: white;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.7rem;
-            cursor: pointer;
-            margin-top: 4px;
-            transition: background 0.2s;
-        }
-        
-        .chat-delete-btn:hover {
-            background: var(--danger);
-        }
-
-        .chat-meta {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            margin-top: 4px;
-        }
-
-        #chat-input-area {
-            display: flex;
-            flex-direction: column;
-            border-top: 1px solid var(--border-color);
-            background: var(--bg-surface);
-        }
-
-        .chat-empty-state {
-            text-align: center;
-            padding: 2rem;
             color: var(--text-muted);
             font-size: 0.875rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1rem;
-            height: 100%;
-            justify-content: center;
         }
 
-        /* ==========================================================================
-           13. Interactions (Stories/Announcements)
-           ========================================================================== */
-        .interaction-bar {
-            display: flex;
-            gap: 1.5rem;
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px solid var(--border-color);
-            flex-wrap: wrap; /* Prevent overflow on small screens */
-        }
-
-        .interaction-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.875rem;
-            font-weight: 600;
-            transition: color 0.2s;
-            padding: 0;
-        }
-
-        .interaction-btn:hover { color: var(--accent); }
-        .interaction-btn i { font-size: 1.1rem; }
-        .interaction-btn.liked { color: var(--danger); }
-        .interaction-btn.liked i { font-weight: 900; }
-
-        /* ==========================================================================
-           14. Footer
-           ========================================================================== */
-        .site-footer {
-            background: var(--bg-surface);
-            border-top: 1px solid var(--border-color);
-            padding: 4rem 5% 2rem 5%;
-            margin-top: auto; /* Push to bottom */
-        }
-
-        .footer-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 3rem;
-            margin-bottom: 3rem;
-            max-width: 1400px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .footer-col h4 {
-            font-size: 1.1rem;
-            margin-bottom: 1.5rem;
-            color: var(--text-main);
-            font-weight: 800;
-            text-align: left;
-            position: relative;
-            padding-bottom: 0.5rem;
-        }
-        
-        .footer-col h4::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 40px;
-            height: 3px;
-            background: var(--accent);
-            border-radius: 2px;
-        }
-
-        .footer-col ul { list-style: none; padding: 0; margin: 0; }
-        .footer-col ul li { margin-bottom: 0.75rem; }
-        .footer-col ul li a {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 0.95rem;
-            transition: color 0.2s, padding-left 0.2s;
-            display: inline-block;
-        }
-
-        .footer-col ul li a:hover { 
-            color: var(--accent); 
-            padding-left: 5px;
-        }
-
-        .footer-bottom {
-            border-top: 1px solid var(--border-color);
-            padding-top: 2rem;
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 0.875rem;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        /* ==========================================================================
-           15. Quill Rich Text Overrides & Modal Scroll specific
-           ========================================================================== */
-        .ql-toolbar { 
-            border-color: var(--border-color) !important; 
-            background: var(--bg-primary); 
-            border-top-left-radius: var(--radius-md); 
-            border-top-right-radius: var(--radius-md);
-        }
-        .ql-container { 
-            border-color: var(--border-color) !important; 
-            font-family: inherit !important; 
-            font-size: 0.9rem !important; 
-            border-bottom-left-radius: var(--radius-md); 
-            border-bottom-right-radius: var(--radius-md);
-            background: var(--bg-surface);
-        }
-        .ql-editor { 
-            color: var(--text-main); 
-            min-height: 100px;
-            max-height: 60vh; /* Smooth scrolling constraint */
-            overflow-y: auto; 
-        }
-        
-        #chat-input-area .ql-toolbar { padding: 4px; border: none; border-bottom: 1px solid var(--border-color); border-radius: 0; }
-        #chat-input-area .ql-container { border: none; height: 70px; font-size: 0.875rem; border-radius: 0;}
-
-        /* Fix for scrollable details and limits */
-        #details-desc {
-            max-height: 50vh; /* Allow large text to scroll inside the modal properly */
-            overflow-y: auto;
-            padding: 10px; /* Buffer for aesthetics */
-        }
-        
-        #story-details-content {
-            max-height: 50vh; 
-            overflow-y: auto;
-            padding-right: 10px; 
-        }
-        
-        #details-desc img {
-            max-width: 100%;
-            height: auto;
-            border-radius: var(--radius-md);
-            margin: 1rem 0;
-        }
-
-        /* Checkout specific */
-        .payment-instruction-box {
-            background: var(--accent-light);
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            border-radius: var(--radius-md);
-            padding: 1rem;
-            margin-bottom: 1rem;
-            color: var(--text-main);
-            font-size: 0.9rem;
-            line-height: 1.5;
-            display: none; /* hidden by default */
+        @media (max-width: 992px) {
+            .hero-grid, .order-project-wrapper { grid-template-columns: 1fr; }
+            .form-row { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <div id="dynamic-announcement" class="announcement-banner"></div>
-    <div id="toast-container" class="toast-container"></div>
 
-    <header>
-        <div class="brand-container" onclick="navigate('home')">
-            <img id="global-company-logo" 
-                 src="https://cmdzuxmijyacpkuhlman.supabase.co/storage/v1/object/public/product-assets/Untitled%20folder/Company%20logo.jpg" 
-                 alt="Mwamini Logo" 
-                 class="brand-logo"
-                 onerror="this.onerror=null; this.src='https://via.placeholder.com/150x45?text=Mwamini+Trading';">
-            <div class="brand-title">Mwamini complex services & Trading Portal</div>
-        </div>
-
-        <div class="nav-group">
-            <button onclick="navigate('home')" class="btn btn-outline" style="border:none;">
-                <i class="fa-solid fa-house"></i> Home
-            </button>
+    <!-- Navigation Header -->
+    <header class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="brand">
+                <div class="brand-icon"><i class="fa-solid fa-layer-group"></i></div>
+                <span>Mwamini Hub</span>
+            </a>
             
-            <button onclick="navigate('shop')" class="btn btn-outline" style="border:none;">
-                <i class="fa-solid fa-store"></i> Shop
-            </button>
-            
-            <button onclick="navigate('announcements')" class="btn btn-outline" style="border:none;">
-                <i class="fa-solid fa-bullhorn"></i> Announcements
-            </button>
+            <ul class="nav-links">
+                <li><a href="#inventory" class="nav-link">Inventory</a></li>
+                <li><a href="#announcements" class="nav-link">Announcements</a></li>
+                <li><a href="#stories" class="nav-link">Stories</a></li>
+                <li><a href="#order-project" class="nav-link">Order Project</a></li>
+                <li><a href="#contact" class="nav-link">Contact Us</a></li>
+            </ul>
 
-            <button onclick="navigate('about')" class="btn btn-outline" style="border:none;">
-                <i class="fa-solid fa-circle-info"></i> About
-            </button>
-            
-            <button onclick="navigate('story')" class="btn btn-outline" style="border:none;">
-                <i class="fa-solid fa-book-open"></i> Story
-            </button>
-            
-            <button onclick="navigate('contact')" class="btn btn-outline" style="border:none;">
-                <i class="fa-solid fa-envelope"></i> Contact Us
-            </button>
-
-            <button id="theme-toggle" class="btn btn-outline" style="border-radius: 50%; width: 40px; height: 40px; padding: 0;">
-                <i class="fa-solid fa-moon"></i>
-            </button>
-
-            <div id="guest-nav" class="user-nav-group">
-                <button onclick="openAuthModal('login')" class="btn btn-outline">Sign In</button>
-                <button onclick="openAuthModal('register')" class="btn btn-primary">Register</button>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                <button id="theme-toggle" class="btn btn-outline" style="padding: 0.5rem 0.75rem;">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <a href="admin.html" class="btn btn-primary">
+                    <i class="fa-solid fa-lock"></i> Mainframe
+                </a>
             </div>
-
-            <div id="user-nav" class="user-nav-group" style="display:none;">
-                <span id="auth-user-name" style="font-weight:600; font-size:0.875rem; margin-right: 0.5rem;"></span>
-                <button onclick="openUserDashboard()" class="btn btn-primary"><i class="fa-solid fa-user"></i> My Account</button>
-                <button onclick="logoutUser()" class="btn btn-danger-outline"><i class="fa-solid fa-right-from-bracket"></i></button>
-            </div>
-
-            <button onclick="window.location.href='login.html'" class="btn btn-outline" style="border:none; margin-left:1rem; opacity: 0.5;" title="Admin Access">
-                <i class="fa-solid fa-lock"></i>
-            </button>
         </div>
     </header>
 
-    <div id="home-view" class="view-section active">
-        <section class="hero-banner">
-            <h1 class="hero-title">Welcome to Mwamini Complex Services & Trading Portal</h1>
-            <p class="hero-subtitle">
-                We are pleased to serve you with a carefully curated selection of high-quality products.
-                Our commitment is to ensure every item meets strict standards of value and reliability, providing a smooth and satisfying experience that consistently exceeds expectations.
-            </p>
-            <div style="margin-top: 2.5rem;">
-                <button onclick="navigate('shop')" class="btn btn-primary" style="font-size: 1.1rem; padding: 1rem 2rem; border-radius: 50px;">
-                    <i class="fa-solid fa-cart-shopping"></i> Explore Our Catalog
-                </button>
-                <button onclick="navigate('about')" class="btn btn-outline" style="font-size: 1.1rem; padding: 1rem 2rem; border-radius: 50px; background: rgba(255,255,255,0.1); color: white; border-color: rgba(255,255,255,0.3); margin-left: 1rem;">
-                    Learn More
-                </button>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container hero-grid">
+            <div>
+                <h1 class="hero-title">Industrial Equipment & Custom Engineering Solutions</h1>
+                <p class="hero-subtitle">Access premier commodities, order specialized industrial machinery, and collaborate on heavy engineering projects in seamless ecosystem real-time.</p>
+                <div style="display:flex; gap:1rem;">
+                    <a href="#order-project" class="btn btn-primary" style="padding: 0.875rem 1.75rem;"><i class="fa-solid fa-diagram-project"></i> Order Custom Project</a>
+                    <a href="#inventory" class="btn btn-outline" style="padding: 0.875rem 1.75rem;">Explore Inventory</a>
+                </div>
             </div>
-        </section>
-
-        <div class="content-grid">
-            <div class="info-card" style="text-align: center;">
-                <div style="font-size: 3rem; color: var(--accent); margin-bottom: 1rem;"><i class="fa-solid fa-truck-fast"></i></div>
-                <h3 style="justify-content: center;">Global Logistics</h3>
-                <p style="text-align: center !important;">Secure and reliable delivery routing ensuring your commodities reach their destination safely and on schedule, monitored via our robust supply chain matrix.</p>
-            </div>
-            <div class="info-card" style="text-align: center;">
-                <div style="font-size: 3rem; color: var(--success); margin-bottom: 1rem;"><i class="fa-solid fa-shield-halved"></i></div>
-                <h3 style="justify-content: center;">Verified Quality</h3>
-                <p style="text-align: center !important;">Every product entering our ecosystem undergoes stringent quality control checks to guarantee performance, durability, and absolute client satisfaction.</p>
-            </div>
-            <div class="info-card" style="text-align: center;">
-                <div style="font-size: 3rem; color: var(--warning); margin-bottom: 1rem;"><i class="fa-solid fa-headset"></i></div>
-                <h3 style="justify-content: center;">24/7 Support Desk</h3>
-                <p style="text-align: center !important;">Our dedicated engineering and support teams maintain constant oversight of the trading platform, ready to assist with real-time chat integration.</p>
-            </div>
-        </div>
-    </div>
-
-    <div id="shop-view" class="view-section">
-        <div style="background: var(--bg-surface); padding: 2rem 5%; border-bottom: 1px solid var(--border-color);">
-            <h2 style="font-size: 2rem; color: var(--accent); margin-bottom: 0.5rem;"><i class="fa-solid fa-store"></i> Commodities Catalog</h2>
-            <p style="color: var(--text-muted); max-width: 600px;">Browse our extensive inventory of verified products. Filter by category or search directly for specific nomenclatures.</p>
-        </div>
-
-        <div class="search-filter-bar">
-            <div style="position: relative; flex: 2; min-width: 250px;">
-                <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
-                <input type="text" id="search-input" class="search-input" style="padding-left: 2.5rem;" placeholder="Search our selection (e.g. Rice, Fertilizer, Electronics)...">
-            </div>
-
-            <select id="category-filter" class="filter-select" style="flex: 1; min-width: 150px;">
-                <option value="All">All Categories</option>
-                <option value="Grains">Grains</option>
-                <option value="Agriculture">Agriculture</option>
-                <option value="Construction">Construction</option>
-                <option value="Electronics">Electronics</option>
-                <option value="Electrical">Electrical</option>
-                <option value="Food Materials">Food Materials</option>
-                <option value="Services">Services</option>
-                <option value="Others">Others</option>
-            </select>
-
-            <select id="currency-select" class="filter-select" style="max-width: 180px;">
-                <option value="RWF"> 🇷🇼 RWF (Fr)</option>
-                <option value="KES"> 🇰🇪 KES (KSh)</option>
-                <option value="UGX"> 🇺🇬 UGX (USh)</option>
-                <option value="TZS"> 🇹🇿 TZS (TSh)</option>
-                <option value="BIF"> 🇧🇮 BIF (FBu)</option>
-                <option value="SSP"> 🇸🇸 SSP (£)</option>
-                <option value="CDF"> 🇨🇩 CDF (FC)</option>
-                <option value="USD"> 🇺🇸 USD ($)</option>
-                <option value="EUR"> 🇪🇺 EUR (€)</option>
-                <option value="GBP"> 🇬🇧 GBP (£)</option>
-                <option value="AED"> 🇦🇪 AED (د.إ)</option>
-                <option value="SAR"> 🇸🇦 SAR (ر.س)</option>
-                <option value="CNY"> 🇨🇳 CNY (¥)</option>
-                <option value="INR"> 🇮🇳 INR (₹)</option>
-                <option value="JPY"> 🇯🇵 JPY (¥)</option>
-                <option value="ZAR"> 🇿🇦 ZAR (R)</option>
-                <option value="CAD"> 🇨🇦 CAD ($)</option>
-            </select>
-        </div>
-
-        <main class="products-grid" id="products-container">
-            <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: var(--text-muted);">
-                <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 2rem; margin-bottom: 1rem;"></i>
-                <p>Synchronizing inventory matrix...</p>
-            </div>
-        </main>
-    </div>
-
-    <div id="announcements-view" class="view-section" style="padding: 4rem 5%; background: var(--bg-surface);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; max-width: 1400px; margin-left: auto; margin-right: auto;">
-            <h2 style="font-size: 2.25rem; color: var(--accent);"><i class="fa-solid fa-bullhorn"></i> Platform Announcements</h2>
-        </div>
-        <div id="public-announcements-container" class="products-grid" style="padding-top: 0;">
-            <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: var(--text-muted);">
-                <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 2rem; margin-bottom: 1rem;"></i>
-                <p>Synchronizing broadcast channels...</p>
-            </div>
-        </div>
-    </div>
-
-    <div id="about-view" class="view-section" style="padding: 4rem 5%; background: var(--bg-primary);">
-        <h2 style="font-size: 2.5rem; color: var(--accent); margin-bottom: 1.5rem; text-align: center;">About Mwamini Complex Services & Trading Portal</h2>
-        <div style="max-width: 900px; margin: 0 auto 3.5rem auto; padding: 0 1rem; text-align: center;">
-            <p style="color: var(--text-muted); font-size: 1.15rem; line-height: 1.8; text-align: center !important;">
-                Mwamini Complex Services & Trading Portal is a trusted platform connecting businesses, institutions, and individuals through reliable trading, logistics, and supply chain solutions. Built on the principles of trust, operational excellence, transparency, and innovation, our platform provides secure access to quality products and professional services while supporting efficient domestic and international commerce. We are committed to delivering value, reliability, and long-term partnerships through modern technology and customer-focused service.
-            </p>
-        </div>
-
-        <div class="content-grid" style="padding: 0;">
-            <div class="info-card">
-                <h3><i class="fa-solid fa-eye"></i> Vision</h3>
-                <p>To become the leading and most trusted trading and supply chain platform across East Africa and beyond by providing secure, innovative, and efficient commercial solutions.</p>
-            </div>
-            <div class="info-card">
-                <h3><i class="fa-solid fa-rocket"></i> Mission</h3>
-                <p>To deliver high-quality products and professional services through transparent operations, dependable logistics, modern digital technology, and exceptional customer satisfaction.</p>
-            </div>
-            <div class="info-card">
-                <h3><i class="fa-solid fa-triangle-exclamation"></i> Problem Statement</h3>
-                <p>Many businesses continue to face inefficient procurement systems, fragmented supply chains, limited transparency, and unreliable trading platforms. These challenges increase operational costs, delay deliveries, and reduce customer confidence. Mwamini Complex Services & Trading Portal addresses these challenges by providing an integrated, secure, and reliable digital marketplace.</p>
-            </div>
-            <div class="info-card">
-                <h3><i class="fa-solid fa-book-open-reader"></i> Our Story</h3>
-                <p>Founded on the meaning of "Mwamini" (Trust), the platform began with a commitment to providing dependable services and quality products. Through continuous innovation and customer dedication, it has grown into a comprehensive digital marketplace serving agriculture, construction, electronics, engineering, and general commerce.</p>
-            </div>
-            <div class="info-card" style="grid-column: 1 / -1; max-width: 800px; margin: 0 auto;">
-                <h3><i class="fa-solid fa-bullseye"></i> Company Objectives</h3>
-                <ul>
-                    <li>Expand operations throughout the East African Community.</li>
-                    <li>Improve supply chain efficiency through digital innovation.</li>
-                    <li>Integrate modern IoT-based logistics monitoring.</li>
-                    <li>Maintain secure and reliable customer data management.</li>
-                    <li>Build long-term partnerships with customers and suppliers.</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    <div id="story-view" class="view-section" style="padding: 4rem 5%; background: var(--bg-surface);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; max-width: 1400px; margin-left: auto; margin-right: auto;">
-            <h2 style="font-size: 2.25rem; color: var(--accent);"><i class="fa-solid fa-newspaper"></i> Platform Innovations & Stories</h2>
-            <button id="admin-add-story-btn" class="btn btn-primary" style="display: none;" onclick="window.location.href='admin.html'">
-                <i class="fa-solid fa-plus"></i> Manage Stories (Admin)
-            </button>
-        </div>
-        
-        <div id="stories-container" class="products-grid" style="padding-top: 0;">
-            <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: var(--text-muted);">
-                <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 2rem; margin-bottom: 1rem;"></i>
-                <p>Loading narrative vectors...</p>
-            </div>
-        </div>
-    </div>
-
-    <div id="contact-view" class="view-section" style="padding: 4rem 5%; background: var(--bg-primary);">
-        <div style="max-width: 800px; margin: 0 auto;">
-            <h2 style="font-size: 2.5rem; color: var(--accent); margin-bottom: 1rem; text-align: center;"><i class="fa-solid fa-envelope-open-text"></i> Contact Us</h2>
-            <p style="color: var(--text-muted); text-align: center !important; margin-bottom: 3rem;">Reach out to our dedicated support teams through any of the verified channels below. We operate a 24/7 communications grid to assist you.</p>
-
-            <div class="info-card" style="margin-bottom: 3rem;">
-                <ul class="contact-list" id="dynamic-contact-list">
-                    <li style="justify-content: center;"><i class="fa-solid fa-circle-notch fa-spin text-muted"></i> Fetching contact vectors...</li>
-                </ul>
-            </div>
-        </div>
-
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 3rem; max-width: 1200px; margin: 0 auto;">
-            <div class="info-card">
-                <h3 style="margin-bottom: 1.5rem;"><i class="fa-solid fa-star text-warning"></i> Share Your Experience</h3>
-                <form id="review-form">
-                    <div class="form-group">
-                        <label class="form-label">Your Name / Enterprise</label>
-                        <input type="text" id="review-name" class="form-control" placeholder="e.g. Acme Logistics Corp" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Service Dispatch Rating</label>
-                        <div class="star-rating">
-                            <input type="radio" id="star5" name="rating" value="5" required />
-                            <label for="star5" title="5 stars"><i class="fa-solid fa-star"></i></label>
-                            <input type="radio" id="star4" name="rating" value="4" />
-                            <label for="star4" title="4 stars"><i class="fa-solid fa-star"></i></label>
-                            <input type="radio" id="star3" name="rating" value="3" />
-                            <label for="star3" title="3 stars"><i class="fa-solid fa-star"></i></label>
-                            <input type="radio" id="star2" name="rating" value="2" />
-                            <label for="star2" title="2 stars"><i class="fa-solid fa-star"></i></label>
-                            <input type="radio" id="star1" name="rating" value="1" />
-                            <label for="star1" title="1 star"><i class="fa-solid fa-star"></i></label>
+            <div>
+                <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 2rem; box-shadow: var(--shadow-lg);">
+                    <h3 style="margin-bottom: 1rem;"><i class="fa-solid fa-bolt text-accent"></i> Real-time Telemetry</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div style="background: var(--bg-primary); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                            <div style="font-size: 0.75rem; color: var(--text-muted);">Active Commodities</div>
+                            <div id="stat-sku-count" style="font-size: 1.5rem; font-weight: 800;">--</div>
+                        </div>
+                        <div style="background: var(--bg-primary); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                            <div style="font-size: 0.75rem; color: var(--text-muted);">Custom Projects</div>
+                            <div id="stat-project-count" style="font-size: 1.5rem; font-weight: 800;">--</div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-                    <div class="form-group">
-                        <label class="form-label">Verbatim Review Payload</label>
-                        <div style="background: var(--bg-surface); border-radius: var(--radius-md);">
-                            <div id="review-message-editor"></div>
-                        </div>
-                    </div>
+    <!-- Inventory Matrix Section -->
+    <section id="inventory" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Commodities & Equipment</h2>
+                <p class="section-subtitle">High precision industrial machinery and agricultural units ready for immediate procurement.</p>
+            </div>
+            <div id="public-inventory-grid" class="card-grid"></div>
+        </div>
+    </section>
 
-                    <button type="submit" class="btn btn-primary w-full" style="width: 100%; margin-top: 1rem;"><i class="fa-solid fa-paper-plane"></i> Submit Platform Review</button>
-                </form>
+    <!-- Announcements Section -->
+    <section id="announcements" class="section" style="background: var(--bg-surface);">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Public Announcements</h2>
+                <p class="section-subtitle">Live system updates, maintenance logs, and official operational broadcasts.</p>
+            </div>
+            <div id="public-announcements-grid" class="card-grid"></div>
+        </div>
+    </section>
+
+    <!-- Story Section -->
+    <section id="stories" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Ecosystem Stories & Case Studies</h2>
+                <p class="section-subtitle">In-depth insights, technological updates, and field reports from our engineers.</p>
+            </div>
+            <div id="public-stories-grid" class="card-grid"></div>
+        </div>
+    </section>
+
+    <!-- Order Project Section (New Upgrade: Inserted between Story and Contact Us) -->
+    <section id="order-project" class="section" style="background: linear-gradient(180deg, var(--bg-surface) 0%, var(--bg-primary) 100%);">
+        <div class="container">
+            <div class="section-header">
+                <span class="badge badge-info" style="margin-bottom: 0.5rem;">Custom Fabrication & Engineering</span>
+                <h2 class="section-title">Order a Custom Project</h2>
+                <p class="section-subtitle">Submit your exact engineering blueprints, bespoke machinery requirements, or construction scope to our technical team.</p>
             </div>
 
-            <div class="info-card">
-                <h3 style="margin-bottom: 1.5rem;"><i class="fa-solid fa-headset text-accent"></i> Secure Support Routing</h3>
-                <form id="inquiry-form">
-                    <div style="padding: 1rem; background: var(--accent-light); color: var(--accent); border: 1px dashed var(--accent); border-radius: var(--radius-md); margin-bottom: 1.5rem; font-size: 0.875rem;">
-                        <i class="fa-solid fa-circle-info"></i> Support nodes are fully active and monitoring inbound requests.
-                    </div>
+            <div class="order-project-wrapper">
+                <div>
+                    <h3 style="font-size: 1.5rem; margin-bottom: 1rem;"><i class="fa-solid fa-compass-drafting" style="color: var(--accent);"></i> Project Commission Form</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Fill out the form below with your required specifications. Our technical dispatch team will evaluate your scope and generate a formal quotation.</p>
 
-                    <div class="form-group">
-                        <label class="form-label">Inquiry Core Subject</label>
-                        <input type="text" id="inquiry-subject" class="form-control" placeholder="e.g. Bulk Rice Logistics" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Detailed Request Message</label>
-                        <div style="background: var(--bg-surface); border-radius: var(--radius-md);">
-                            <div id="inquiry-message-editor"></div>
+                    <form id="public-order-project-form" class="project-form">
+                        <div class="form-group">
+                            <label class="form-label">Project Title / Name *</label>
+                            <input type="text" id="project-pub-title" class="form-control" placeholder="e.g., Heavy-Duty Solar Processing System" required>
                         </div>
-                    </div>
 
-                    <button type="submit" class="btn btn-success w-full" style="width: 100%; margin-top: 1rem; background: var(--success); color: white; border: none;"><i class="fa-solid fa-paper-plane"></i> Transmit Ticket to Helpdesk</button>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Category *</label>
+                                <select id="project-pub-category" class="form-control" required>
+                                    <option value="Agriculture">Agriculture & Processing</option>
+                                    <option value="Electrical">Electrical Systems</option>
+                                    <option value="Construction">Civil & Construction</option>
+                                    <option value="Custom Machinery">Custom Machinery</option>
+                                    <option value="Software/Tech">Automation & Tech</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Estimated Budget (USD) *</label>
+                                <input type="number" id="project-pub-budget" class="form-control" placeholder="e.g., 15000" step="100" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Target Completion Date</label>
+                                <input type="date" id="project-pub-timeline" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Client Full Name *</label>
+                                <input type="text" id="project-pub-client-name" class="form-control" placeholder="Your Full Name" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Client Email *</label>
+                                <input type="email" id="project-pub-client-email" class="form-control" placeholder="email@domain.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Phone / WhatsApp *</label>
+                                <input type="text" id="project-pub-client-phone" class="form-control" placeholder="+250 7..." required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Deployment Location / Address *</label>
+                            <input type="text" id="project-pub-location" class="form-control" placeholder="e.g., Kigali Special Economic Zone" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Detailed Project Specifications & Scope *</label>
+                            <textarea id="project-pub-description" class="form-control" rows="4" placeholder="Describe the technical requirements, structural dimensions, operational load..." required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Attach Blueprints / Schematics (Image, PDF, Doc)</label>
+                            <input type="file" id="project-pub-file" class="form-control" accept="image/*,.pdf,.doc,.docx">
+                        </div>
+
+                        <button type="submit" id="btn-submit-project" class="btn btn-primary" style="margin-top: 0.5rem; padding: 0.875rem;">
+                            <i class="fa-solid fa-paper-plane"></i> Submit Project Blueprint Order
+                        </button>
+                    </form>
+                </div>
+
+                <div>
+                    <h3 style="font-size: 1.5rem; margin-bottom: 1rem;"><i class="fa-solid fa-list-check" style="color: var(--accent);"></i> Active & Featured Commission Showcase</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Browse public commission examples and live projects ongoing across our facilities.</p>
+
+                    <div id="public-projects-list" class="card-grid" style="grid-template-columns: 1fr; gap: 1rem; max-height: 600px; overflow-y: auto; padding-right: 0.5rem;">
+                        <div style="text-align: center; color: var(--text-muted); padding: 2rem;">Loading active project commissions...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Us Section -->
+    <section id="contact" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Contact Operational Head</h2>
+                <p class="section-subtitle">Reach out directly to our engineering division or support staff.</p>
+            </div>
+
+            <div style="max-width: 600px; margin: 0 auto;" class="card card-body">
+                <form id="contact-public-form" style="display:flex; flex-direction:column; gap:1rem;">
+                    <div class="form-group">
+                        <label class="form-label">Full Identity</label>
+                        <input type="text" id="contact-name" class="form-control" placeholder="John Doe" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email Vector</label>
+                        <input type="email" id="contact-email-input" class="form-control" placeholder="john@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Message Payload</label>
+                        <textarea id="contact-msg" class="form-control" rows="4" placeholder="Enter inquiry..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i> Transmit Inquiry</button>
                 </form>
             </div>
         </div>
-    </div>
+    </section>
 
-
-    <div class="modal" id="auth-modal">
-        <div class="modal-content">
-            <button type="button" class="close-modal-btn" onclick="closeAuthModal()"> <i class="fa-solid fa-xmark"></i> </button>
-            <h2 id="auth-title" style="margin-bottom: 1.5rem; text-align: center; color: var(--accent);">Sign In</h2>
-            <form id="auth-form">
-                <input type="hidden" id="auth-mode" value="login">
-
-                <div id="register-fields" style="display:none;">
-                    <div class="form-group">
-                        <label class="form-label">Full Name</label>
-                        <input type="text" id="reg-name" class="form-control" placeholder="John Doe">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Phone Number (+250...)</label>
-                        <input type="text" id="reg-phone" class="form-control" placeholder="+250780000000">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Current Location / Country</label>
-                        <input type="text" id="reg-location" class="form-control" placeholder="Kigali, Rwanda">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Delivery Destination / Hub</label>
-                        <input type="text" id="reg-dest" class="form-control" placeholder="Warehouse 4, Nyabugogo">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Email Address</label>
-                    <input type="email" id="auth-email" class="form-control" placeholder="user@example.com" required>
-                </div>
-
-                <div class="form-group" style="margin-bottom: 2rem;">
-                    <label class="form-label">Password</label>
-                    <input type="password" id="auth-password" class="form-control" placeholder="••••••••" required>
-                </div>
-
-                <button type="submit" id="auth-submit-btn" class="btn btn-primary" style="width: 100%; font-size: 1rem; padding: 0.75rem;">Sign In</button>
-                
-                <div style="text-align: center; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
-                    <span style="color: var(--text-muted); font-size: 0.875rem;">
-                        <span id="auth-toggle-text">Don't have an account?</span> 
-                        <a href="#" onclick="toggleAuthMode(); return false;" style="font-weight: 600;">Click here</a>
-                    </span>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div class="modal" id="verif-modal-1">
-        <div class="modal-content"><button type="button" class="close-modal-btn" onclick="terminateVerification()"> <i class="fa-solid fa-xmark"></i> </button>
-            <h2 style="margin-bottom: 1.5rem; color: var(--accent); text-align: center;">Admin Verification</h2>
-            <form id="verif-form-1">
-                <input type="password" id="verif-1-pass" class="form-control" style="margin-bottom:1rem;" placeholder="Password@4321" required>
-                <span id="verif-1-error" class="error-text" style="margin-bottom:1rem;"></span>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Verify & Continue</button>
-            </form>
-        </div>
-    </div>
-    <div class="modal" id="verif-modal-2">
-        <div class="modal-content"><button type="button" class="close-modal-btn" onclick="terminateVerification()"> <i class="fa-solid fa-xmark"></i> </button>
-            <h2 style="margin-bottom: 1.5rem; color: var(--accent); text-align: center;">Admin Verification Phase 1</h2>
-            <form id="verif-form-2">
-                <input type="password" id="verif-2-pass" class="form-control" style="margin-bottom:1rem;" placeholder="Mwamini@321" required>
-                <span id="verif-2-error" class="error-text" style="margin-bottom:1rem;"></span>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Verify & Continue</button>
-            </form>
-        </div>
-    </div>
-    <div class="modal" id="verif-modal-3">
-        <div class="modal-content"><button type="button" class="close-modal-btn" onclick="terminateVerification()"> <i class="fa-solid fa-xmark"></i> </button>
-            <h2 style="margin-bottom: 1.5rem; color: var(--accent); text-align: center;">Admin Verification Credential</h2>
-            <form id="verif-form-3">
-                <input type="email" id="verif-3-email" class="form-control" style="margin-bottom:1rem;" placeholder="soulaimanmwamini0@gmail.com" required>
-                <input type="password" id="verif-3-pass" class="form-control" style="margin-bottom:1rem;" placeholder="Enter authenticated password" required>
-                <span id="verif-3-error" class="error-text" style="margin-bottom:1rem;"></span>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Verify & Continue</button>
-            </form>
-        </div>
-    </div>
-    <div class="modal" id="verif-modal-4">
-        <div class="modal-content"><button type="button" class="close-modal-btn" onclick="terminateVerification()"> <i class="fa-solid fa-xmark"></i> </button>
-            <h2 style="margin-bottom: 1.5rem; color: var(--success); text-align: center;"><i class="fa-solid fa-shield-check"></i> Final Verification</h2>
-            <form id="verif-form-4">
-                <input type="password" id="verif-4-pass" class="form-control" style="margin-bottom:1rem;" placeholder="Mwamini@9023" required>
-                <span id="verif-4-error" class="error-text" style="margin-bottom:1rem;"></span>
-                <button type="submit" class="btn" style="width: 100%; background: var(--success); color: white;">Complete Verification</button>
-            </form>
-        </div>
-    </div>
-
-    <div class="modal" id="profile-completion-modal">
-        <div class="modal-content" style="text-align: center;">
-            <button type="button" class="close-modal-btn" onclick="closeProfileCompletionModal()"> <i class="fa-solid fa-xmark"></i> </button>
-            <h2 style="margin-bottom: 1rem; color: var(--accent);">Complete Your Profile (Optional)</h2>
-            <p style="margin-bottom: 1.5rem; font-size: 0.875rem; color: var(--text-muted);">You may upload a profile picture to personalize your registration, or skip this step.</p>
-            <form id="profile-completion-form">
-                <img id="avatar-preview" class="user-avatar-preview" src="https://via.placeholder.com/100?text=Avatar" alt="Avatar">
-                <div class="form-group">
-                    <input type="file" id="avatar-upload" accept="image/*" class="form-control" style="padding: 0.5rem;" required>
-                </div>
-                <button type="submit" id="profile-complete-btn" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Upload Avatar</button>
-                <button type="button" class="btn btn-outline" style="width: 100%; margin-top: 0.5rem;" onclick="closeProfileCompletionModal()">Skip For Now</button>
-            </form>
-        </div>
-    </div>
-
-    <div class="modal" id="user-dashboard-modal">
-        <div class="modal-content" style="max-width: 1000px; padding: 0; overflow: hidden; display: flex; flex-direction: column;">
-            
-            <div style="padding: 1.5rem 2rem; background: var(--bg-surface); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
-                <h2 style="margin: 0; color: var(--accent);"><i class="fa-solid fa-user-gear"></i> My Account Dashboard</h2>
-                <button type="button" class="close-modal-btn" style="position: static;" onclick="closeUserDashboard()"> <i class="fa-solid fa-xmark"></i> </button>
-            </div>
-
-            <div style="display: flex; flex-wrap: wrap; flex: 1; min-height: 500px; max-height: 70vh; overflow-y: auto;">
-                <div style="flex: 1; min-width: 250px; background: var(--bg-primary); padding: 2rem; border-right: 1px solid var(--border-color);">
-                    <h3 style="margin-bottom: 1.5rem; text-align: center; font-size: 1.1rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">Identity Matrix</h3>
-                    
-                    <div style="text-align: center; margin-bottom: 2rem;">
-                        <img id="dash-avatar" class="user-avatar-preview" src="https://via.placeholder.com/100?text=Avatar" alt="Profile">
-                        <form id="dash-avatar-update-form" style="display:flex; flex-direction:column; gap:0.5rem; align-items:center;">
-                            <input type="file" id="dash-avatar-upload" accept="image/*" class="form-control" style="font-size:0.75rem; padding:0.4rem;" required>
-                            <button type="submit" class="btn btn-outline" style="width: 100%; padding:0.4rem; font-size:0.75rem;"><i class="fa-solid fa-upload"></i> Update Avatar</button>
-                        </form>
-                    </div>
-                    
-                    <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.5rem; font-size: 0.875rem;">
-                        <div style="margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
-                            <span style="color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; display: block; margin-bottom: 0.25rem;">Full Name</span>
-                            <strong id="dash-name" style="color: var(--text-main);"></strong>
-                        </div>
-                        <div style="margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
-                            <span style="color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; display: block; margin-bottom: 0.25rem;">Registered Email</span>
-                            <strong id="dash-email" style="color: var(--text-main); word-break: break-all;"></strong>
-                        </div>
-                        <div style="margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
-                            <span style="color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; display: block; margin-bottom: 0.25rem;">Contact Vector</span>
-                            <strong id="dash-phone" style="color: var(--text-main);"></strong>
-                        </div>
-                        <div>
-                            <span style="color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; display: block; margin-bottom: 0.25rem;">Default Hub / Destination</span>
-                            <strong id="dash-dest" style="color: var(--text-main);"></strong>
-                        </div>
-                    </div>
-                </div>
-
-                <div style="flex: 2; min-width: 400px; padding: 2rem; background: var(--bg-surface);">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                        <h3 style="margin: 0; color: var(--accent);"><i class="fa-solid fa-boxes-stacked"></i> Transaction History</h3>
-                        <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.4rem 0.75rem;" onclick="loadUserOrders()"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
-                    </div>
-
-                    <div class="dashboard-table-container">
-                        <table class="dashboard-table">
-                            <thead>
-                                <tr>
-                                    <th>Ref ID</th>
-                                    <th>Requested Item</th>
-                                    <th>Volume</th>
-                                    <th>Pipeline State</th>
-                                    <th style="text-align: right;">Operations</th>
-                                </tr>
-                            </thead>
-                            <tbody id="user-orders-body">
-                                </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal" id="order-modal">
-        <div class="modal-content" style="max-width: 600px;">
-            <button type="button" class="close-modal-btn" onclick="closeOrderModal()"> <i class="fa-solid fa-xmark"></i> </button>
-            
-            <div style="text-align: center; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
-                <h3 style="color: var(--accent); font-size: 1.5rem; margin-bottom: 0.5rem;"><i class="fa-solid fa-cart-arrow-down"></i> Checkout & Fulfillment</h3>
-                <div style="font-weight: 600; color: var(--text-main);" id="modal-product-title">Product Name Placeholder</div>
-                <div style="color: var(--success); font-weight: 800; font-size: 1.25rem; margin-top: 0.5rem;" id="modal-product-price">$0.00</div>
-            </div>
-
-            <form id="order-submission-form">
-                <input type="hidden" id="form-product-id">
-                <input type="hidden" id="form-product-title-val">
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                    <div class="form-group">
-                        <label class="form-label">Recipient Full Name</label>
-                        <input type="text" id="cust-name" class="form-control" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Contact Number</label>
-                        <input type="tel" id="cust-phone" class="form-control" required>
-                    </div>
-                </div>
-
-                <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 1rem;">
-                    <div class="form-group">
-                        <label class="form-label">Quantity</label>
-                        <input type="number" id="cust-qty" value="1" min="1" class="form-control" required onchange="calculateOrderTotal()">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Delivery Destination / Hub</label>
-                        <input type="text" id="cust-location" class="form-control" required>
-                    </div>
-                </div>
-
-                <div class="form-group" style="margin-top: 1rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">
-                    <label class="form-label"><i class="fa-solid fa-money-bill-transfer text-success"></i> Select Payment Gateway</label>
-                    <select id="checkout-payment-method" class="form-control" required onchange="updatePaymentInstructions()">
-                        <option value="" disabled selected>Loading gateways...</option>
-                        </select>
-                </div>
-
-                <div id="payment-instructions" class="payment-instruction-box">
-                    </div>
-
-                <div class="form-group">
-                    <label class="form-label">Special Notes / Freight Requests</label>
-                    <textarea id="cust-notes" class="form-control" style="height: 60px; resize: none;"></textarea>
-                </div>
-
-                <div style="background: var(--bg-primary); padding: 1rem; border-radius: var(--radius-md); margin: 1.5rem 0; text-align: center; border: 1px solid var(--border-color);">
-                    <span style="color: var(--text-muted); font-size: 0.875rem; text-transform: uppercase;">Total Computation</span>
-                    <div id="order-total-display" style="font-size: 1.5rem; font-weight: 800; color: var(--accent);">--</div>
-                </div>
-
-                <button type="submit" id="submit-order-btn" class="btn btn-primary" style="width: 100%; font-size: 1.1rem; padding: 1rem;">
-                    <i class="fa-solid fa-check-double"></i> Confirm & Submit Order
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <div class="modal" id="details-modal">
-        <div class="modal-content" style="max-width: 800px; padding: 0; overflow: hidden; display: flex; flex-direction: column; max-height: 90vh;">
-            <div style="position: relative; flex-shrink: 0;">
-                <button type="button" class="close-modal-btn" style="position: absolute; top: 1rem; right: 1rem; z-index: 50; background: rgba(0,0,0,0.5); color: white; border: none;" onclick="closeDetailsModal()"> <i class="fa-solid fa-xmark"></i> </button>
-                <div id="details-media" style="width: 100%; height: 350px; background: var(--bg-primary);"></div>
-            </div>
-            
-            <div style="padding: 2rem; overflow-y: auto; flex-grow: 1;">
-                <h2 id="details-title" style="margin-bottom: 1rem; color: var(--accent); font-size: 1.75rem;"></h2>
-                <div id="details-desc" class="ql-editor" style="padding: 0; font-size: 1rem; line-height: 1.7; max-height: none;"></div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal" id="story-details-modal">
-        <div class="modal-content" style="max-width: 800px; padding: 0; overflow: hidden;">
-            <div style="position: relative;">
-                <button type="button" class="close-modal-btn" style="position: absolute; top: 1rem; right: 1rem; z-index: 50; background: rgba(0,0,0,0.5); color: white; border: none;" onclick="closeStoryDetailsModal()"> <i class="fa-solid fa-xmark"></i> </button>
-                <div id="story-details-media" style="width: 100%; height: 300px; background: var(--bg-primary);"></div>
-            </div>
-            
-            <div style="padding: 2.5rem;">
-                <h2 id="story-details-title" style="margin-bottom: 0.5rem; color: var(--accent); font-size: 2rem;"></h2>
-                <div id="story-details-meta" style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 2rem; font-weight: 500; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;"></div>
-                <div id="story-details-content" class="ql-editor" style="padding: 0; font-size: 1.05rem; line-height: 1.8;"></div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal" id="comments-modal">
-        <div class="modal-content" style="max-width: 600px; padding: 2rem;">
-            <button type="button" class="close-modal-btn" onclick="closeCommentsModal()" style="z-index: 50;"> <i class="fa-solid fa-xmark"></i> </button>
-            <h3 style="margin-bottom: 1.5rem; color: var(--accent);"><i class="fa-solid fa-comments"></i> Discussion Vector</h3>
-            
-            <div id="comments-list" style="max-height: 350px; overflow-y: auto; margin-bottom: 1.5rem; padding: 1rem; background: var(--bg-primary); border-radius: var(--radius-md); border: 1px solid var(--border-color); scroll-behavior: smooth;">
-                </div>
-            
-            <form id="comment-form" style="display: flex; flex-direction: column; gap: 1rem;">
-                <input type="hidden" id="comment-target-id">
-                <input type="hidden" id="comment-target-type">
-                
-                <div style="background: var(--bg-surface); border-radius: var(--radius-md);">
-                    <div id="comment-input-editor" style="height: 100px;"></div>
-                </div>
-                
-                <button type="submit" class="btn btn-primary" style="align-self: flex-end;"><i class="fa-solid fa-reply"></i> Post Comment</button>
-            </form>
-        </div>
-    </div>
-
-    <button id="chat-toggle-btn" onclick="toggleChatWidget()">
-        <i class="fa-solid fa-headset" style="font-size: 1.2rem;"></i> Support
-    </button>
-    
-    <div id="chat-widget">
-        <div id="chat-header">
-            <div style="display: flex; align-items: center; gap: 8px;">
-                <div style="width: 8px; height: 8px; background: #34d399; border-radius: 50%; box-shadow: 0 0 5px #34d399;"></div>
-                <span>Live Helpdesk</span>
-            </div>
-            <button onclick="toggleChatWidget()" style="background:none; border:none; color:white; cursor:pointer; font-size: 1.2rem; transition: transform 0.2s;"><i class="fa-solid fa-angle-down"></i></button>
-        </div>
-        
-        <div id="chat-messages">
-            </div>
-        
-        <form id="chat-input-area" onsubmit="sendChatMessage(event)">
-            <div id="chat-editor-container" style="flex: 1;">
-                <div id="chat-message-editor"></div>
-            </div>
-            <div style="display:flex; justify-content:space-between; align-items: center; padding: 0.5rem 1rem; background: var(--bg-primary); border-top: 1px solid var(--border-color);">
-                <span style="font-size: 0.7rem; color: var(--text-muted);">Secure Channel</span>
-                <button type="submit" id="chat-submit-btn" class="btn btn-primary" style="border-radius: 50px; font-size: 0.875rem; padding: 0.4rem 1rem;">
-                    <i class="fa-solid fa-paper-plane"></i> Send
-                </button>
-            </div>
-        </form>
-    </div>
-
-    <footer class="site-footer">
-        <div class="footer-grid">
-            <div class="footer-col">
-                <h4>Mwamini Complex Services & Trading Portal</h4>
-                <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">Leading the continent in reliable logistics, secure dispatch, and premium commodity distribution. We love you for life.</p>
-                <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
-                    <a href="#" id="footer-fb" style="color: var(--text-muted); font-size: 1.5rem;"><i class="fa-brands fa-facebook"></i></a>
-                    <a href="#" id="footer-ig" style="color: var(--text-muted); font-size: 1.5rem;"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="#" id="footer-wa" style="color: var(--text-muted); font-size: 1.5rem;"><i class="fa-brands fa-whatsapp"></i></a>
-                </div>
-            </div>
-            
-            <div class="footer-col">
-                <h4>Quick Links</h4>
-                <ul>
-                    <li><a href="#" onclick="navigate('home'); return false;">Portal Home</a></li>
-                    <li><a href="#" onclick="navigate('shop'); return false;">Commodities Catalog</a></li>
-                    <li><a href="#" onclick="navigate('announcements'); return false;">Platform Announcements</a></li>
-                    <li><a href="#" onclick="navigate('about'); return false;">Corporate Vision</a></li>
-                    <li><a href="#" onclick="navigate('story'); return false;">Platform Stories</a></li>
-                </ul>
-            </div>
-            
-            <div class="footer-col">
-                <h4>Support Matrix</h4>
-                <ul>
-                    <li><a href="#" onclick="navigate('contact'); return false;">Contact Helpdesk</a></li>
-                    <li><a href="#" onclick="if(currentUser) openUserDashboard(); else openAuthModal('login'); return false;">Track Order Telemetry</a></li>
-                    <li><a href="#">Returns & Discrepancies</a></li>
-                    <li><a href="#">Security Protocol</a></li>
-                </ul>
-            </div>
-            
-            <div class="footer-col">
-                <h4>Contact Terminal</h4>
-                <ul style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.8;" id="footer-contact-list">
-                    <li><i class="fa-solid fa-circle-notch fa-spin"></i> Syncing...</li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            &copy; <span id="current-year">2026</span> Mwamini Complex Services & Trading Portal Corporation. All Rights Reserved.
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container text-center">
+            <p>&copy; 2026 Mwamini Ecosystem. All rights reserved. Engineering and Industrial Platform.</p>
         </div>
     </footer>
 
+    <div id="toast-container" class="toast-container"></div>
+
     <script src="supabase-config.js"></script>
     <script>
-        /**
-         * Mwamini Global Trading Portal - Client Frontend Logic
-         * Phase 2 - Comprehensive Implementation ensuring robustness and zero placeholders.
-         */
-
-        // State & Caching Matrices
-        let localProductsCache = [];
-        let localAnnouncementsCache = [];
-        let localStoriesCache = [];
-        let localPaymentMethods = [];
-        let currentUser = null;
-        let currentUserProfile = null;
-        
-        let activeOrderPriceVal = 0; // Temp holding for checkout calc
-        let activeOrderCurrency = "USD";
-
-        // Admin Verification State (Preserved exactly as requested)
-        let pendingVerificationData = null; 
-        let currentVerificationStep = 0;
-
-        // Base Exchange Rates anchoring system
-        const exchangeRates = {
-            RWF: 1290, KES: 132.5, UGX: 3820, TZS: 2580, BIF: 2850, SSP: 1030, CDF: 2750, USD: 1, EUR: 0.92, GBP: 0.79, AED: 3.67, SAR: 3.75, CNY: 7.23, INR: 83.15, JPY: 151.05, ZAR: 18.90, CAD: 1.36
-        };
-
-        // Rich Text Editors (Quill.js) configuration
-        const fullToolbarOptions = [
-            ['bold', 'italic', 'underline', 'strike'],
-            ['blockquote', 'code-block'],
-            [{ 'header': 1 }, { 'header': 2 }],
-            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-            [{ 'script': 'sub'}, { 'script': 'super' }],
-            [{ 'indent': '-1'}, { 'indent': '+1' }],
-            [{ 'direction': 'rtl' }],
-            [{ 'size': ['small', false, 'large', 'huge'] }],
-            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-            [{ 'color': [] }, { 'background': [] }],
-            [{ 'font': [] }],
-            [{ 'align': [] }],
-            ['clean'],
-            ['link', 'image', 'video']
-        ];
-
-        const compactToolbarOptions = [
-            ['bold', 'italic', 'underline'],
-            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-            ['link', 'clean']
-        ];
-
-        let reviewQuill, inquiryQuill, commentQuill, chatQuill;
-
-        document.addEventListener("DOMContentLoaded", async () => {
-            console.log("Initializing Mwamini Portal Subroutines...");
-            
-            // Set dynamic year
-            document.getElementById('current-year').innerText = new Date().getFullYear();
-
-            if (!window.supabase) {
-                showToast("CRITICAL: Database connection layer not found.", "error");
-                return;
-            }
-
-            // Init UI features
-            setupSearchFilters();
-            initializeFeedbackEngine();
-            
-            // Fetch initial DB states
-            await fetchContactSettings();
-            await fetchPaymentMethods();
-            await fetchAnnouncements();
-            await initializePublicCatalog();
-            
-            // Auth flow
-            await checkUserSession();
-
-            // Order fulfillment setup
-            initializeOrderFulfillmentEngine();
-            
-            // Editors
-            reviewQuill = new Quill('#review-message-editor', { theme: 'snow', modules: { toolbar: fullToolbarOptions } });
-            inquiryQuill = new Quill('#inquiry-message-editor', { theme: 'snow', modules: { toolbar: fullToolbarOptions } });
-            commentQuill = new Quill('#comment-input-editor', { theme: 'snow', modules: { toolbar: fullToolbarOptions } });
-            chatQuill = new Quill('#chat-message-editor', { theme: 'snow', modules: { toolbar: compactToolbarOptions }, placeholder: 'Type your message securely...' });
-
-            // Theme controller
-            const root = document.documentElement;
-            document.getElementById('theme-toggle').addEventListener('click', () => {
-                const nextTheme = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-                root.setAttribute('data-theme', nextTheme);
-                const icon = document.querySelector('#theme-toggle i');
-                if(nextTheme === 'dark') { icon.classList.replace('fa-moon', 'fa-sun'); }
-                else { icon.classList.replace('fa-sun', 'fa-moon'); }
-            });
-
-            // Handle Profile Image Upload
-            document.getElementById('profile-completion-form').addEventListener('submit', handleProfileCompletion);
-            
-            // Handle Profile Update from Dashboard
-            document.getElementById('dash-avatar-update-form').addEventListener('submit', updateDashboardAvatar);
+        document.addEventListener("DOMContentLoaded", () => {
+            initializePublicPage();
         });
 
-        // ==========================================
-        // ROUTING / VIEW CONTROLLER
-        // ==========================================
-        window.navigate = function(viewName) {
-            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-            
-            const target = document.getElementById(`${viewName}-view`);
-            if (target) {
-                target.classList.add('active');
-                if (viewName === 'story') fetchStories();
-                if (viewName === 'announcements') fetchAnnouncements();
-            } else {
-                document.getElementById('home-view').classList.add('active');
-            }
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        };
+        async function initializePublicPage() {
+            setupThemeToggle();
+            await loadPublicInventory();
+            await loadPublicAnnouncements();
+            await loadPublicStories();
+            await loadPublicProjects();
+            setupProjectOrderForm();
+        }
 
-        // ==========================================
-        // NOTIFICATIONS (Strictly verified)
-        // ==========================================
+        function setupThemeToggle() {
+            const toggle = document.getElementById("theme-toggle");
+            if (!toggle) return;
+            toggle.addEventListener("click", () => {
+                const root = document.documentElement;
+                const nextTheme = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+                root.setAttribute("data-theme", nextTheme);
+                toggle.querySelector("i").className = nextTheme === "dark" ? "fa-solid fa-sun" : "fa-solid fa-moon";
+            });
+        }
+
         function showToast(msg, type = "success") {
             const container = document.getElementById("toast-container");
+            if (!container) return;
             const toast = document.createElement("div");
-            toast.className = `toast-ui ${type}`;
-            const icon = type === 'success' ? 'fa-circle-check' : 'fa-triangle-exclamation';
-            toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${escapeHTML(msg)}</span>`;
-            
+            toast.className = `toast toast-${type}`;
+            toast.innerHTML = `<i class="fa-solid fa-circle-info"></i> <span>${DOMPurify.sanitize(msg)}</span>`;
             container.appendChild(toast);
-            
-            // Animate in
-            requestAnimationFrame(() => {
-                requestAnimationFrame(() => toast.classList.add("show"));
-            });
-
-            // Destroy
-            setTimeout(() => {
-                toast.classList.remove("show");
-                setTimeout(() => toast.remove(), 300);
-            }, 4000);
+            setTimeout(() => toast.remove(), 4000);
         }
 
-        // ==========================================
-        // DYNAMIC CONTACT SETTINGS (Interactive uprades)
-        // ==========================================
-        async function fetchContactSettings() {
+        async function loadPublicInventory() {
+            const grid = document.getElementById("public-inventory-grid");
+            const stat = document.getElementById("stat-sku-count");
             try {
-                const { data, error } = await window.supabase.from('platform_settings').select('*').eq('category', 'contact').maybeSingle();
-                const p = (data && data.payload) ? data.payload : {};
-                
-                // Construct lists mapping to interactive URL schemes
-                const listHTML = `
-                    ${p.phone ? `<li><i class="fa-solid fa-phone text-muted"></i> <div><strong>Direct Comms</strong><br><a href="tel:${escapeHTML(p.phone)}" style="font-size:0.9rem; color:var(--accent); text-decoration:none;">${escapeHTML(p.phone)}</a></div></li>` : ''}
-                    ${p.whatsapp ? `<li><i class="fa-brands fa-whatsapp text-success"></i> <div><strong>WhatsApp Routing</strong><br><a href="https://wa.me/${p.whatsapp.replace(/[^0-9]/g, '')}" target="_blank" style="font-size:0.9rem; color:var(--accent); text-decoration:none;">${escapeHTML(p.whatsapp)}</a></div></li>` : ''}
-                    ${p.email ? `<li><i class="fa-solid fa-envelope text-accent"></i> <div><strong>Official Email</strong><br><a href="mailto:${escapeHTML(p.email)}" style="font-size:0.9rem; color:var(--accent); text-decoration:none;">${escapeHTML(p.email)}</a></div></li>` : ''}
-                    ${p.address ? `<li><i class="fa-solid fa-map-location-dot text-danger"></i> <div><strong>Physical Matrix</strong><br><span style="font-size:0.9rem; color:var(--text-muted);">${escapeHTML(p.address)}</span></div></li>` : ''}
-                `;
-                
-                const footerHtml = `
-                    ${p.address ? `<li><strong>Base:</strong> ${escapeHTML(p.address)}</li>` : ''}
-                    ${p.phone ? `<li><strong>Comms:</strong> <a href="tel:${escapeHTML(p.phone)}">${escapeHTML(p.phone)}</a></li>` : ''}
-                    ${p.email ? `<li><strong>Grid:</strong> <a href="mailto:${escapeHTML(p.email)}">${escapeHTML(p.email)}</a></li>` : ''}
-                `;
-
-                document.getElementById('dynamic-contact-list').innerHTML = listHTML || '<li>No contact telemetry configured.</li>';
-                document.getElementById('footer-contact-list').innerHTML = footerHtml || '<li>Awaiting config.</li>';
-
-                // Footer socials interactive linking
-                if(p.facebook) document.getElementById('footer-fb').href = p.facebook; else document.getElementById('footer-fb').style.display = 'none';
-                if(p.instagram) document.getElementById('footer-ig').href = p.instagram; else document.getElementById('footer-ig').style.display = 'none';
-                if(p.whatsapp) document.getElementById('footer-wa').href = `https://wa.me/${p.whatsapp.replace(/[^0-9]/g, '')}`; else document.getElementById('footer-wa').style.display = 'none';
-
-            } catch (e) {
-                console.error("Failed to load contact matrix:", e);
-                document.getElementById('dynamic-contact-list').innerHTML = '<li>Unable to fetch contact data.</li>';
-            }
-        }
-
-        // ==========================================
-        // DYNAMIC PAYMENT GATEWAYS
-        // ==========================================
-        async function fetchPaymentMethods() {
-            try {
-                const { data, error } = await window.supabase.from('payment_methods').select('*').eq('active', true);
-                if (!error && data) {
-                    localPaymentMethods = data;
-                }
-            } catch (e) {
-                console.error("Payment methods fetch error:", e);
-            }
-        }
-
-        // ==========================================
-        // AUTHENTICATION & SESSIONS
-        // ==========================================
-        async function checkUserSession() {
-            if(!window.supabase) return;
-            try {
-                const { data: { session }, error } = await window.supabase.auth.getSession();
+                const { data, error } = await window.supabase.from("products").select("*").limit(6);
                 if (error) throw error;
-
-                if (session) {
-                    currentUser = session.user;
-                    await loadUserProfile();
-                } else {
-                    showGuestNav();
-                }
-            } catch (e) {
-                console.error("Session check error:", e);
-                showGuestNav();
-            }
-        }
-
-        async function loadUserProfile() {
-            try {
-                const { data, error } = await window.supabase.from('profiles').select('*').eq('id', currentUser.id).single();
-                if (error && error.code !== 'PGRST116') throw error; // ignore no rows error momentarily
+                if (stat) stat.innerText = data ? data.length : 0;
+                if (!grid) return;
                 
-                if (data) {
-                    currentUserProfile = data;
-                    
-                    // Check if disabled by admin
-                    if(data.account_status === 'Disabled') {
-                        await window.supabase.auth.signOut();
-                        currentUser = null; currentUserProfile = null;
-                        showToast("Account suspended by Administrator.", "error");
-                        showGuestNav();
-                        return;
-                    }
-
-                    // Removed forced mandatory avatar check as per constraints.
-                    // Just initialize navigation.
-                    showUserNav(data.full_name || currentUser.email);
-                    initializeChat(); 
-                } else {
-                    // We prompt optional profile completion if they somehow have no profile at all
-                    document.getElementById('profile-completion-modal').classList.add('active');
-                }
-            } catch (e) {
-                console.error("Profile load error:", e);
-            }
-        }
-
-        window.closeProfileCompletionModal = function() {
-            document.getElementById('profile-completion-modal').classList.remove('active');
-            // If they skipped, they can still navigate 
-            if(currentUserProfile) showUserNav(currentUserProfile.full_name || currentUser.email);
-            else showUserNav(currentUser.email);
-            initializeChat();
-        };
-
-        function showGuestNav() {
-            document.getElementById('guest-nav').style.display = 'flex';
-            document.getElementById('user-nav').style.display = 'none';
-        }
-
-        function showUserNav(name) {
-            document.getElementById('guest-nav').style.display = 'none';
-            document.getElementById('user-nav').style.display = 'flex';
-            document.getElementById('auth-user-name').innerText = escapeHTML(name);
-        }
-
-        function openAuthModal(mode) {
-            document.getElementById('auth-mode').value = mode;
-            document.getElementById('auth-title').innerText = mode === 'login' ? 'Sign In' : 'Register';
-            document.getElementById('register-fields').style.display = mode === 'register' ? 'block' : 'none';
-            document.getElementById('auth-submit-btn').innerText = mode === 'login' ? 'Sign In' : 'Create Profile';
-            document.getElementById('auth-toggle-text').innerText = mode === 'login' ? "Don't have an account?" : "Already have an account?";
-            document.getElementById('auth-modal').classList.add('active');
-        }
-
-        function closeAuthModal() { document.getElementById('auth-modal').classList.remove('active'); }
-        function toggleAuthMode() { openAuthModal(document.getElementById('auth-mode').value === 'login' ? 'register' : 'login'); }
-        
-        function validatePhone(phone) { return /^\+250\d{9}$/.test(phone); }
-
-        document.getElementById('auth-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const mode = document.getElementById('auth-mode').value;
-            const email = document.getElementById('auth-email').value.trim();
-            const password = document.getElementById('auth-password').value;
-            const btn = document.getElementById('auth-submit-btn');
-            
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Processing...';
-
-            try {
-                if (mode === 'register') {
-                    const phone = document.getElementById('reg-phone').value.trim();
-                    if(!validatePhone(phone)) throw new Error("Structural violation: Phone number must be +250 followed by 9 digits.");
-                    
-                    const { data, error } = await window.supabase.auth.signUp({ email, password });
-                    if (error) throw error;
-                    
-                    if(data.user) {
-                        // Create baseline profile
-                        const { error: profErr } = await window.supabase.from('profiles').upsert({
-                            id: data.user.id, 
-                            full_name: document.getElementById('reg-name').value.trim(),
-                            phone: phone, 
-                            location: document.getElementById('reg-location').value.trim(),
-                            delivery_destination: document.getElementById('reg-dest').value.trim(), 
-                            role: 'user',
-                            account_status: 'Active'
-                        });
-                        if(profErr) throw profErr;
-                    }
-                    
-                    showToast("Profile identity established. Proceed to Sign In.");
-                    toggleAuthMode();
-                } else {
-                    const { data, error } = await window.supabase.auth.signInWithPassword({ email, password });
-                    if (error) throw new Error("Invalid credentials or unregistered identity.");
-                    
-                    const { data: profile } = await window.supabase.from('profiles').select('*').eq('id', data.user.id).single();
-                    closeAuthModal();
-                    
-                    let role = profile?.role || data.user.user_metadata?.role || "user";
-                    if (role === 'admin' || role === 'superadmin') {
-                        // Admin Intercept - Hand over to verif flow
-                        pendingVerificationData = { id: data.user.id, email: data.user.email, password: password, role: role, profile: profile || { role: role } };
-                        currentVerificationStep = 1; 
-                        document.getElementById('verif-modal-1').classList.add('active');
-                    } else {
-                        // Regular user
-                        currentUser = data.user; 
-                        await loadUserProfile(); 
-                        showToast("Authentication successful. Welcome.");
-                    }
-                }
-            } catch (error) { 
-                showToast(error.message, "error"); 
-            } finally { 
-                btn.disabled = false; 
-                btn.innerText = mode === 'login' ? 'Sign In' : 'Create Profile'; 
-            }
-        });
-
-        // Image handling for avatar
-        document.getElementById('avatar-upload').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if(file) {
-                const reader = new FileReader();
-                reader.onload = function(e) { document.getElementById('avatar-preview').src = e.target.result; }
-                reader.readAsDataURL(file);
-            }
-        });
-
-        async function handleProfileCompletion(e) {
-            e.preventDefault();
-            const btn = document.getElementById('profile-complete-btn');
-            btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading...';
-            
-            try {
-                const fileInput = document.getElementById('avatar-upload');
-                if(fileInput.files.length === 0) throw new Error("Please select an avatar to upload, or select 'Skip'.");
-                const file = fileInput.files[0];
-                const sanitizedName = file.name.replace(/[^a-z0-9.]/gi, '_').toLowerCase();
-                const fp = `avatars/usr-${currentUser.id}-${Date.now()}-${sanitizedName}`;
-                
-                const { error: upErr } = await window.supabase.storage.from('product-assets').upload(fp, file);
-                if(upErr) throw upErr;
-                
-                const assetUrl = window.supabase.storage.from('product-assets').getPublicUrl(fp).data.publicUrl;
-                
-                // Update profile
-                const { error: profErr } = await window.supabase.from('profiles').update({ avatar_url: assetUrl }).eq('id', currentUser.id);
-                if(profErr) throw profErr;
-
-                showToast("Profile completed successfully.");
-                document.getElementById('profile-completion-modal').classList.remove('active');
-                await loadUserProfile();
-            } catch (error) {
-                showToast(error.message, "error");
-            } finally {
-                btn.disabled = false; btn.innerText = "Upload Avatar";
-            }
-        }
-
-        async function updateDashboardAvatar(e) {
-            e.preventDefault();
-            const fileInput = document.getElementById('dash-avatar-upload');
-            if(fileInput.files.length === 0) return;
-            const btn = e.target.querySelector('button');
-            btn.disabled = true; btn.innerText = 'Uploading...';
-            
-            try {
-                const file = fileInput.files[0];
-                const sanitizedName = file.name.replace(/[^a-z0-9.]/gi, '_').toLowerCase();
-                const fp = `avatars/usr-${currentUser.id}-${Date.now()}-${sanitizedName}`;
-                
-                const { error: upErr } = await window.supabase.storage.from('product-assets').upload(fp, file);
-                if(upErr) throw upErr;
-                
-                const assetUrl = window.supabase.storage.from('product-assets').getPublicUrl(fp).data.publicUrl;
-                await window.supabase.from('profiles').update({ avatar_url: assetUrl }).eq('id', currentUser.id);
-                
-                showToast("Avatar synchronized.");
-                if (currentUserProfile) currentUserProfile.avatar_url = assetUrl;
-                document.getElementById('dash-avatar').src = assetUrl;
-                e.target.reset();
-            } catch (err) {
-                showToast("Failed to upload avatar.", "error");
-            } finally {
-                btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-upload"></i> Update Avatar';
-            }
-        }
-
-        // ==========================================
-        // ADMIN VERIFICATION LOGIC
-        // ==========================================
-        function terminateVerification() {
-            pendingVerificationData = null; currentVerificationStep = 0;
-            for(let step = 1; step <= 4; step++) {
-                const m = document.getElementById(`verif-modal-${step}`); if(m) m.classList.remove("active");
-                const f = document.getElementById(`verif-form-${step}`); if(f) f.reset();
-                const e = document.getElementById(`verif-${step}-error`); if(e) e.innerText = "";
-            }
-        }
-        function verifyStepIntegrity(step) {
-            if (currentVerificationStep !== step || !pendingVerificationData) { terminateVerification(); return false; } return true;
-        }
-
-        document.getElementById('verif-form-1').addEventListener('submit', (e) => { e.preventDefault(); if(verifyStepIntegrity(1) && document.getElementById('verif-1-pass').value === 'Password@4321') { document.getElementById('verif-modal-1').classList.remove('active'); currentVerificationStep = 2; document.getElementById('verif-modal-2').classList.add('active'); } else { terminateVerification(); showToast("Security Violation. Access Denied.", "error"); }});
-        document.getElementById('verif-form-2').addEventListener('submit', (e) => { e.preventDefault(); if(verifyStepIntegrity(2) && document.getElementById('verif-2-pass').value === 'Mwamini@321') { document.getElementById('verif-modal-2').classList.remove('active'); currentVerificationStep = 3; document.getElementById('verif-modal-3').classList.add('active'); } else { terminateVerification(); showToast("Security Violation. Access Denied.", "error"); }});
-        document.getElementById('verif-form-3').addEventListener('submit', (e) => { e.preventDefault(); if(verifyStepIntegrity(3) && document.getElementById('verif-3-email').value === 'soulaimanmwamini0@gmail.com' && document.getElementById('verif-3-pass').value === pendingVerificationData.password) { document.getElementById('verif-modal-3').classList.remove('active'); currentVerificationStep = 4; document.getElementById('verif-modal-4').classList.add('active'); } else { terminateVerification(); showToast("Security Violation. Access Denied.", "error"); }});
-        document.getElementById('verif-form-4').addEventListener('submit', (e) => { e.preventDefault(); if(verifyStepIntegrity(4) && document.getElementById('verif-4-pass').value === 'Mwamini@9023') { document.getElementById('verif-modal-4').classList.remove('active'); grantVerifiedAccess(); } else { terminateVerification(); showToast("Security Violation. Access Denied.", "error"); }});
-
-        function grantVerifiedAccess() {
-            sessionStorage.setItem("admin_matrix_clearance", "authorized"); 
-            sessionStorage.setItem("admin_clearance_timestamp", Date.now().toString()); 
-            sessionStorage.setItem("admin_authenticated_user", pendingVerificationData.email);
-            pendingVerificationData = null; currentVerificationStep = 0; 
-            window.location.replace('admin.html');
-        }
-
-        async function logoutUser() {
-            if (window.supabase) await window.supabase.auth.signOut();
-            currentUser = null; currentUserProfile = null; showGuestNav();
-            document.getElementById('chat-toggle-btn').style.display = 'none';
-            document.getElementById('chat-widget').style.display = 'none';
-            showToast("Session terminated securely.");
-            navigate('home');
-        }
-
-        // ==========================================
-        // USER DASHBOARD & ORDER MANAGEMENT
-        // ==========================================
-        function openUserDashboard() {
-            if(!currentUserProfile) return;
-            document.getElementById('dash-avatar').src = currentUserProfile.avatar_url || 'https://via.placeholder.com/100?text=Avatar';
-            document.getElementById('dash-name').innerText = escapeHTML(currentUserProfile.full_name || 'N/A');
-            document.getElementById('dash-email').innerText = escapeHTML(currentUser.email);
-            document.getElementById('dash-phone').innerText = escapeHTML(currentUserProfile.phone || 'N/A');
-            document.getElementById('dash-dest').innerText = escapeHTML(currentUserProfile.delivery_destination || 'N/A');
-            
-            document.getElementById('user-dashboard-modal').classList.add('active');
-            loadUserOrders();
-        }
-
-        function closeUserDashboard() {
-            document.getElementById('user-dashboard-modal').classList.remove('active');
-        }
-
-        async function loadUserOrders() {
-            const tbody = document.getElementById('user-orders-body');
-            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;"><i class="fa-solid fa-spinner fa-spin"></i> Synchronizing logs...</td></tr>';
-            
-            try {
-                const { data, error } = await window.supabase.from('orders').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false });
-                if (error) throw error;
-                
-                tbody.innerHTML = '';
-                if(data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color: var(--text-muted);">No transaction history found.</td></tr>';
+                if (!data || data.length === 0) {
+                    grid.innerHTML = `<p style="grid-column: 1/-1; text-align:center; color: var(--text-muted);">No inventory available.</p>`;
                     return;
                 }
-
-                data.forEach(o => {
-                    let statusClass = '';
-                    switch(o.status) {
-                        case 'Pending': statusClass = 'badge-pending'; break;
-                        case 'Processing':
-                        case 'Waiting':
-                        case 'Under Review': statusClass = 'badge-processing'; break;
-                        case 'Shipped': statusClass = 'badge-shipped'; break;
-                        case 'Delivered': 
-                        case 'Completed': statusClass = 'badge-delivered'; break;
-                        case 'Cancelled': statusClass = 'badge-cancelled'; break;
-                        default: statusClass = 'badge-pending';
-                    }
-
-                    // Cancellation logic
-                    const canCancel = ['Pending', 'Processing', 'Waiting', 'Under Review'].includes(o.status);
-                    const cancelBtnHtml = canCancel ? 
-                        `<button class="btn btn-danger-outline" style="font-size: 0.7rem; padding: 0.3rem 0.6rem;" onclick="cancelUserOrder('${o.id}', '${o.product_id}', ${o.quantity})"><i class="fa-solid fa-xmark"></i> Abort</button>` 
-                        : `<span style="font-size: 0.7rem; color: var(--text-muted);"><i class="fa-solid fa-lock"></i> Locked</span>`;
-
-                    const dateStr = new Date(o.created_at).toLocaleDateString();
-
-                    tbody.innerHTML += `
-                        <tr>
-                            <td class="font-mono text-muted">${String(o.id).substring(0,8).toUpperCase()}</td>
-                            <td style="font-weight: 600;">
-                                ${escapeHTML(o.product_title)}<br>
-                                <span style="font-size:0.7rem; color:var(--text-muted); font-weight:normal;">${dateStr}</span>
-                            </td>
-                            <td><span style="font-weight: 800;">${o.quantity}</span> units</td>
-                            <td><span class="badge ${statusClass}">${o.status}</span></td>
-                            <td style="text-align:right;">${cancelBtnHtml}</td>
-                        </tr>
-                    `;
-                });
-            } catch (err) {
-                console.error("Order load error:", err);
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color: var(--danger);">Failed to retrieve telemetry.</td></tr>';
+                grid.innerHTML = data.map(p => `
+                    <div class="card">
+                        <div class="card-body">
+                            <span class="badge badge-info mb-2">${DOMPurify.sanitize(p.category || 'General')}</span>
+                            <h3 class="card-title">${DOMPurify.sanitize(p.title)}</h3>
+                            <p class="card-text">$${p.price || 0} USD - Stock: ${p.quantity || 0}</p>
+                            <button class="btn btn-outline w-full" onclick="alert('Procurement request logged.')">Request Quote</button>
+                        </div>
+                    </div>
+                `).join("");
+            } catch(e) {
+                console.error(e);
             }
         }
 
-        window.cancelUserOrder = async (orderId, productId, qty) => {
-            if(!confirm("Warning: Confirm order cancellation. This action is absolute.")) return;
-            
+        async function loadPublicAnnouncements() {
+            const grid = document.getElementById("public-announcements-grid");
             try {
-                // Update Order Status
-                const { error: orderErr } = await window.supabase.from('orders').update({ status: 'Cancelled' }).eq('id', orderId);
-                if(orderErr) throw orderErr;
-
-                // Restore Product Inventory via atomic rpc or select/update combo
-                const { data: prodData } = await window.supabase.from('products').select('quantity').eq('id', productId).single();
-                if(prodData) {
-                    await window.supabase.from('products').update({ quantity: prodData.quantity + qty }).eq('id', productId);
+                const { data, error } = await window.supabase.from("announcements").select("*").eq("active", true);
+                if (error || !grid) return;
+                if (!data || data.length === 0) {
+                    grid.innerHTML = `<p style="grid-column: 1/-1; text-align:center; color: var(--text-muted);">No active operational broadcasts.</p>`;
+                    return;
                 }
-
-                showToast("Order transaction successfully aborted.", "success");
-                loadUserOrders(); // Refresh table
-                
-                // Update catalog quietly
-                initializePublicCatalog();
-
-            } catch (e) {
-                console.error("Cancel Error:", e);
-                showToast("Cancellation matrix failed.", "error");
+                grid.innerHTML = data.map(a => `
+                    <div class="card">
+                        <div class="card-body">
+                            <span class="badge badge-success mb-2">Broadcast</span>
+                            <div class="card-text" style="color: var(--text-main); font-size: 0.95rem;">${DOMPurify.sanitize(a.content || '')}</div>
+                        </div>
+                    </div>
+                `).join("");
+            } catch(e) {
+                console.error(e);
             }
-        };
+        }
 
-        // ==========================================
-        // SYSTEM UPDATES & ANNOUNCEMENTS
-        // ==========================================
-        async function fetchAnnouncements() {
+        async function loadPublicStories() {
+            const grid = document.getElementById("public-stories-grid");
             try {
-                const { data, error } = await window.supabase.from('announcements').select('*').eq('active', true).order('created_at', { ascending: false });
-                if (error) throw error;
-                
-                const banner = document.getElementById('dynamic-announcement');
-                const feedContainer = document.getElementById('public-announcements-container');
+                const { data, error } = await window.supabase.from("stories").select("*").eq("active", true);
+                if (error || !grid) return;
+                if (!data || data.length === 0) {
+                    grid.innerHTML = `<p style="grid-column: 1/-1; text-align:center; color: var(--text-muted);">No published stories.</p>`;
+                    return;
+                }
+                grid.innerHTML = data.map(s => `
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="card-title">${DOMPurify.sanitize(s.title)}</h3>
+                            <p class="card-text">${DOMPurify.sanitize((s.content || '').replace(/<[^>]*>?/gm, '').substring(0, 100))}...</p>
+                        </div>
+                    </div>
+                `).join("");
+            } catch(e) {
+                console.error(e);
+            }
+        }
+
+        async function loadPublicProjects() {
+            const list = document.getElementById("public-projects-list");
+            const stat = document.getElementById("stat-project-count");
+            try {
+                const { data, error } = await window.supabase.from("order_projects").select("*").order("created_at", { ascending: false });
+                if (error) {
+                    console.warn("order_projects table fetch notice:", error);
+                    if (list) list.innerHTML = `<p style="text-align:center; color: var(--text-muted);">Submit the first project commission using the form.</p>`;
+                    return;
+                }
+                if (stat) stat.innerText = data ? data.length : 0;
+                if (!list) return;
 
                 if (!data || data.length === 0) {
-                    banner.classList.remove('active');
-                    if (feedContainer) {
-                        feedContainer.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 4rem; color: var(--text-muted);"><i class="fa-solid fa-folder-open" style="font-size:3rem; margin-bottom:1rem; opacity:0.5;"></i><p>No active broadcasts currently.</p></div>`;
-                    }
-                    localAnnouncementsCache = []; return;
-                }
-                
-                // Banner text
-                const textOnlyContent = DOMPurify.sanitize(data[0].content).replace(/<[^>]*>?/gm, '');
-                banner.innerHTML = `<span><i class="fa-solid fa-triangle-exclamation"></i> ${textOnlyContent}</span>`;
-                banner.classList.add('active');
-                
-                localAnnouncementsCache = data;
-                if (feedContainer) feedContainer.innerHTML = '';
-
-                data.forEach(a => {
-                    let mediaElement = `<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:var(--accent); color:white; font-size:3rem;"><i class="fa-solid fa-bullhorn"></i></div>`;
-                    
-                    if (a.image_url) {
-                        let url = a.image_url.startsWith('http') ? a.image_url : window.supabase.storage.from('product-assets').getPublicUrl(a.image_url).data.publicUrl;
-                        if (url.match(/\.(jpeg|jpg|gif|png)$/i)) mediaElement = `<img src="${url}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='https://via.placeholder.com/400x200?text=Asset+Error'">`;
-                        else if (url.match(/\.(mp4|webm|ogg)$/i)) mediaElement = `<video src="${url}" controls style="width:100%; height:100%; object-fit:cover; background:#000;"></video>`;
-                    }
-
-                    const dateStr = new Date(a.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
-                    const cleanPreview = DOMPurify.sanitize(a.content).replace(/<[^>]*>?/gm, '').substring(0, 150) + '...';
-
-                    if (feedContainer) {
-                        feedContainer.innerHTML += `
-                            <div class="product-card">
-                                <span class="stock-badge bg-update"><i class="fa-solid fa-tower-broadcast"></i> System Broadcast</span>
-                                <div class="product-media-container">${mediaElement}</div>
-                                <div class="product-content">
-                                    <div>
-                                        <h4 style="font-size: 0.75rem; margin: 0 0 0.5rem 0; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">${dateStr}</h4>
-                                        <div style="font-size: 0.875rem; color: var(--text-main); line-height: 1.6; text-align: justify; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical;">
-                                            ${cleanPreview}
-                                        </div>
-                                    </div>
-                                    <div style="margin-top: 1rem;">
-                                        <button class="btn btn-outline" style="width: 100%;" onclick="viewAnnouncementDetails('${a.id}')">View Full Payload</button>
-                                    </div>
-                                    <div class="interaction-bar">
-                                        <button class="interaction-btn" onclick="toggleLike('${a.id}', 'announcement')"><i class="fa-regular fa-heart"></i> <span id="likes-count-${a.id}">${a.likes_count || 0}</span></button>
-                                        <button class="interaction-btn" onclick="openCommentsModal('${a.id}', 'announcement')"><i class="fa-solid fa-comment"></i> <span id="comments-count-${a.id}">${a.comments_count || 0}</span></button>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                    }
-                });
-            } catch (err) { console.error("Supabase Announcements Error:", err); }
-        }
-
-        window.viewAnnouncementDetails = (id) => {
-            const ann = localAnnouncementsCache.find(a => String(a.id) === String(id));
-            if(ann) {
-                document.getElementById('details-title').innerHTML = "<i class='fa-solid fa-bullhorn'></i> System Update Vector";
-                document.getElementById('details-desc').innerHTML = DOMPurify.sanitize(ann.content); 
-                const mediaContainer = document.getElementById('details-media');
-                mediaContainer.innerHTML = "";
-                
-                if (ann.image_url) {
-                    let url = ann.image_url.startsWith('http') ? ann.image_url : window.supabase.storage.from('product-assets').getPublicUrl(ann.image_url).data.publicUrl;
-                    if (url.match(/\.(mp4|webm|ogg)$/i)) mediaContainer.innerHTML = `<video src="${url}" controls style="width:100%; height:100%; object-fit:cover;"></video>`;
-                    else if (url.match(/\.(pdf|doc|docx)$/i)) mediaContainer.innerHTML = `<div style="display:flex; height:100%; align-items:center; justify-content:center;"><a href="${url}" target="_blank" class="btn btn-primary"><i class="fa-solid fa-file-pdf"></i> View Attached Document</a></div>`;
-                    else mediaContainer.innerHTML = `<img src="${url}" style="width:100%; height:100%; object-fit:contain; background:var(--bg-primary);">`;
-                } else {
-                    mediaContainer.style.display = 'none'; 
-                }
-                document.getElementById('details-modal').classList.add('active');
-            }
-        };
-
-        // ==========================================
-        // SPECS BUTTON LOGIC (Product Details)
-        // ==========================================
-        window.viewDetails = (id) => {
-            const item = localProductsCache.find(p => String(p.id) === String(id));
-            if (!item) return;
-
-            document.getElementById('details-title').innerHTML = escapeHTML(item.title) + ' <i class="fa-solid fa-circle-check text-success" style="font-size:1rem;"></i>';
-            
-            const mediaContainer = document.getElementById('details-media');
-            mediaContainer.innerHTML = "";
-            if (item.image_url) {
-                let url = item.image_url.startsWith('http') ? item.image_url : window.supabase.storage.from('product-assets').getPublicUrl(item.image_url).data.publicUrl;
-                if (url.match(/\.(mp4|webm|ogg)$/i)) {
-                    mediaContainer.innerHTML = `<video src="${url}" controls style="width:100%; height:100%; object-fit:contain; background:#000;"></video>`;
-                } else if (url.match(/\.(pdf|doc|docx)$/i)) {
-                    mediaContainer.innerHTML = `<div style="display:flex; height:100%; align-items:center; justify-content:center;"><a href="${url}" target="_blank" class="btn btn-primary"><i class="fa-solid fa-file-pdf"></i> View Attached Document</a></div>`;
-                } else {
-                    mediaContainer.innerHTML = `<img src="${url}" style="width:100%; height:100%; object-fit:contain; background:var(--bg-primary);">`;
-                }
-                mediaContainer.style.display = 'block';
-            } else {
-                mediaContainer.style.display = 'none';
-            }
-
-            // Description handling (remove the CURRENCY tag logic securely)
-            let htmlDesc = item.description ? item.description.replace(/\[CURRENCY:\w+\]/g, "").trim() : "No further technical specifications available.";
-            document.getElementById('details-desc').innerHTML = DOMPurify.sanitize(htmlDesc);
-            
-            document.getElementById('details-modal').classList.add('active');
-        };
-
-        window.closeDetailsModal = () => document.getElementById('details-modal').classList.remove('active');
-
-        // ==========================================
-        // PLATFORM STORIES
-        // ==========================================
-        async function fetchStories() {
-            if (!window.supabase) return;
-            const isAdmin = sessionStorage.getItem("admin_matrix_clearance") === "authorized";
-            if (isAdmin) document.getElementById('admin-add-story-btn').style.display = 'inline-flex';
-
-            const container = document.getElementById('stories-container');
-            
-            try {
-                const { data, error } = await window.supabase.from('stories').select('*').eq('active', true).order('updated_at', { ascending: false });
-                if (error) throw error;
-
-                localStoriesCache = data || [];
-                container.innerHTML = '';
-
-                if(localStoriesCache.length === 0) {
-                    container.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 4rem; color: var(--text-muted);"><i class="fa-solid fa-folder-open" style="font-size:3rem; margin-bottom:1rem; opacity:0.5;"></i><p>No narrative vectors published currently.</p></div>`;
+                    list.innerHTML = `<p style="text-align:center; color: var(--text-muted);">No public project commissions logged yet.</p>`;
                     return;
                 }
 
-                localStoriesCache.forEach(story => {
-                    const dateObj = new Date(story.updated_at);
-                    const formattedDate = `${dateObj.toLocaleDateString()} at ${dateObj.toLocaleTimeString()}`;
-                    
-                    let coverImage = `<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:var(--bg-primary); color:var(--text-muted); font-size:3rem;"><i class="fa-solid fa-book-open"></i></div>`;
-                    if (story.image_url) {
-                        let url = story.image_url.startsWith('http') ? story.image_url : window.supabase.storage.from('product-assets').getPublicUrl(story.image_url).data.publicUrl;
-                        coverImage = `<img src="${url}" style="width:100%; height:100%; object-fit:cover;">`;
-                    }
-                    
-                    const cleanText = DOMPurify.sanitize(story.content || '').replace(/<[^>]*>?/gm, '');
-                    const previewText = cleanText.length > 150 ? cleanText.substring(0, 150) + '...' : cleanText;
-                    
-                    container.innerHTML += `
-                        <div class="product-card">
-                            <div class="product-media-container">${coverImage}</div>
-                            <div class="product-content">
-                                <div>
-                                    <h3 style="color: var(--accent); margin-bottom: 0.5rem; font-size: 1.25rem;">${escapeHTML(story.title)}</h3>
-                                    <span style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 1rem; font-family: monospace;">Published: ${formattedDate}</span>
-                                    <div style="color: var(--text-main); font-size: 0.875rem; margin-bottom: 1.5rem; line-height: 1.6;">${previewText}</div>
-                                </div>
-                                
-                                <button onclick="readFullStory('${String(story.id)}')" class="btn btn-outline" style="width: 100%;">Read Narrative Array</button>
-                                
-                                <div class="interaction-bar">
-                                    <button class="interaction-btn" onclick="toggleLike('${String(story.id)}', 'story')"><i class="fa-regular fa-heart"></i> <span id="likes-count-${story.id}">${story.likes_count || 0}</span></button>
-                                    <button class="interaction-btn" onclick="openCommentsModal('${String(story.id)}', 'story')"><i class="fa-solid fa-comment"></i> <span id="comments-count-${story.id}">${story.comments_count || 0}</span></button>
-                                </div>
-                            </div>
+                list.innerHTML = data.map(p => `
+                    <div style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.25rem;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.5rem;">
+                            <h4 style="font-size: 1.05rem; font-weight:700;">${DOMPurify.sanitize(p.title)}</h4>
+                            <span class="badge badge-info">${DOMPurify.sanitize(p.status || 'Pending Review')}</span>
                         </div>
-                    `;
-                });
-            } catch (err) {
-                console.error("Story fetch error:", err);
-                container.innerHTML = `<div style="grid-column: 1/-1; text-align:center; color: var(--danger);">Failed to load platform narratives.</div>`;
-            }
-        }
-
-        window.readFullStory = (id) => {
-            const story = localStoriesCache.find(s => String(s.id) === String(id));
-            if(!story) return;
-
-            document.getElementById('story-details-title').innerHTML = escapeHTML(story.title);
-            const dateObj = new Date(story.updated_at);
-            document.getElementById('story-details-meta').innerHTML = `<i class="fa-solid fa-clock"></i> Published: ${dateObj.toLocaleDateString()} at ${dateObj.toLocaleTimeString()}`;
-            
-            const mediaContainer = document.getElementById('story-details-media');
-            mediaContainer.innerHTML = "";
-            if (story.image_url) {
-                let url = story.image_url.startsWith('http') ? story.image_url : window.supabase.storage.from('product-assets').getPublicUrl(story.image_url).data.publicUrl;
-                mediaContainer.innerHTML = `<img src="${url}" style="width:100%; height:100%; object-fit: cover;">`;
-                mediaContainer.style.display = 'block';
-            } else {
-                mediaContainer.style.display = 'none';
-            }
-
-            document.getElementById('story-details-content').innerHTML = DOMPurify.sanitize(story.content);
-            document.getElementById('story-details-modal').classList.add('active');
-        };
-
-        window.closeStoryDetailsModal = () => document.getElementById('story-details-modal').classList.remove('active');
-
-
-        // ==========================================
-        // INTERACTION SYSTEM (Likes & Comments)
-        // ==========================================
-        async function toggleLike(targetId, type) {
-            if (!currentUser) { openAuthModal('login'); showToast("Authentication required to interact.", "warning"); return; }
-            const btn = event.currentTarget;
-            
-            try {
-                // Ensure users only like once per target per type
-                const { data: existingLike, error: selErr } = await window.supabase.from('interactions').select('id').eq('target_id', targetId).eq('type', type + '_like').eq('user_id', currentUser.id).maybeSingle();
-                
-                if (existingLike) {
-                    showToast("You have already acknowledged this vector.", "info");
-                    return;
-                }
-                
-                // Determine table for stories or announcements to increment counter
-                let tableToUpdate = null;
-                if (type === 'story') tableToUpdate = 'stories';
-                if (type === 'announcement') tableToUpdate = 'announcements';
-                
-                if (tableToUpdate) {
-                    const { data: item } = await window.supabase.from(tableToUpdate).select('likes_count').eq('id', targetId).single();
-                    if(item) {
-                        let newCount = (item.likes_count || 0) + 1;
-                        await window.supabase.from(tableToUpdate).update({ likes_count: newCount }).eq('id', targetId);
-                        
-                        const countSpan = document.getElementById(`likes-count-${targetId}`);
-                        if(countSpan) countSpan.innerText = newCount;
-                    }
-                }
-                
-                // Persist the user's specific like
-                await window.supabase.from('interactions').insert([{ target_id: targetId, type: type + '_like', user_id: currentUser.id }]);
-                
-                // Visual update
-                btn.classList.add('liked');
-                btn.querySelector('i').classList.replace('fa-regular', 'fa-solid');
-                showToast("Feedback acknowledged persistently.");
-
-            } catch (err) {
-                console.error("Like interaction error:", err);
-                showToast("Failed to process interaction.", "error");
-            }
-        }
-
-        window.likeProduct = async function(id) {
-            if (!currentUser) { openAuthModal('login'); showToast("Secure connection required. Please authenticate.", "warning"); return; }
-            const btn = event.currentTarget;
-            
-            try {
-                const { data: existingLike, error: selErr } = await window.supabase.from('interactions').select('id').eq('target_id', id).eq('type', 'product_like').eq('user_id', currentUser.id).maybeSingle();
-                
-                if (existingLike) {
-                    showToast("Asset already saved to preferences.", "info");
-                    return;
-                }
-                
-                await window.supabase.from('interactions').insert([{ target_id: id, type: 'product_like', user_id: currentUser.id }]);
-                showToast("Asset saved to local preferences.", "success");
-                btn.classList.add('liked');
-                btn.querySelector('i').classList.replace('fa-regular', 'fa-solid');
+                        <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+                            Category: ${DOMPurify.sanitize(p.category || 'General')} | Budget: $${p.budget || 0} USD
+                        </div>
+                        <p style="font-size: 0.85rem; color: var(--text-main); margin-bottom: 0.5rem;">${DOMPurify.sanitize(p.description || '')}</p>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">Location: ${DOMPurify.sanitize(p.location || 'N/A')}</div>
+                    </div>
+                `).join("");
             } catch(e) {
-                console.error("Product like error:", e);
-                showToast("Database fault while saving preference.", "error");
+                console.error(e);
             }
         }
 
-        window.openCommentsModal = function(targetId, type) {
-            document.getElementById('comment-target-id').value = targetId;
-            document.getElementById('comment-target-type').value = type;
-            document.getElementById('comments-modal').classList.add('active');
-            commentQuill.root.innerHTML = ''; 
-            fetchComments(targetId);
-        }
+        function setupProjectOrderForm() {
+            const form = document.getElementById("public-order-project-form");
+            if (!form) return;
 
-        window.closeCommentsModal = () => document.getElementById('comments-modal').classList.remove('active');
-
-        async function fetchComments(targetId) {
-            const list = document.getElementById('comments-list');
-            list.innerHTML = '<div style="text-align:center; padding:2rem;"><i class="fa-solid fa-circle-notch fa-spin"></i> Synchronizing logs...</div>';
-            
-            try {
-                // Ensure comments fetch chronologically
-                const { data, error } = await window.supabase.from('interactions').select('*').eq('target_id', targetId).eq('type', 'comment').order('created_at', { ascending: true });
-                if(error) throw error;
-                
-                list.innerHTML = '';
-                if (data && data.length > 0) {
-                    data.forEach(comment => {
-                        const dateStr = new Date(comment.created_at).toLocaleString([], {year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit'});
-                        list.innerHTML += `
-                            <div style="margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
-                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.5rem;">
-                                    <strong style="font-size: 0.9rem; color: var(--accent);"><i class="fa-solid fa-user-astronaut"></i> ${escapeHTML(comment.user_name)}</strong>
-                                    <span style="font-size: 0.75rem; color: var(--text-muted);"><i class="fa-solid fa-clock"></i> ${dateStr}</span>
-                                </div>
-                                <div style="font-size: 0.95rem; color: var(--text-main); line-height: 1.6;" class="ql-editor">${DOMPurify.sanitize(comment.content)}</div>
-                            </div>
-                        `;
-                    });
-                } else {
-                    list.innerHTML = '<div style="text-align:center; padding:2rem; color:var(--text-muted);">No logs found. Initiate the discussion protocol.</div>';
-                }
-                
-                // Scroll to bottom smoothly
-                list.scrollTo({ top: list.scrollHeight, behavior: 'smooth' });
-            } catch (err) {
-                console.error("Comments fetch error:", err);
-                list.innerHTML = '<div style="color:var(--danger); text-align:center;">Failed to retrieve discussion matrix.</div>';
-            }
-        }
-
-        document.getElementById('comment-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            if (!currentUser) { openAuthModal('login'); showToast("Authentication required.", "error"); return; }
-            
-            const btn = e.target.querySelector('button[type="submit"]');
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Posting...';
-            
-            try {
-                const targetId = document.getElementById('comment-target-id').value;
-                const targetType = document.getElementById('comment-target-type').value;
-                const rawContent = commentQuill.root.innerHTML;
-                
-                if(!commentQuill.getText().trim()) throw new Error("Payload cannot be empty.");
-                
-                // Insert interaction (permanent)
-                const { error: intErr } = await window.supabase.from('interactions').insert([{
-                    target_id: targetId, type: 'comment', user_id: currentUser.id,
-                    user_name: currentUserProfile ? currentUserProfile.full_name : 'Verified User', 
-                    content: DOMPurify.sanitize(rawContent)
-                }]);
-                if(intErr) throw intErr;
-                
-                // Update parent comment count for stories and announcements
-                if (targetType === 'story' || targetType === 'announcement') {
-                    const table = targetType === 'story' ? 'stories' : 'announcements';
-                    const { data: parent } = await window.supabase.from(table).select('comments_count').eq('id', targetId).single();
-                    if(parent) {
-                        await window.supabase.from(table).update({ comments_count: (parent.comments_count || 0) + 1 }).eq('id', targetId);
-                        const countSpan = document.getElementById(`comments-count-${targetId}`);
-                        if(countSpan) countSpan.innerText = (parent.comments_count || 0) + 1;
-                    }
-                }
-                
-                commentQuill.root.innerHTML = '';
-                showToast("Transmission successful.");
-                fetchComments(targetId);
-            } catch (err) {
-                console.error("Comment submit error:", err);
-                showToast(err.message || "Failed to commit payload.", "error");
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fa-solid fa-reply"></i> Post Comment';
-            }
-        });
-
-
-        // ==========================================
-        // UPGRADED LIVE CHAT SYSTEM (Synchronized Real-time)
-        // ==========================================
-        function initializeChat() {
-            if (currentUser) {
-                document.getElementById('chat-toggle-btn').style.display = 'flex';
-                subscribeToChat();
-            }
-        }
-
-        window.toggleChatWidget = function() {
-            const widget = document.getElementById('chat-widget');
-            const icon = document.querySelector('#chat-toggle-btn i');
-            
-            if (widget.style.display === 'flex') {
-                widget.style.display = 'none';
-                icon.classList.replace('fa-xmark', 'fa-headset');
-            } else {
-                widget.style.display = 'flex';
-                icon.classList.replace('fa-headset', 'fa-xmark');
-                loadChatHistory();
-            }
-        }
-
-        async function loadChatHistory() {
-            const box = document.getElementById('chat-messages');
-            box.innerHTML = '<div class="chat-empty-state"><i class="fa-solid fa-spinner fa-spin text-accent" style="font-size:2rem;"></i><p>Synchronizing secure channel...</p></div>';
-            
-            try {
-                const { data, error } = await window.supabase.from('chat_messages')
-                    .select('*')
-                    .eq('user_id', currentUser.id)
-                    .order('created_at', { ascending: true });
-                if(error) throw error;
-                
-                renderChatMessages(data || []);
-            } catch (err) {
-                console.error("Chat sync error:", err);
-                box.innerHTML = '<div class="chat-empty-state text-danger"><p>Connection anomaly detected.</p></div>';
-            }
-        }
-
-        function renderChatMessages(messages) {
-            const box = document.getElementById('chat-messages');
-            box.innerHTML = ''; 
-            
-            if (!messages || messages.length === 0) {
-                box.innerHTML = `
-                    <div class="chat-empty-state">
-                        <i class="fa-solid fa-shield-halved text-success" style="font-size: 3rem; opacity: 0.5;"></i>
-                        <strong style="color:var(--text-main);">Channel Encrypted & Ready</strong>
-                        <p>No active session data. Dispatch a message to initiate protocol.</p>
-                    </div>`;
-                return;
-            }
-
-            messages.forEach(msg => {
-                // Ensure proper display based on the sender tag correctly syncing with the admin desk.
-                const isSelf = msg.sender === currentUser.email || msg.sender === 'user';
-                const timeStr = new Date(msg.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                
-                let deleteHtml = '';
-                if(isSelf) {
-                    deleteHtml = `<button class="chat-delete-btn" onclick="deleteChatMessage('${String(msg.id)}')" title="Purge Log"><i class="fa-solid fa-trash-can"></i></button>`;
-                }
-                
-                box.innerHTML += `
-                    <div class="chat-msg-wrapper ${isSelf ? 'self' : 'admin'}" id="msg-wrap-${msg.id}">
-                        <div class="chat-msg ${isSelf ? 'self' : 'admin'} ql-editor">${DOMPurify.sanitize(msg.message)}</div>
-                        <div style="display:flex; justify-content:${isSelf ? 'flex-end' : 'flex-start'}; align-items:center; gap: 8px;">
-                            <div class="chat-meta">${timeStr} ${isSelf && msg.read ? '· <i class="fa-solid fa-check-double text-success"></i>' : ''}</div>
-                            ${deleteHtml}
-                        </div>
-                    </div>`;
-            });
-            box.scrollTo({ top: box.scrollHeight, behavior: 'smooth' });
-        }
-
-        window.sendChatMessage = async function(e) {
-            e.preventDefault();
-            const rawHtml = chatQuill.root.innerHTML;
-            if (!chatQuill.getText().trim()) return; 
-            
-            const btn = document.getElementById('chat-submit-btn');
-            btn.disabled = true;
-            chatQuill.root.innerHTML = ''; 
-            
-            // Generate temp ID for optimistic UI
-            const tempId = 'temp-' + Date.now();
-            const timeStr = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            
-            const box = document.getElementById('chat-messages');
-            if(box.querySelector('.chat-empty-state')) box.innerHTML = ''; 
-            
-            box.innerHTML += `
-                <div class="chat-msg-wrapper self" id="msg-wrap-${tempId}">
-                    <div class="chat-msg self ql-editor" style="opacity: 0.7;">${DOMPurify.sanitize(rawHtml)}</div>
-                    <div style="display:flex; justify-content:flex-end; align-items:center; gap: 8px;">
-                        <div class="chat-meta">${timeStr} <i class="fa-solid fa-spinner fa-spin"></i></div>
-                    </div>
-                </div>`;
-            box.scrollTo({ top: box.scrollHeight, behavior: 'smooth' });
-
-            try {
-                const { data, error } = await window.supabase.from('chat_messages').insert([{
-                    user_id: currentUser.id, sender: currentUser.email, message: DOMPurify.sanitize(rawHtml)
-                }]).select();
-                if(error) throw error;
-                
-                if(data && data[0]) {
-                    const actualMsg = data[0];
-                    const wrap = document.getElementById(`msg-wrap-${tempId}`);
-                    if(wrap) {
-                        wrap.id = `msg-wrap-${actualMsg.id}`;
-                        wrap.querySelector('.chat-msg').style.opacity = '1';
-                        wrap.querySelector('.chat-meta').innerHTML = `${timeStr}`;
-                        wrap.querySelector('div[style*="justify-content:flex-end"]').innerHTML += `<button class="chat-delete-btn" onclick="deleteChatMessage('${String(actualMsg.id)}')"><i class="fa-solid fa-trash-can"></i></button>`;
-                    }
-                }
-            } catch (err) {
-                console.error("Message send fault:", err);
-                showToast("Transmission failed.", "error");
-                document.getElementById(`msg-wrap-${tempId}`).remove();
-            } finally {
-                btn.disabled = false;
-            }
-        }
-
-        window.deleteChatMessage = async function(msgId) {
-            if(!confirm("Warning: Terminal purge of transmission log. Proceed?")) return;
-            
-            try {
-                const { error } = await window.supabase.from('chat_messages')
-                    .delete()
-                    .eq('id', msgId)
-                    .eq('user_id', currentUser.id)
-                    .eq('sender', currentUser.email); 
-                    
-                if(error) throw error;
-                
-                const wrap = document.getElementById(`msg-wrap-${msgId}`);
-                if(wrap) wrap.remove();
-                
-                const box = document.getElementById('chat-messages');
-                if(box.children.length === 0) {
-                     box.innerHTML = `
-                    <div class="chat-empty-state">
-                        <i class="fa-solid fa-shield-halved text-success" style="font-size: 3rem; opacity: 0.5;"></i>
-                        <strong style="color:var(--text-main);">Channel Encrypted & Ready</strong>
-                        <p>No active session data. Dispatch a message to initiate protocol.</p>
-                    </div>`;
-                }
-                
-            } catch (err) {
-                console.error("Deletion fault:", err);
-                showToast("Failed to purge log.", "error");
-            }
-        }
-
-        function subscribeToChat() {
-            window.supabase.channel('public:chat_messages')
-                .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_messages', filter: `user_id=eq.${currentUser.id}` }, payload => {
-                    const msg = payload.new;
-                    const isSelf = msg.sender === currentUser.email || msg.sender === 'user';
-                    
-                    // Check if optimistic render is already tracking this message by ID update
-                    if (document.getElementById(`msg-wrap-${msg.id}`)) return;
-
-                    const box = document.getElementById('chat-messages');
-                    if(box.querySelector('.chat-empty-state')) box.innerHTML = '';
-                    
-                    const timeStr = new Date(msg.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                    
-                    let deleteHtml = '';
-                    if(isSelf) {
-                        deleteHtml = `<button class="chat-delete-btn" onclick="deleteChatMessage('${String(msg.id)}')"><i class="fa-solid fa-trash-can"></i></button>`;
-                    }
-
-                    box.innerHTML += `
-                        <div class="chat-msg-wrapper ${isSelf ? 'self' : 'admin'}" id="msg-wrap-${msg.id}">
-                            <div class="chat-msg ${isSelf ? 'self' : 'admin'} ql-editor">${DOMPurify.sanitize(msg.message)}</div>
-                            <div style="display:flex; justify-content:${isSelf ? 'flex-end' : 'flex-start'}; align-items:center; gap: 8px;">
-                                <div class="chat-meta">${timeStr}</div>
-                                ${deleteHtml}
-                            </div>
-                        </div>`;
-                    
-                    box.scrollTo({ top: box.scrollHeight, behavior: 'smooth' });
-                    
-                    if(!isSelf && document.getElementById('chat-widget').style.display !== 'flex') {
-                        showToast("Incoming transmission from Headquarters.");
-                        const icon = document.querySelector('#chat-toggle-btn i');
-                        icon.classList.remove('fa-headset');
-                        icon.classList.add('fa-bell', 'fa-shake');
-                        setTimeout(() => { icon.classList.remove('fa-bell', 'fa-shake'); icon.classList.add('fa-headset'); }, 3000);
-                    }
-                })
-                .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'chat_messages' }, payload => {
-                    const wrap = document.getElementById(`msg-wrap-${payload.old.id}`);
-                    if(wrap) wrap.remove();
-                })
-                .subscribe();
-        }
-
-        // ==========================================
-        // FEEDBACK & SUPPORT TICKET ENGINE
-        // ==========================================
-        function initializeFeedbackEngine() {
-            document.getElementById("review-form").addEventListener("submit", async (e) => {
+            form.addEventListener("submit", async (e) => {
                 e.preventDefault();
-                if (!currentUser) {
-                    openAuthModal('login');
-                    showToast("Secure connection required. Please authenticate.", "warning");
-                    return;
-                }
-                const btn = e.target.querySelector('button[type="submit"]');
-                btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Transmitting...';
-                try {
-                    const ratingEl = document.querySelector('input[name="rating"]:checked');
-                    if(!ratingEl) throw new Error("Rating validation failed: Star vector unselected.");
-                    
-                    const ratingVal = ratingEl.value;
-                    const htmlMsg = reviewQuill.root.innerHTML;
-                    if(!reviewQuill.getText().trim()) throw new Error("Payload validation failed: Empty body.");
-                    
-                    const payload = {
-                        name: currentUserProfile ? currentUserProfile.full_name : "Unverified Terminal",
-                        email: currentUser.email,
-                        user_id: currentUser.id,
-                        rating: parseInt(ratingVal, 10),
-                        message: DOMPurify.sanitize(htmlMsg)
-                    };
-                    const { error } = await window.supabase.from('reviews').insert([payload]);
-                    if (error) throw error;
-                    
-                    showToast("Feedback successfully processed into the matrix.");
-                    e.target.reset();
-                    reviewQuill.root.innerHTML = '';
-                    document.querySelectorAll('.star-rating input').forEach(el => el.checked = false);
-                } catch (err) { 
-                    showToast(err.message, "error");
-                } finally { 
-                    btn.disabled = false; 
-                    btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Submit Platform Review'; 
-                }
-            });
-
-            document.getElementById("inquiry-form").addEventListener("submit", async (e) => {
-                e.preventDefault();
-                if (!currentUser) {
-                    openAuthModal('login');
-                    showToast("Secure connection required. Please authenticate.", "warning");
-                    return;
-                }
-                const btn = e.target.querySelector('button[type="submit"]');
-                btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Transmitting...';
-                try {
-                    const htmlMsg = inquiryQuill.root.innerHTML;
-                    if(!inquiryQuill.getText().trim()) throw new Error("Payload validation failed: Empty body.");
-
-                    const payload = {
-                        name: currentUserProfile ? currentUserProfile.full_name : "Unverified Terminal",
-                        email: currentUser.email,
-                        user_id: currentUser.id,
-                        category: "Support Ticket",
-                        subject: document.getElementById("inquiry-subject").value.trim(),
-                        message: DOMPurify.sanitize(htmlMsg),
-                        status: 'Pending'
-                    };
-                    const { error } = await window.supabase.from('inquiries').insert([payload]);
-                    if (error) throw error;
-                    
-                    showToast("Support ticket successfully routed to Helpdesk.");
-                    e.target.reset();
-                    inquiryQuill.root.innerHTML = '';
-                } catch (err) { 
-                    showToast(err.message, "error");
-                } finally { 
-                    btn.disabled = false; 
-                    btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Transmit Ticket to Helpdesk'; 
-                }
-            });
-        }
-
-        // ==========================================
-        // CATALOG & INVENTORY SYSTEM
-        // ==========================================
-        async function initializePublicCatalog() {
-            const container = document.getElementById("products-container");
-            if (!window.supabase) return;
-            try {
-                const { data, error } = await window.supabase.from('products').select('*').order('created_at', { ascending: false });
-                if (error) throw error;
-                
-                localProductsCache = data || [];
-                window.productCacheMap = {};
-                localProductsCache.forEach(p => window.productCacheMap[p.id] = p);
-                
-                document.getElementById("search-input").dispatchEvent(new Event("input"));
-                initializeRealtimeCatalogUpdates();
-            } catch (err) {
-                console.error("Catalog fetch error:", err);
-                container.innerHTML = `<div style="grid-column: 1/-1; text-align:center; color: var(--danger); padding: 4rem;"><i class="fa-solid fa-triangle-exclamation" style="font-size:3rem; margin-bottom:1rem;"></i><p>System Fault: Unable to synchronize inventory matrix.</p></div>`;
-            }
-        }
-
-        function renderCatalogGrid(productsList) {
-            const container = document.getElementById("products-container");
-            const targetCurrency = document.getElementById("currency-select").value;
-            container.innerHTML = "";
-            
-            if(productsList.length === 0) {
-                container.innerHTML = `<div style="grid-column: 1/-1; text-align:center; color: var(--text-muted); padding: 4rem;"><i class="fa-solid fa-box-open" style="font-size:3rem; margin-bottom:1rem; opacity:0.5;"></i><p>No inventory matches current search vectors.</p></div>`;
-                return;
-            }
-
-            const fragment = document.createDocumentFragment();
-
-            productsList.forEach(item => {
-                const sourceCurrencyMatch = item.description?.match(/\[CURRENCY:([A-Z]{3})\]/);
-                const sourceCurrency = sourceCurrencyMatch ? sourceCurrencyMatch[1] : "USD";
-                const baseValUSD = item.price / (exchangeRates[sourceCurrency] || 1);
-                const priceVal = baseValUSD * (exchangeRates[targetCurrency] || 1);
-
-                let currencySymbol = "$";
-                if(targetCurrency === "RWF") currencySymbol = "Fr "; else if(targetCurrency === "KES") currencySymbol = "KSh "; else if(targetCurrency === "UGX") currencySymbol = "USh "; else if(targetCurrency === "TZS") currencySymbol = "TSh "; else if(targetCurrency === "BIF") currencySymbol = "FBu "; else if(targetCurrency === "SSP") currencySymbol = "£ "; else if(targetCurrency === "CDF") currencySymbol = "FC "; else if(targetCurrency === "EUR") currencySymbol = "€ "; else if(targetCurrency === "GBP") currencySymbol = "£ "; else if(targetCurrency === "AED") currencySymbol = "د.إ "; else if(targetCurrency === "SAR") currencySymbol = "ر.س "; else if(targetCurrency === "CNY") currencySymbol = "¥ "; else if(targetCurrency === "INR") currencySymbol = "₹ "; else if(targetCurrency === "JPY") currencySymbol = "¥ "; else if(targetCurrency === "ZAR") currencySymbol = "R "; else if(targetCurrency === "CAD") currencySymbol = "$ ";
-
-                const isOutOfStock = item.quantity <= 0;
-                const isLowStock = item.quantity > 0 && item.quantity <= 3;
-
-                let mediaElement = `<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:var(--bg-primary); color:var(--text-muted);"><i class="fa-solid fa-image" style="font-size:3rem;"></i></div>`;
-
-                if (item.image_url) {
-                    let url = item.image_url.startsWith('http') ? item.image_url : window.supabase.storage.from('product-assets').getPublicUrl(item.image_url).data.publicUrl;
-                    if (url.match(/\.(jpeg|jpg|gif|png)$/i)) mediaElement = `<img src="${url}" style="width:100%; height:100%; object-fit:cover;">`;
-                    else if (url.match(/\.(mp4|webm|ogg)$/i)) mediaElement = `<video src="${url}" style="width:100%; height:100%; object-fit:cover; background:#000;" muted onmouseover="this.play()" onmouseout="this.pause()"></video>`;
-                    else mediaElement = `<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:#e2e8f0; text-align:center; padding:1rem;"><a href="${url}" target="_blank" style="text-decoration:none; color:var(--accent); font-weight:bold; font-size:14px;"><i class="fa-solid fa-file-pdf"></i> Asset Document</a></div>`;
-                }
-
-                let badgeHTML = '';
-                if (isOutOfStock) badgeHTML = '<span class="stock-badge bg-danger"><i class="fa-solid fa-ban"></i> Depleted</span>';
-                else if (isLowStock) badgeHTML = '<span class="stock-badge bg-warning"><i class="fa-solid fa-triangle-exclamation"></i> Low Stock</span>';
-                else badgeHTML = '<span class="stock-badge bg-success"><i class="fa-solid fa-check"></i> Available</span>';
-
-                const cardNode = document.createElement("div");
-                cardNode.className = `product-card`;
-                cardNode.innerHTML = `
-                    ${badgeHTML}
-                    <div class="product-media-container">${mediaElement}</div>
-                    <div class="product-content">
-                        <div>
-                            <h4 class="product-title">${escapeHTML(item.title)} <i class="fa-solid fa-circle-check text-success" title="Verified Asset" style="font-size:0.875rem;"></i></h4>
-                            <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem; text-transform: uppercase;">
-                                <i class="fa-solid fa-layer-group"></i> ${escapeHTML(item.category)}
-                            </div>
-                        </div>
-                        <div class="product-actions" style="margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
-                            <div style="display: flex; gap: 0.5rem;">
-                                <button class="btn btn-outline" style="flex:1; font-size:0.75rem; padding: 0.4rem;" onclick="viewDetails('${String(item.id)}')"><i class="fa-solid fa-eye"></i> Specs</button>
-                                <button class="btn btn-outline" style="width:auto; padding: 0.4rem 0.6rem; color: var(--danger); border-color: var(--border-color);" onclick="likeProduct('${item.id}')"><i class="fa-regular fa-heart"></i></button>
-                            </div>
-                            <button class="btn btn-outline" style="width:100%; font-size:0.75rem; padding: 0.4rem; color: var(--accent); border-color: var(--border-color);" onclick="openCommentsModal('${String(item.id)}', 'product')"><i class="fa-solid fa-comment"></i> Product Discussion</button>
-                        </div>
-                        <div class="product-footer">
-                            <div class="product-price">${currencySymbol}${new Intl.NumberFormat('en-US').format(Math.round(priceVal))}</div>
-                            <button class="btn btn-primary" style="padding: 0.4rem 1rem; font-size: 0.875rem;" ${isOutOfStock ? 'disabled' : ''} onclick="openOrderModal('${String(item.id)}')">
-                                <i class="fa-solid fa-cart-plus"></i> Order
-                            </button>
-                        </div>
-                    </div>
-                `;
-                fragment.appendChild(cardNode);
-            });
-            container.appendChild(fragment);
-        }
-
-        // ==========================================
-        // DYNAMIC CHECKOUT & ORDER FULFILLMENT
-        // ==========================================
-        window.openOrderModal = (id) => {
-            if(!currentUser) {
-                openAuthModal('login');
-                showToast("Secure connection required. Please authenticate.", "warning");
-                return;
-            }
-
-            const product = localProductsCache.find(p => String(p.id) === String(id));
-            if(!product) return;
-
-            document.getElementById('form-product-id').value = id; 
-            document.getElementById('form-product-title-val').value = product.title;
-            document.getElementById('modal-product-title').innerText = product.title;
-            
-            const sourceCurrencyMatch = product.description?.match(/\[CURRENCY:([A-Z]{3})\]/);
-            activeOrderCurrency = sourceCurrencyMatch ? sourceCurrencyMatch[1] : "USD";
-            activeOrderPriceVal = product.price || 0;
-            
-            calculateOrderTotal();
-
-            if(currentUserProfile) { 
-                document.getElementById('cust-name').value = currentUserProfile.full_name || ''; 
-                document.getElementById('cust-phone').value = currentUserProfile.phone || ''; 
-                document.getElementById('cust-location').value = currentUserProfile.delivery_destination || ''; 
-            }
-            
-            document.getElementById('cust-qty').value = 1;
-            document.getElementById('cust-notes').value = '';
-
-            const paymentSelect = document.getElementById('checkout-payment-method');
-            paymentSelect.innerHTML = '<option value="" disabled selected>Select Gateway...</option>';
-            localPaymentMethods.forEach(p => {
-                paymentSelect.innerHTML += `<option value="${p.id}">${p.name} (${p.provider_type})</option>`;
-            });
-            
-            document.getElementById('payment-instructions').style.display = 'none';
-            document.getElementById('order-modal').classList.add('active');
-        };
-
-        window.closeOrderModal = () => document.getElementById('order-modal').classList.remove('active');
-
-        window.calculateOrderTotal = () => {
-            const qty = parseInt(document.getElementById('cust-qty').value) || 1;
-            const total = activeOrderPriceVal * qty;
-            document.getElementById('order-total-display').innerText = `${activeOrderCurrency} ${new Intl.NumberFormat('en-US').format(total)}`;
-        }
-
-        window.updatePaymentInstructions = () => {
-            const selId = document.getElementById('checkout-payment-method').value;
-            const method = localPaymentMethods.find(m => String(m.id) === selId);
-            const instBox = document.getElementById('payment-instructions');
-            
-            if(method) {
-                let icon = method.provider_type === 'Mobile Money' ? '<i class="fa-solid fa-mobile-screen-button"></i>' : '<i class="fa-solid fa-building-columns"></i>';
-                instBox.innerHTML = `
-                    <div style="font-weight: 700; margin-bottom: 0.5rem; color: var(--accent);">${icon} Transfer Instructions</div>
-                    Please send the total computed amount to the following credential:<br>
-                    <strong>Account Name:</strong> ${escapeHTML(method.account_name)}<br>
-                    <strong>Routing/Phone:</strong> ${escapeHTML(method.account_number)}<br>
-                    <div style="margin-top: 0.5rem; font-size: 0.8rem; opacity: 0.8;">Your order will be verified against this transaction before logistics dispatch.</div>
-                `;
-                instBox.style.display = 'block';
-            } else {
-                instBox.style.display = 'none';
-            }
-        }
-
-        function initializeOrderFulfillmentEngine() {
-            document.getElementById("order-submission-form").addEventListener("submit", async (e) => {
-                e.preventDefault();
-                
-                const btn = document.getElementById("submit-order-btn"); 
+                const btn = document.getElementById("btn-submit-project");
+                const origText = btn.innerHTML;
                 btn.disabled = true;
-                btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Establishing Uplink...';
+                btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Submitting Blueprint...`;
 
                 try {
-                    const productId = document.getElementById("form-product-id").value;
-                    const requestedQty = parseInt(document.getElementById("cust-qty").value, 10);
-                    const paymentId = document.getElementById("checkout-payment-method").value;
-                    
-                    if(!paymentId) throw new Error("A secure payment gateway must be selected.");
-
-                    const { data: targetedProduct, error: prodErr } = await window.supabase.from('products').select('*').eq('id', productId).single();
-                    if(prodErr) throw prodErr;
-
-                    if (!targetedProduct || targetedProduct.quantity < requestedQty) {
-                        throw new Error(`Inventory Deficit: Only ${targetedProduct?.quantity || 0} units available.`);
+                    let fileUrl = null;
+                    const fileInput = document.getElementById("project-pub-file");
+                    if (fileInput.files && fileInput.files[0]) {
+                        const file = fileInput.files[0];
+                        const path = `projects/${Date.now()}_${file.name}`;
+                        const { data: uploadData, error: uploadErr } = await window.supabase.storage.from("product-assets").upload(path, file);
+                        if (!uploadErr && uploadData) fileUrl = uploadData.path;
                     }
 
                     const payload = {
-                        product_id: productId, 
-                        product_title: document.getElementById("form-product-title-val").value,
-                        customer_name: document.getElementById("cust-name").value.trim(), 
-                        customer_phone: document.getElementById("cust-phone").value.trim(),
-                        quantity: requestedQty, 
-                        location: document.getElementById("cust-location").value.trim(),
-                        notes: document.getElementById("cust-notes").value.trim() + `\n[PAYMENT_GW_ID:${paymentId}]`, 
-                        status: 'Processing', 
-                        user_id: currentUser.id
+                        title: document.getElementById("project-pub-title").value.trim(),
+                        category: document.getElementById("project-pub-category").value,
+                        budget: parseFloat(document.getElementById("project-pub-budget").value) || 0,
+                        timeline: document.getElementById("project-pub-timeline").value,
+                        client_name: document.getElementById("project-pub-client-name").value.trim(),
+                        client_email: document.getElementById("project-pub-client-email").value.trim(),
+                        client_phone: document.getElementById("project-pub-client-phone").value.trim(),
+                        location: document.getElementById("project-pub-location").value.trim(),
+                        description: document.getElementById("project-pub-description").value.trim(),
+                        file_url: fileUrl,
+                        status: "Pending Review",
+                        created_at: new Date().toISOString()
                     };
 
-                    const { data: orderData, error: orderErr } = await window.supabase.from('orders').insert([payload]).select();
-                    if (orderErr) throw orderErr;
+                    const { error } = await window.supabase.from("order_projects").insert([payload]);
+                    if (error) throw error;
 
-                    const updatedQty = targetedProduct.quantity - requestedQty;
-                    const { error: updateErr } = await window.supabase.from('products').update({ quantity: updatedQty }).eq('id', productId);
-                    if(updateErr) console.warn("Non-fatal: Stock deduction desync."); 
-
-                    try {
-                        const emailPayload = {
-                            order_number: orderData[0].id,
-                            customer_name: payload.customer_name,
-                            products: payload.product_title,
-                            quantities: payload.quantity,
-                            total_amount: `${activeOrderCurrency} ${activeOrderPriceVal * requestedQty}`,
-                            status: payload.status,
-                            date: new Date().toISOString()
-                        };
-                        window.supabase.functions.invoke('send-order-email', { body: emailPayload }).then().catch(e => console.log('Edge func log:', e));
-                    } catch(emailError) {
-                        console.log("Email dispatch module offline.");
-                    }
-
-                    showToast("Order transaction successfully confirmed and logged.", "success");
-                    closeOrderModal(); 
-                    e.target.reset();
-                    
-                    openUserDashboard();
-
-                } catch (err) {
-                    showToast(err.message, "error");
+                    showToast("Order Project Commission submitted successfully!", "success");
+                    form.reset();
+                    await loadPublicProjects();
+                } catch(err) {
+                    console.error("Order Project Error:", err);
+                    showToast("Failed to submit project: " + err.message, "danger");
                 } finally {
                     btn.disabled = false;
-                    btn.innerHTML = '<i class="fa-solid fa-check-double"></i> Confirm & Submit Order';
+                    btn.innerHTML = origText;
                 }
             });
         }
-
-        // ==========================================
-        // UTILITIES & REALTIME
-        // ==========================================
-        function setupSearchFilters() {
-            const trigger = () => {
-                const searchVal = document.getElementById("search-input").value.toLowerCase().trim();
-                const categoryVal = document.getElementById("category-filter").value;
-                const filtered = localProductsCache.filter(p => {
-                    const matchQuery = p.title.toLowerCase().includes(searchVal) || p.description?.toLowerCase().includes(searchVal);
-                    return (categoryVal === "All" || p.category === categoryVal) && matchQuery;
-                });
-                renderCatalogGrid(filtered);
-            };
-            document.getElementById("search-input").addEventListener("input", trigger);
-            document.getElementById("category-filter").addEventListener("change", trigger);
-            document.getElementById("currency-select").addEventListener("change", () => renderCatalogGrid(localProductsCache));
-        }
-
-        function initializeRealtimeCatalogUpdates() {
-            window.supabase.channel('public-products-channel')
-                .on('postgres_changes', { event: '*', schema: 'public', table: 'products' }, async () => {
-                    await initializePublicCatalog(); 
-                }).subscribe();
-                
-            window.supabase.channel('public-announcements-channel')
-                .on('postgres_changes', { event: '*', schema: 'public', table: 'announcements' }, () => { fetchAnnouncements(); }).subscribe();
-                
-            window.supabase.channel('public-stories-channel')
-                .on('postgres_changes', { event: '*', schema: 'public', table: 'stories' }, () => { fetchStories(); }).subscribe();
-
-            if(currentUser) {
-                window.supabase.channel('private-orders-channel')
-                    .on('postgres_changes', { event: '*', schema: 'public', table: 'orders', filter: `user_id=eq.${currentUser.id}` }, payload => {
-                        if(document.getElementById('user-dashboard-modal').classList.contains('active')) {
-                            loadUserOrders(); 
-                        }
-                        if(payload.eventType === 'UPDATE' && payload.new.status !== payload.old.status) {
-                            showToast(`Order status updated to: ${payload.new.status}`, "info");
-                        }
-                    }).subscribe();
-            }
-        }
-
-        function escapeHTML(str) {
-            if(!str) return '';
-            const div = document.createElement('div'); 
-            div.textContent = str; 
-            return div.innerHTML;
-        }
-
     </script>
+</body>
+</html>
