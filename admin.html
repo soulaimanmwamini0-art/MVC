@@ -1036,11 +1036,302 @@
             <div class="text-xs font-bold text-muted mb-4" style="padding-left: 1rem; text-transform: uppercase; letter-spacing: 0.1em; margin-top: 1.5rem;">
                 System Configuration
             </div>
+<button class="nav-item" data-target="payments-view">
+    <i class="fa-solid fa-money-bill-transfer"></i><span>Payment Gateways</span>
+</button>
+<!-- Replace everything up to the JS boundary as requested -->
+</aside>
 
-            <button class="nav-item" data-target="payments-view">
-                <i class="fa-solid fa-money-bill-transfer"></i><span>Payment Gateways</span>
+<main class="admin-content-area">
+    <section id="payments-view" class="tab-content">
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h2>Payment Gateways Configurator</h2>
+                <p>Manage supported transactional endpoints securely.</p>
+            </div>
+            <button class="btn btn-primary" onclick="openPaymentFormModal()">
+                <i class="fa-solid fa-plus"></i> Add Payment Gateway
             </button>
+        </div>
+
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Gateway Name</th>
+                        <th>Environment</th>
+                        <th>Currency</th>
+                        <th>Status</th>
+                        <th style="text-align: right;">Operations</th>
+                    </tr>
+                </thead>
+                <tbody id="payments-table-body"></tbody>
+            </table>
+        </div>
+    </section>
+</main>
+</div>
+
+<div id="toast-container" class="toast-container"></div>
+
+<div class="modal" id="payment-form-modal">
+    <div class="modal-content" style="max-width: 600px;">
+        <button type="button" class="close-modal-btn" onclick="closePaymentFormModal()"> ✕ </button>
+        <h3 style="margin-bottom: 1.5rem;" id="payment-form-title">Configure Gateway</h3>
+        <form id="payment-management-form" class="form-grid">
+            <input type="hidden" id="payment-id">
             
+            <div class="form-group" style="grid-column: 1 / -1;">
+                <label class="form-label">Gateway Type / Name</label>
+                <select id="payment-gatewayName" class="form-control" required>
+                    <option value="" disabled selected>Select gateway...</option>
+                    <option value="Cash">Cash</option>
+                    <option value="Bank Transfer">Bank Transfer</option>
+                    <option value="Mobile Money">Mobile Money</option>
+                    <option value="Stripe">Stripe</option>
+                    <option value="PayPal">PayPal</option>
+                    <option value="Flutterwave">Flutterwave</option>
+                    <option value="Razorpay">Razorpay</option>
+                    <option value="Custom Gateway">Custom Gateway</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Environment</label>
+                <select id="payment-environment" class="form-control" required>
+                    <option value="Sandbox">Sandbox / Test</option>
+                    <option value="Production">Production / Live</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Currency</label>
+                <input type="text" id="payment-currency" class="form-control" placeholder="e.g. USD, RWF" required>
+            </div>
+
+            <div class="form-group" style="grid-column: 1 / -1;">
+                <label class="form-label">Public Key</label>
+                <input type="text" id="payment-publicKey" class="form-control" placeholder="pk_test_...">
+            </div>
+
+            <div class="form-group" style="grid-column: 1 / -1;">
+                <label class="form-label">Secret Key</label>
+                <input type="password" id="payment-secretKey" class="form-control" placeholder="sk_test_...">
+            </div>
+
+            <div class="form-group" style="grid-column: 1 / -1;">
+                <label class="form-label">Merchant ID (If applicable)</label>
+                <input type="text" id="payment-merchantId" class="form-control" placeholder="Merchant Identity">
+            </div>
+
+            <div class="form-group" style="grid-column: 1 / -1;">
+                <label class="form-label">Description / Instructions</label>
+                <textarea id="payment-description" class="form-control" rows="3" placeholder="Instructions for users..."></textarea>
+            </div>
+
+            <div class="form-group" style="grid-column: 1 / -1;">
+                <label class="form-label">Gateway Status</label>
+                <select id="payment-enabled" class="form-control">
+                    <option value="true">Enabled (Active)</option>
+                    <option value="false">Disabled (Hidden)</option>
+                </select>
+            </div>
+            
+            <div class="flex gap-4 mt-4" style="grid-column: 1 / -1;">
+                <button type="submit" id="payment-submit-btn" class="btn btn-primary" style="flex: 1;">Save Gateway Configuration</button>
+                <button type="button" class="btn btn-outline" style="flex: 1;" onclick="closePaymentFormModal()">Reset / Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+let rawPaymentsCache = [];
+
+async function loadPayments() {
+    try {
+        const { data, error } = await window.supabase
+            .from('gateway_settings')
+            .select('*')
+            .order('createdAt', { ascending: false });
+
+        if (error) throw error;
+        
+        rawPaymentsCache = data || [];
+        renderPaymentsTable();
+    } catch (err) {
+        console.error("Payment Load Error:", err);
+        showToast("Failed to fetch gateway settings.", "error");
+    }
+}
+
+function renderPaymentsTable() {
+    const tbody = document.getElementById('payments-table-body');
+    if (!tbody) return;
+    
+    tbody.innerHTML = '';
+    
+    if (rawPaymentsCache.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center text-muted" style="padding: 2rem;">No payment gateways compiled in database.</td></tr>`;
+        return;
+    }
+    
+    rawPaymentsCache.forEach(gateway => {
+        const statusBadge = gateway.enabled 
+            ? '<span class="badge badge-success">Enabled</span>' 
+            : '<span class="badge badge-neutral">Disabled</span>';
+            
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td style="font-weight: 600;">${sanitizeString(gateway.gatewayName)}</td>
+            <td>${sanitizeString(gateway.environment)}</td>
+            <td>${sanitizeString(gateway.currency)}</td>
+            <td>${statusBadge}</td>
+            <td style="text-align: right;">
+                <button class="btn btn-outline btn-icon" onclick="togglePaymentGateway('${gateway.id}', ${gateway.enabled})" title="${gateway.enabled ? 'Disable' : 'Enable'}">
+                    <i class="fa-solid ${gateway.enabled ? 'fa-toggle-on text-success' : 'fa-toggle-off text-muted'}"></i>
+                </button>
+                <button class="btn btn-outline btn-icon" onclick="openPaymentFormModal('${gateway.id}')" title="Edit">
+                    <i class="fa-solid fa-pen text-accent"></i>
+                </button>
+                <button class="btn btn-outline btn-icon" onclick="deletePaymentGateway('${gateway.id}')" title="Delete">
+                    <i class="fa-solid fa-trash text-danger"></i>
+                </button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+async function togglePaymentGateway(id, currentState) {
+    try {
+        const { error } = await window.supabase
+            .from('gateway_settings')
+            .update({ enabled: !currentState, updatedAt: new Date().toISOString() })
+            .eq('id', id);
+
+        if (error) throw error;
+        
+        showToast(`Gateway ${!currentState ? 'enabled' : 'disabled'} successfully.`, "success");
+        await loadPayments();
+    } catch (err) {
+        console.error("Payment Toggle Error:", err);
+        showToast("Failed to alter gateway status.", "error");
+    }
+}
+
+async function deletePaymentGateway(id) {
+    if (!confirm("CRITICAL WARNING: Are you sure you want to permanently delete this gateway configuration?")) return;
+    
+    try {
+        const { error } = await window.supabase
+            .from('gateway_settings')
+            .delete()
+            .eq('id', id);
+
+        if (error) throw error;
+        
+        showToast("Gateway configuration purged.", "success");
+        await loadPayments();
+    } catch (err) {
+        console.error("Payment Delete Error:", err);
+        showToast("Failed to purge gateway configuration.", "error");
+    }
+}
+
+function openPaymentFormModal(id = null) {
+    const modal = document.getElementById('payment-form-modal');
+    const form = document.getElementById('payment-management-form');
+    if (!modal || !form) return;
+    
+    form.reset();
+    document.getElementById('payment-id').value = '';
+    document.getElementById('payment-form-title').innerText = 'Configure New Gateway';
+    
+    if (id) {
+        const gateway = rawPaymentsCache.find(g => g.id === id);
+        if (gateway) {
+            document.getElementById('payment-form-title').innerText = 'Modify Gateway Configuration';
+            document.getElementById('payment-id').value = gateway.id;
+            document.getElementById('payment-gatewayName').value = gateway.gatewayName;
+            document.getElementById('payment-environment').value = gateway.environment;
+            document.getElementById('payment-currency').value = gateway.currency;
+            document.getElementById('payment-publicKey').value = gateway.publicKey || '';
+            document.getElementById('payment-secretKey').value = gateway.secretKey || '';
+            document.getElementById('payment-merchantId').value = gateway.merchantId || '';
+            document.getElementById('payment-description').value = gateway.description || '';
+            document.getElementById('payment-enabled').value = gateway.enabled ? "true" : "false";
+        }
+    }
+    
+    modal.classList.add('active');
+}
+
+function closePaymentFormModal() {
+    const modal = document.getElementById('payment-form-modal');
+    if (modal) modal.classList.remove('active');
+}
+
+async function savePaymentGateway() {
+    const id = document.getElementById('payment-id').value;
+    const gatewayName = document.getElementById('payment-gatewayName').value;
+    const environment = document.getElementById('payment-environment').value;
+    const currency = document.getElementById('payment-currency').value;
+    const publicKey = document.getElementById('payment-publicKey').value;
+    const secretKey = document.getElementById('payment-secretKey').value;
+    const merchantId = document.getElementById('payment-merchantId').value;
+    const description = document.getElementById('payment-description').value;
+    const enabled = document.getElementById('payment-enabled').value === "true";
+
+    if (!gatewayName || !environment || !currency) {
+        showToast("Critical fields missing. Please complete the form.", "warning");
+        return;
+    }
+
+    const payload = {
+        gatewayName,
+        environment,
+        currency,
+        publicKey,
+        secretKey,
+        merchantId,
+        description,
+        enabled,
+        updatedAt: new Date().toISOString()
+    };
+
+    try {
+        if (id) {
+            const { error } = await window.supabase
+                .from('gateway_settings')
+                .update(payload)
+                .eq('id', id);
+
+            if (error) throw error;
+            showToast("Gateway configuration updated successfully.", "success");
+        } else {
+            const duplicate = rawPaymentsCache.find(g => g.gatewayName === gatewayName && g.environment === environment);
+            if (duplicate) {
+                showToast(`A ${environment} environment configuration for ${gatewayName} already exists.`, "warning");
+                return;
+            }
+            
+            payload.createdAt = new Date().toISOString();
+            const { error } = await window.supabase
+                .from('gateway_settings')
+                .insert([payload]);
+
+            if (error) throw error;
+            showToast("Gateway compiled and injected into database.", "success");
+        }
+
+        closePaymentFormModal();
+        await loadPayments();
+    } catch (err) {
+        console.error("Payment Save Error:", err);
+        showToast("Failed to compile gateway settings.", "error");
+    }
+}            
             <button class="nav-item" data-target="contacts-view">
                 <i class="fa-solid fa-address-book"></i><span>Contact & Socials</span>
             </button>
@@ -3652,109 +3943,6 @@
         // ==========================================================================
         // Subsystem: Payment Gateways Configurator
         // ==========================================================================
-
-        async function loadPayments() {
-            try {
-                const { data, error } = await window.supabase.from('payment_gateways').select('*').order('created_at', { ascending: true });
-                
-                if (error && error.code !== '42P01') {
-                    throw error;
-                }
-                
-                rawPaymentsCache = data || [];
-                const tbody = document.getElementById("payments-table-body");
-                
-                if (!tbody) {
-                    return;
-                }
-                
-                tbody.innerHTML = "";
-                
-                if (rawPaymentsCache.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 3rem; color: var(--text-muted);">No payment gateways established.</td></tr>`;
-                    return;
-                }
-                
-                rawPaymentsCache.forEach(p => {
-                    const tr = document.createElement("tr");
-                    tr.innerHTML = `
-                        <td><span class="badge badge-neutral">${sanitizeString(p.type)}</span></td>
-                        <td style="font-weight:600;">${sanitizeString(p.name)}</td>
-                        <td>${sanitizeString(p.account_name)}</td>
-                        <td class="font-mono text-sm">${sanitizeString(p.account_number)}</td>
-                        <td><span class="badge ${p.active ? 'badge-success' : 'badge-danger'}">${p.active ? 'Visible' : 'Hidden'}</span></td>
-                        <td style="text-align:right;">
-                            <button class="btn btn-outline btn-icon" onclick="openPaymentFormModal('${p.id}')" title="Configure"><i class="fa-solid fa-pen"></i></button>
-                            <button class="btn btn-danger btn-icon" onclick="deleteRecord('payment_gateways', '${p.id}')" title="Purge Gateway"><i class="fa-solid fa-trash"></i></button>
-                        </td>
-                    `;
-                    tbody.appendChild(tr);
-                });
-            } catch (err) {
-                console.error("Payments Load Error:", err);
-            }
-        }
-
-        window.openPaymentFormModal = function(id = null) {
-            const modal = document.getElementById('payment-form-modal');
-            const form = document.getElementById('payment-management-form');
-            form.reset();
-            
-            document.getElementById('payment-id').value = "";
-            document.getElementById('payment-form-title').innerText = "Configure Gateway";
-            
-            if (id) {
-                const p = rawPaymentsCache.find(x => String(x.id) === String(id));
-                if (p) {
-                    document.getElementById('payment-id').value = p.id;
-                    document.getElementById('payment-type').value = p.type || "Mobile Money";
-                    document.getElementById('payment-name').value = p.name || "";
-                    document.getElementById('payment-account-name').value = p.account_name || "";
-                    document.getElementById('payment-account-number').value = p.account_number || "";
-                    document.getElementById('payment-status').value = p.active ? "true" : "false";
-                    document.getElementById('payment-form-title').innerText = "Edit Gateway";
-                }
-            }
-            
-            modal.classList.add('active');
-        };
-
-        window.closePaymentFormModal = function() {
-            document.getElementById('payment-form-modal').classList.remove('active');
-        };
-
-        async function savePaymentGateway() {
-            try {
-                const id = document.getElementById('payment-id').value;
-                const payload = {
-                    type: document.getElementById('payment-type').value,
-                    name: document.getElementById('payment-name').value,
-                    account_name: document.getElementById('payment-account-name').value,
-                    account_number: document.getElementById('payment-account-number').value,
-                    active: document.getElementById('payment-status').value === "true"
-                };
-                
-                if (id) {
-                    const { error } = await window.supabase.from('payment_gateways').update(payload).eq('id', id);
-                    if (error) {
-                        throw error;
-                    }
-                    showToast("Gateway configuration updated.", "success");
-                } else {
-                    const { error } = await window.supabase.from('payment_gateways').insert([payload]);
-                    if (error) {
-                        throw error;
-                    }
-                    showToast("New gateway deployed.", "success");
-                }
-                
-                closePaymentFormModal();
-                loadPayments();
-            } catch (err) {
-                console.error("Payment Save Error:", err);
-                showToast("Failed to compile gateway settings.", "error");
-            }
-        }
 
         // ==========================================================================
         // Subsystem: Platform Contact Vectors Settings
