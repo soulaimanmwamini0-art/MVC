@@ -1004,10 +1004,6 @@
                 <i class="fa-solid fa-boxes-stacked"></i><span>Inventory Matrix</span>
             </button>
 
-<button class="nav-item" data-target="order-project-view">
-                <i class="fa-solid fa-diagram-project"></i><span>Order Project</span>
-            </button>
-
             <button class="nav-item" data-target="announcements-view">
                 <i class="fa-solid fa-bullhorn"></i><span>Announcements</span>
             </button>
@@ -1277,126 +1273,6 @@
                             </tr>
                         </thead>
                         <tbody id="sku-table-body"></tbody>
-                    </table>
-                </div>
-            </section>
-<section id="order-project-view" class="tab-content">
-                <div class="flex justify-between items-center mb-8">
-                    <div>
-                        <h2>Order Project Command Center</h2>
-                        <p>Track, manage, and dispatch custom client project requests and technical scope specifications.</p>
-                    </div>
-                    <div class="flex gap-2">
-                        <button class="btn btn-primary" onclick="openNewProjectOrderForm()">
-                            <i class="fa-solid fa-plus"></i> New Project Request
-                        </button>
-                        <button class="btn btn-danger" onclick="deleteAllRecords('order_projects', 'project orders')">
-                            <i class="fa-solid fa-trash-can"></i> Purge All Projects
-                        </button>
-                    </div>
-                </div>
-
-                <div id="project-order-form-container" class="card mb-8 hidden" style="border: 2px dashed var(--accent);">
-                    <div class="flex justify-between items-center mb-6">
-                        <h3 id="project-form-title">Register Project Order</h3>
-                        <button class="btn btn-outline btn-icon" onclick="openNewProjectOrderForm()">
-                            <i class="fa-solid fa-xmark"></i>
-                        </button>
-                    </div>
-                    
-                    <form id="project-order-form" class="form-grid">
-                        <input type="hidden" id="project-order-id">
-                        
-                        <div class="form-group">
-                            <label class="form-label">Project Title / Designation</label>
-                            <input type="text" id="project-title" class="form-control" placeholder="e.g. Solar Irrigation System Installation" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Client / Organization Name</label>
-                            <input type="text" id="project-client-name" class="form-control" placeholder="e.g. Mwamini Agri-Coop" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Client Email / Phone Contact</label>
-                            <input type="text" id="project-client-contact" class="form-control" placeholder="client@example.com or +250..." required>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Estimated Valuation (USD)</label>
-                            <input type="number" id="project-budget" step="0.01" class="form-control" placeholder="0.00" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Engineering Domain / Classification</label>
-                            <select id="project-category" class="form-control" required>
-                                <option value="Agriculture & Irrigation">Agriculture & Irrigation</option>
-                                <option value="Electrical & Power">Electrical & Power</option>
-                                <option value="Civil & Construction">Civil & Construction</option>
-                                <option value="Industrial Services">Industrial Services</option>
-                                <option value="Custom Engineering">Custom Engineering</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Lifecycle Pipeline Status</label>
-                            <select id="project-status" class="form-control" required>
-                                <option value="Requested">Requested (Pending)</option>
-                                <option value="Under Review">Under Review</option>
-                                <option value="In Progress">In Progress</option>
-                                <option value="Completed">Completed</option>
-                                <option value="Cancelled">Cancelled</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group" style="grid-column: 1 / -1;">
-                            <label class="form-label">Technical Scope & Specifications</label>
-                            <textarea id="project-specs" class="form-control" rows="4" placeholder="Detail explicit client requirements, land dimensions, component lists, or project milestones..."></textarea>
-                        </div>
-                        
-                        <div class="flex gap-4" style="grid-column: 1 / -1; margin-top: 1rem;">
-                            <button type="submit" id="project-submit-btn" class="btn btn-primary w-full">
-                                <i class="fa-solid fa-cloud-arrow-up"></i> Commit Project Order
-                            </button>
-                            <button type="button" class="btn btn-outline w-full" onclick="openNewProjectOrderForm()">
-                                Cancel Operation
-                            </button>
-                        </div>
-                    </form>
-                </div>
-
-                <div class="card mb-6">
-                    <div class="flex gap-4">
-                        <div class="form-group" style="flex: 2; margin: 0;">
-                            <input type="text" id="project-search-box" class="form-control" placeholder="Search by project designation, client identity, or specification text...">
-                        </div>
-                        <div class="form-group" style="flex: 1; margin: 0;">
-                            <select id="project-status-filter" class="form-control">
-                                <option value="All">All Pipeline States</option>
-                                <option value="Requested">Requested</option>
-                                <option value="Under Review">Under Review</option>
-                                <option value="In Progress">In Progress</option>
-                                <option value="Completed">Completed</option>
-                                <option value="Cancelled">Cancelled</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="table-container">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Project Designation</th>
-                                <th>Client Identity</th>
-                                <th>Domain</th>
-                                <th>Valuation</th>
-                                <th>Pipeline State</th>
-                                <th>Timestamp</th>
-                                <th style="text-align: right;">Action Matrix</th>
-                            </tr>
-                        </thead>
-                        <tbody id="project-orders-table-body"></tbody>
                     </table>
                 </div>
             </section>
@@ -1817,12 +1693,6 @@
                     <label class="form-label">Default Routing Destination</label>
                     <input type="text" id="user-dest" class="form-control">
                 </div>
-                <!-- ADDED: Media & Document Upload field for Users -->
-                <div class="form-group">
-                    <label class="form-label">User Media / Documents (Avatar, ID, Videos)</label>
-                    <input type="file" id="user-media-upload" class="form-control" style="padding: 0.5rem;" accept="image/*,video/*,.pdf,.doc,.docx" multiple>
-                    <div class="text-xs text-muted mt-2">Maximum file size: 50MB. Supported formats: JPG, PNG, MP4, PDF, DOCX.</div>
-                </div>
                 
                 <button type="submit" id="user-submit-btn" class="btn btn-primary w-full mt-4">Commit Profile</button>
             </form>
@@ -1891,7 +1761,6 @@
         let rawUsersCache = [];
         let rawAnnouncementsCache = [];
         let rawStoriesCache = [];
-        let rawProjectOrdersCache = [];
         let rawPaymentsCache = [];
         let chatUsersMap = new Map();
         
@@ -1984,7 +1853,6 @@
             
             loadAnalyticsDashboard();
             loadInventoryControlMatrix();
-            loadOrderProjects();
             loadOrdersQueue();
             loadCustomerComments();
             loadUsers();
@@ -2067,24 +1935,6 @@
                     e.preventDefault();
                     await savePaymentGateway();
                 });
-            }
-
-            const projectOrderForm = document.getElementById('project-order-form');
-            if (projectOrderForm) {
-                projectOrderForm.addEventListener('submit', async (e) => {
-                    e.preventDefault();
-                    await saveProjectOrder();
-                });
-            }
-
-            const projectSearchBox = document.getElementById('project-search-box');
-            if (projectSearchBox) {
-                projectSearchBox.addEventListener('input', renderProjectOrdersTable);
-            }
-
-            const projectStatusFilter = document.getElementById('project-status-filter');
-            if (projectStatusFilter) {
-                projectStatusFilter.addEventListener('change', renderProjectOrdersTable);
             }
         }
 
@@ -2912,53 +2762,1050 @@
                     
                     grid.innerHTML = gridHtmlContent;
                 }
-            } catch (err) {
-                console.error("Story Load Error:", err);
+            } catch (err) { 
+                console.error("Stories Load Error:", err); 
             }
         }
-        
-        // Boilerplate closures bridging the truncated snippet logic
-        function readFullStory(id) {}
-        function initStoryEdit(id) {}
-        function toggleStoryState(id, state) {}
-        function deleteStoryVector(id) {}
-        function saveUserProfile() {}
-        function savePaymentGateway() {}
-        function saveProjectOrder() {}
-        function renderProjectOrdersTable() {}
-        function openNewProjectOrderForm() {}
-        function resetAnnouncementForm() {}
-        function resetStoryForm() {}
-        function closeStoryDetailsModal() {}
-        
-        function openUserFormModal() {
-            document.getElementById('user-form-modal').classList.add('active');
+
+        window.readFullStory = (id) => {
+            const story = rawStoriesCache.find(s => String(s.id) === String(id));
+            if (!story) {
+                return;
+            }
+
+            document.getElementById('story-details-title').innerText = story.title;
+            const dateObj = new Date(story.updated_at);
+            document.getElementById('story-details-meta').innerText = `Published: ${dateObj.toLocaleDateString()} at ${dateObj.toLocaleTimeString()}`;
+            
+            const mediaContainer = document.getElementById('story-details-media');
+            mediaContainer.innerHTML = "";
+            
+            if (story.image_url) {
+                let url = story.image_url.startsWith('http') ? story.image_url : window.supabase.storage.from('product-assets').getPublicUrl(story.image_url).data.publicUrl;
+                mediaContainer.innerHTML = `<img src="${url}" style="width:100%; max-height: 400px; object-fit: cover;">`;
+            }
+
+            document.getElementById('story-details-content').innerHTML = DOMPurify.sanitize(story.content);
+            document.getElementById('story-details-modal').classList.add('active');
+        };
+
+        window.closeStoryDetailsModal = () => document.getElementById('story-details-modal').classList.remove('active');
+
+        window.initStoryEdit = function(id) {
+            const story = rawStoriesCache.find(s => String(s.id) === String(id));
+            if (story) {
+                document.getElementById('story-id').value = story.id;
+                document.getElementById('story-title').value = story.title;
+                
+                storyQuill.root.innerHTML = DOMPurify.sanitize(story.content || '');
+                document.getElementById('story-active').value = (story.active === true || story.active === 'true').toString();
+                
+                const submitBtn = document.getElementById('story-submit-btn');
+                submitBtn.innerHTML = `<i class="fa-solid fa-wrench"></i> Update Narrative`;
+                document.getElementById('story-cancel-btn').classList.remove('hidden');
+                
+                document.getElementById('stories-view').scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+        };
+
+        window.resetStoryForm = function() {
+            const form = document.getElementById('story-form');
+            if (form) {
+                form.reset();
+            }
+            
+            document.getElementById('story-id').value = "";
+            storyQuill.root.innerHTML = "";
+            document.getElementById('story-submit-btn').innerHTML = `<i class="fa-solid fa-book"></i> Publish Story`;
+            document.getElementById('story-cancel-btn').classList.add('hidden');
+        };
+
+        const storyForm = document.getElementById('story-form');
+        if (storyForm) {
+            storyForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = document.getElementById('story-submit-btn');
+                const originalHtml = btn.innerHTML;
+                
+                btn.disabled = true; 
+                btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Processing...`;
+                
+                try {
+                    const rawHtml = storyQuill.root.innerHTML;
+                    if (!storyQuill.getText().trim()) {
+                        throw new Error("Narrative content cannot be empty.");
+                    }
+                    
+                    const payload = {
+                        title: document.getElementById('story-title').value.trim(),
+                        content: DOMPurify.sanitize(rawHtml),
+                        active: document.getElementById('story-active').value === 'true',
+                        updated_at: new Date().toISOString()
+                    };
+                    
+                    const editId = document.getElementById('story-id').value;
+                    if (editId) {
+                        const { error } = await window.supabase.from('stories').update(payload).eq('id', editId);
+                        if (error) {
+                            throw error;
+                        }
+                        showToast("Narrative parameters updated successfully.", "success");
+                    } else {
+                        const { error } = await window.supabase.from('stories').insert([payload]);
+                        if (error) {
+                            throw error;
+                        }
+                        showToast("New narrative initialized.", "success");
+                    }
+                    
+                    resetStoryForm(); 
+                    await loadStories(); 
+                    loadAnalyticsDashboard();
+                } catch (err) { 
+                    console.error("Story Fault:", err); 
+                    showToast("Execution failed: " + err.message, "error"); 
+                } finally { 
+                    btn.disabled = false; 
+                    btn.innerHTML = originalHtml; 
+                }
+            });
         }
-        
-        function closeUserFormModal() {
+
+        window.toggleStoryState = async (id, currentActiveState) => {
+            try {
+                const newStatus = !(currentActiveState === true || String(currentActiveState) === 'true');
+                
+                const { error } = await window.supabase.from('stories').update({ active: newStatus }).eq('id', id);
+                    
+                if (error) {
+                    throw error;
+                }
+
+                showToast(`Story state mutated to: ${newStatus ? 'Published' : 'Draft'}`, "success");
+                await loadStories(); 
+            } catch(err) { 
+                console.error("Toggle Fault:", err); 
+                showToast("Failed to mutate visibility state.", "error"); 
+            }
+        };
+
+        window.deleteStoryVector = async (id) => {
+            if (!confirm("Warning: Terminal purge of narrative vector. Proceed?")) {
+                return;
+            }
+            
+            try {
+                const { error } = await window.supabase.from('stories').delete().eq('id', id);
+                if (error) {
+                    throw error;
+                }
+
+                showToast("Narrative vector pruned.", "success");
+                await loadStories(); 
+                loadAnalyticsDashboard();
+            } catch(err) { 
+                console.error("Delete Fault:", err); 
+                showToast("Failed to purge vector.", "error"); 
+            }
+        };
+
+        // ==========================================================================
+        // Subsystem: Inventory Control Upgrades (Rich Text & Currency Anchor)
+        // ==========================================================================
+
+        function setupInventorySearchMatrix() {
+            const runFilter = () => {
+                const q = document.getElementById("admin-search-box").value.toLowerCase().trim();
+                const cat = document.getElementById("admin-category-box").value;
+                const filtered = localAdminInventoryCache.filter(i => {
+                    const matchQuery = (i.title.toLowerCase().includes(q) || (i.description && i.description.toLowerCase().includes(q)));
+                    return matchQuery && (cat === "All" || i.category === cat);
+                });
+                renderInventoryRowsHTML(filtered);
+            };
+            
+            const searchInput = document.getElementById("admin-search-box");
+            const filterInput = document.getElementById("admin-category-box");
+            
+            if (searchInput) {
+                searchInput.addEventListener("input", runFilter);
+            }
+            if (filterInput) {
+                filterInput.addEventListener("change", runFilter);
+            }
+        }
+
+        async function loadInventoryControlMatrix() {
+            const { data, error } = await window.supabase.from('products').select('*').order('created_at', { ascending: false });
+            if (!error && data) {
+                localAdminInventoryCache = data; 
+                window.productCacheMap = {};
+                
+                data.forEach(p => {
+                    window.productCacheMap[p.id] = p;
+                });
+                
+                const searchBox = document.getElementById("admin-search-box");
+                if (searchBox) {
+                    searchBox.dispatchEvent(new Event("input"));
+                }
+            } else { 
+                console.error("Inventory Fetch Error:", error); 
+            }
+        }
+
+        function renderInventoryRowsHTML(skus) {
+            const tbody = document.getElementById("sku-table-body");
+            if (!tbody) {
+                return;
+            }
+            
+            if (skus.length === 0) { 
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 3rem; color: var(--text-muted);">No records match the current query matrix.</td></tr>`; 
+                return; 
+            }
+            
+            tbody.innerHTML = ""; 
+            const fragment = document.createDocumentFragment();
+            
+            skus.forEach(sku => {
+                const currencyMatch = sku.description?.match(/\[CURRENCY:([A-Z]{3})\]/);
+                const currency = currencyMatch ? currencyMatch[1] : 'USD';
+                const priceStr = `${currency} ${(sku.price || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+                
+                let imgHtml = `<div class="cell-placeholder">Empty</div>`;
+                if (sku.image_url) {
+                    const imgUrl = sku.image_url.startsWith('http') ? sku.image_url : window.supabase.storage.from('product-assets').getPublicUrl(sku.image_url).data.publicUrl;
+                    imgHtml = `<img src="${imgUrl}" class="cell-img" alt="thumbnail">`;
+                }
+                
+                const tr = document.createElement("tr");
+                if (sku.quantity <= 3 && sku.quantity > 0) {
+                    tr.style.borderLeft = "3px solid var(--warning)";
+                } else if (sku.quantity === 0) {
+                    tr.style.borderLeft = "3px solid var(--danger)";
+                }
+                
+                let badgeClass = "badge-neutral", statusIcon = "";
+                if (sku.status === 'Available') { 
+                    badgeClass = "badge-success"; 
+                    statusIcon = `<i class="fa-solid fa-circle-check" style="margin-right:4px;"></i>`; 
+                }
+                if (sku.status === 'Out of stock') { 
+                    badgeClass = "badge-danger"; 
+                    statusIcon = `<i class="fa-solid fa-circle-xmark" style="margin-right:4px;"></i>`; 
+                }
+                if (sku.status === 'Limited stock') { 
+                    badgeClass = "badge-warning"; 
+                    statusIcon = `<i class="fa-solid fa-circle-exclamation" style="margin-right:4px;"></i>`; 
+                }
+                
+                tr.innerHTML = `
+                    <td style="text-align:center;">${imgHtml}</td>
+                    <td>
+                        <div style="font-weight:600; color:var(--text-main); margin-bottom:0.25rem;">${sanitizeString(sku.title)}</div>
+                        <div style="font-family:monospace; font-size:0.75rem; color:var(--text-muted);">ID: ${String(sku.id).substring(0,8).toUpperCase()}</div>
+                    </td>
+                    <td><span class="badge badge-neutral">${sanitizeString(sku.category)}</span></td>
+                    <td style="font-weight:700; color:var(--accent);">${priceStr}</td>
+                    <td>
+                        <div style="margin-bottom:0.25rem;"><span class="badge ${badgeClass}">${statusIcon}${sanitizeString(sku.status)}</span></div>
+                        <div style="font-size:0.75rem; font-weight:600; color:var(--text-muted);">Volume: ${sku.quantity || 0} unit(s)</div>
+                    </td>
+                    <td style="text-align:right;">
+                        <button class="btn btn-outline btn-icon" title="Edit Properties" onclick="safeInitEdit('${String(sku.id)}')"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button class="btn btn-danger btn-icon" title="Purge Asset" onclick="safeDelete('${String(sku.id)}')" style="margin-left:0.5rem;"><i class="fa-solid fa-trash-can"></i></button>
+                    </td>
+                `;
+                fragment.appendChild(tr);
+            });
+            tbody.appendChild(fragment);
+        }
+
+        window.openNewProductForm = () => {
+            const container = document.getElementById("product-form-container");
+            const form = document.getElementById("sku-management-form");
+            
+            if (container.classList.contains('hidden')) {
+                container.classList.remove('hidden'); 
+                form.reset();
+                document.getElementById("sku-id").value = "";
+                document.getElementById("sku-file").dataset.existingUrl = "";
+                productQuill.root.innerHTML = "";
+            } else { 
+                container.classList.add('hidden'); 
+            }
+        };
+
+        window.safeInitEdit = function(id) {
+            const sku = window.productCacheMap[id];
+            if (!sku) {
+                return;
+            }
+            
+            const container = document.getElementById("product-form-container");
+            container.classList.remove('hidden');
+            
+            document.getElementById("sku-id").value = sku.id;
+            document.getElementById("sku-title").value = sku.title;
+            document.getElementById("sku-category").value = sku.category;
+            document.getElementById("sku-price").value = sku.price;
+            document.getElementById("sku-qty").value = sku.quantity || 0;
+            document.getElementById("sku-status").value = sku.status;
+            
+            const currencyMatch = sku.description?.match(/\[CURRENCY:([A-Z]{3})\]/);
+            document.getElementById("sku-currency-type").value = currencyMatch ? currencyMatch[1] : "USD";
+            
+            const htmlDesc = sku.description ? sku.description.replace(/\[CURRENCY:\w+\]/g, "").trim() : "";
+            productQuill.root.innerHTML = DOMPurify.sanitize(htmlDesc);
+            
+            document.getElementById("sku-file").dataset.existingUrl = sku.image_url || "";
+            container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        };
+
+        window.safeDelete = async function(id) {
+            if (!confirm("Warning: Purging this commodity is absolute. Proceed?")) {
+                return;
+            }
+            
+            try {
+                const { error } = await window.supabase.from('products').delete().eq('id', id);
+                if (error) {
+                    throw error;
+                }
+                
+                showToast("Commodity purged from database logs.", "success"); 
+                loadInventoryControlMatrix(); 
+                loadAnalyticsDashboard(); 
+            } catch (err) { 
+                console.error("Purge Error:", err); 
+                showToast("Deletion logic failed.", "error"); 
+            }
+        };
+
+        const formElement = document.getElementById("sku-management-form");
+        if (formElement) {
+            formElement.addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const submitBtn = e.target.querySelector('button[type="submit"]');
+                const originalHtml = submitBtn.innerHTML;
+                
+                submitBtn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Transmitting...`; 
+                submitBtn.disabled = true;
+                
+                try {
+                    const id = document.getElementById("sku-id").value;
+                    const fileInput = document.getElementById("sku-file");
+                    let assetUrl = fileInput.dataset.existingUrl || "";
+                    
+                    if (fileInput.files.length > 0) {
+                        const file = fileInput.files[0];
+                        const sanitizedName = file.name.replace(/[^a-z0-9.]/gi, '_').toLowerCase();
+                        const fp = `assets/v2-${Date.now()}-${sanitizedName}`;
+                        
+                        const { error: upErr } = await window.supabase.storage.from('product-assets').upload(fp, file);
+                        if (upErr) {
+                            throw upErr;
+                        }
+                        
+                        assetUrl = window.supabase.storage.from('product-assets').getPublicUrl(fp).data.publicUrl;
+                    }
+                    
+                    const htmlDesc = DOMPurify.sanitize(productQuill.root.innerHTML);
+                    const currVal = document.getElementById("sku-currency-type").value;
+                    const encodedDesc = `${htmlDesc} [CURRENCY:${currVal}]`;
+
+                    const payload = {
+                        title: document.getElementById("sku-title").value.trim(),
+                        price: parseFloat(document.getElementById("sku-price").value),
+                        category: document.getElementById("sku-category").value,
+                        quantity: parseInt(document.getElementById("sku-qty").value) || 0,
+                        status: document.getElementById("sku-status").value,
+                        description: encodedDesc,
+                        image_url: assetUrl || null
+                    };
+
+                    if (id) {
+                        const { error } = await window.supabase.from('products').update(payload).eq('id', id);
+                        if (error) {
+                            throw error;
+                        }
+                        showToast("Record parameters updated successfully.", "success");
+                    } else {
+                        const { error } = await window.supabase.from('products').insert([payload]);
+                        if (error) {
+                            throw error;
+                        }
+                        showToast("New asset entry registered.", "success");
+                    }
+                    
+                    openNewProductForm(); 
+                    loadInventoryControlMatrix(); 
+                    loadAnalyticsDashboard();
+                } catch(err) { 
+                    console.error("Database Transaction Fault:", err); 
+                    showToast("Database Fault: " + err.message, "error"); 
+                } finally { 
+                    submitBtn.innerHTML = originalHtml; 
+                    submitBtn.disabled = false; 
+                }
+            });
+        }
+
+        // ==========================================================================
+        // Subsystem: Announcements Module Upgrades (Rich Text)
+        // ==========================================================================
+
+        async function loadAnnouncements() {
+            try {
+                const { data, error } = await window.supabase.from('announcements').select('*').order('created_at', { ascending: false });
+                if (!error && data) {
+                    rawAnnouncementsCache = data;
+                    const tbody = document.getElementById("announcements-table-body");
+                    if (!tbody) {
+                        return;
+                    }
+                    
+                    tbody.innerHTML = '';
+                    
+                    if (data.length === 0) {
+                        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 3rem; color: var(--text-muted);">No active broadcast vectors.</td></tr>`;
+                        return;
+                    }
+
+                    const fragment = document.createDocumentFragment();
+                    data.forEach(a => {
+                        let imgHtml = `<div class="cell-placeholder" style="width:40px; height:40px;">None</div>`;
+                        
+                        if (a.image_url) {
+                            let url = a.image_url.startsWith('http') ? a.image_url : window.supabase.storage.from('product-assets').getPublicUrl(a.image_url).data.publicUrl;
+                            imgHtml = `<img src="${url}" class="cell-img" style="width:40px; height:40px;" alt="Attachment">`;
+                        }
+                        
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td style="text-align:center;">${imgHtml}</td>
+                            <td style="max-width: 300px;">
+                                <div class="text-sm ql-editor" style="line-height:1.4; padding:0; min-height:auto;">${DOMPurify.sanitize(a.content)}</div>
+                            </td>
+                            <td style="max-width: 200px;">
+                                <div class="text-xs text-muted font-mono" style="background:var(--bg-surface-hover); padding:0.5rem; border-radius:var(--radius-sm);">
+                                    // ${sanitizeString(a.admin_comments || 'No internal remarks')}
+                                </div>
+                            </td>
+                            <td><span class="badge ${a.active ? 'badge-success' : 'badge-neutral'}">${a.active ? '<i class="fa-solid fa-tower-broadcast"></i> Live' : 'Staged'}</span></td>
+                            <td class="font-mono text-sm text-muted">${new Date(a.created_at).toLocaleDateString()}</td>
+                            <td style="text-align:right;">
+                                <button onclick="initBroadcastEdit('${String(a.id)}')" class="btn btn-outline btn-icon" title="Modify Vector"><i class="fa-solid fa-pen-to-square"></i></button>
+                                <button onclick="toggleBroadcastState('${String(a.id)}', ${a.active})" class="btn btn-outline btn-icon" title="Toggle Transmission" style="margin: 0 0.25rem;"><i class="fa-solid fa-power-off"></i></button>
+                                <button onclick="deleteBroadcastVector('${String(a.id)}')" class="btn btn-danger btn-icon" title="Purge Vector"><i class="fa-solid fa-trash-can"></i></button>
+                            </td>
+                        `;
+                        fragment.appendChild(row);
+                    });
+                    
+                    tbody.appendChild(fragment);
+                }
+            } catch (err) { 
+                console.error("Announcements Load Error:", err); 
+            }
+        }
+
+        window.initBroadcastEdit = function(id) {
+            const ann = rawAnnouncementsCache.find(a => String(a.id) === String(id));
+            if (ann) {
+                document.getElementById('announce-id').value = ann.id;
+                announceQuill.root.innerHTML = DOMPurify.sanitize(ann.content || '');
+                document.getElementById('announce-active').value = ann.active.toString();
+                document.getElementById('announce-comments').value = ann.admin_comments || '';
+                document.getElementById('announce-existing-image').value = ann.image_url || '';
+                
+                const submitBtn = document.getElementById('announce-submit-btn');
+                submitBtn.innerHTML = `<i class="fa-solid fa-wrench"></i> Update Broadcast`;
+                document.getElementById('announce-cancel-btn').classList.remove('hidden');
+                document.getElementById('announcements-view').scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+        };
+
+        window.resetAnnouncementForm = function() {
+            const form = document.getElementById('announcement-form');
+            if (form) {
+                form.reset();
+            }
+            
+            document.getElementById('announce-id').value = "";
+            document.getElementById('announce-existing-image').value = "";
+            announceQuill.root.innerHTML = "";
+            
+            document.getElementById('announce-submit-btn').innerHTML = `<i class="fa-solid fa-paper-plane"></i> Initialize Broadcast`;
+            document.getElementById('announce-cancel-btn').classList.add('hidden');
+        };
+
+        const annForm = document.getElementById('announcement-form');
+        if (annForm) {
+            annForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = document.getElementById('announce-submit-btn');
+                const originalHtml = btn.innerHTML;
+                
+                btn.disabled = true; 
+                btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Processing Signal...`;
+                
+                try {
+                    let assetUrl = document.getElementById('announce-existing-image').value || null;
+                    const fileInput = document.getElementById('announce-image');
+                    
+                    if (fileInput.files.length > 0) {
+                        const file = fileInput.files[0];
+                        const sanitized = file.name.replace(/[^a-z0-9.]/gi, '_');
+                        const fp = `announcements/bc-${Date.now()}-${sanitized}`;
+                        
+                        const { error: upErr } = await window.supabase.storage.from('product-assets').upload(fp, file);
+                        if (upErr) {
+                            throw upErr;
+                        }
+                        assetUrl = window.supabase.storage.from('product-assets').getPublicUrl(fp).data.publicUrl;
+                    }
+                    
+                    const rawHtml = announceQuill.root.innerHTML;
+                    if (!announceQuill.getText().trim()) {
+                        throw new Error("Payload content cannot be empty.");
+                    }
+
+                    const payload = {
+                        content: DOMPurify.sanitize(rawHtml),
+                        active: document.getElementById('announce-active').value === 'true',
+                        admin_comments: document.getElementById('announce-comments').value.trim() || null,
+                        image_url: assetUrl
+                    };
+
+                    const editId = document.getElementById('announce-id').value;
+                    if (editId) {
+                        const { error } = await window.supabase.from('announcements').update(payload).eq('id', editId);
+                        if (error) {
+                            throw error;
+                        }
+                        showToast("Broadcast vector updated.", "success");
+                    } else {
+                        const { error } = await window.supabase.from('announcements').insert([payload]);
+                        if (error) {
+                            throw error;
+                        }
+                        showToast("Broadcast initialized.", "success");
+                    }
+
+                    resetAnnouncementForm();
+                    await loadAnnouncements();
+                } catch (err) {
+                    console.error("Broadcast Fault:", err);
+                    showToast("Execution failed: " + err.message, "error");
+                } finally {
+                    btn.disabled = false;
+                    btn.innerHTML = originalHtml;
+                }
+            });
+        }
+
+        window.toggleBroadcastState = async (id, currentActiveState) => {
+            try {
+                const newStatus = !(currentActiveState === true || String(currentActiveState) === 'true');
+                const { error } = await window.supabase.from('announcements').update({ active: newStatus }).eq('id', id);
+                    
+                if (error) {
+                    throw error;
+                }
+
+                showToast(`Broadcast state mutated to: ${newStatus ? 'Live' : 'Staged'}`, "success");
+                await loadAnnouncements(); 
+            } catch(err) { 
+                console.error("Toggle Fault:", err); 
+                showToast("Failed to mutate broadcast state.", "error"); 
+            }
+        };
+
+        window.deleteBroadcastVector = async (id) => {
+            if (!confirm("Warning: Purging this broadcast vector. Proceed?")) {
+                return;
+            }
+            
+            try {
+                const { error } = await window.supabase.from('announcements').delete().eq('id', id);
+                if (error) {
+                    throw error;
+                }
+
+                showToast("Broadcast vector pruned.", "success");
+                await loadAnnouncements(); 
+            } catch(err) { 
+                console.error("Delete Fault:", err); 
+                showToast("Failed to purge broadcast vector.", "error"); 
+            }
+        };
+
+        // ==========================================================================
+        // Subsystem: Customer Orders Dashboard
+        // ==========================================================================
+
+        async function loadOrdersQueue() {
+            try {
+                const { data, error } = await window.supabase
+                    .from('orders')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                    
+                if (error) {
+                    throw error;
+                }
+                
+                rawOrdersCache = data || [];
+                renderOrdersTable();
+            } catch (err) {
+                console.error("Orders Load Error:", err);
+            }
+        }
+
+        window.renderOrdersTable = function() {
+            const tbody = document.getElementById("admin-orders-list");
+            if (!tbody) {
+                return;
+            }
+            
+            const query = document.getElementById("order-search")?.value.toLowerCase().trim() || "";
+            const dateFilter = document.getElementById("order-date-filter")?.value || "";
+            const statusFilter = document.getElementById("order-status-filter")?.value || "All";
+            
+            const filtered = rawOrdersCache.filter(o => {
+                const matchQuery = (o.customer_name || "").toLowerCase().includes(query) || 
+                                   (o.id || "").toLowerCase().includes(query) || 
+                                   (o.product_title || "").toLowerCase().includes(query);
+                                   
+                const matchStatus = statusFilter === "All" || o.status === statusFilter;
+                const matchDate = !dateFilter || new Date(o.created_at).toISOString().startsWith(dateFilter);
+                
+                return matchQuery && matchStatus && matchDate;
+            });
+            
+            tbody.innerHTML = "";
+            
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 3rem; color: var(--text-muted);">No orders match the current filters.</td></tr>`;
+                return;
+            }
+            
+            const fragment = document.createDocumentFragment();
+            filtered.forEach(o => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>
+                        <div style="font-weight:600;">${sanitizeString(o.customer_name)}</div>
+                        <div class="font-mono text-xs text-muted">${String(o.id).substring(0,8).toUpperCase()}</div>
+                    </td>
+                    <td>${sanitizeString(o.product_title)} (x${o.quantity || 1})</td>
+                    <td style="text-align:center;">-</td>
+                    <td>${sanitizeString(o.location || 'N/A')}</td>
+                    <td><span class="badge badge-neutral">${sanitizeString(o.status)}</span></td>
+                    <td class="font-mono text-xs text-muted">${new Date(o.created_at).toLocaleDateString()}</td>
+                    <td style="text-align:right;">
+                        <button class="btn btn-outline btn-icon" onclick="updateOrderStatus('${o.id}')" title="Update Pipeline Status"><i class="fa-solid fa-pen"></i></button>
+                        <button class="btn btn-danger btn-icon" onclick="deleteRecord('orders', '${o.id}')" title="Delete Transaction"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                `;
+                fragment.appendChild(tr);
+            });
+            
+            tbody.appendChild(fragment);
+        };
+
+        window.updateOrderStatus = async function(id) {
+            const newStatus = prompt("Enter new pipeline status (Pending, Processing, Shipped, Delivered, Cancelled):");
+            if (!newStatus) {
+                return;
+            }
+            
+            try {
+                const { error } = await window.supabase.from('orders').update({ status: newStatus }).eq('id', id);
+                if (error) {
+                    throw error;
+                }
+                
+                showToast("Order status successfully updated.", "success");
+                loadOrdersQueue();
+                loadAnalyticsDashboard();
+            } catch (err) {
+                console.error(err);
+                showToast("Status update failed.", "error");
+            }
+        };
+
+        window.deleteRecord = async function(table, id) {
+            if (!confirm("Are you certain you want to purge this record?")) {
+                return;
+            }
+            
+            try {
+                const { error } = await window.supabase.from(table).delete().eq('id', id);
+                if (error) {
+                    throw error;
+                }
+                
+                showToast("Record successfully purged.", "success");
+                
+                if (table === 'orders') {
+                    loadOrdersQueue();
+                } else if (table === 'reviews' || table === 'inquiries') {
+                    loadCustomerComments();
+                } else if (table === 'profiles') {
+                    loadUsers();
+                } else if (table === 'payment_gateways') {
+                    loadPayments();
+                }
+            } catch (err) {
+                console.error(err);
+                showToast("Delete operation failed.", "error");
+            }
+        };
+
+        // ==========================================================================
+        // Subsystem: Feedback & Tickets Manager
+        // ==========================================================================
+
+        async function loadCustomerComments() {
+            try {
+                const [ { data: reviews }, { data: tickets } ] = await Promise.all([
+                    window.supabase.from('reviews').select('*').order('created_at', { ascending: false }),
+                    window.supabase.from('inquiries').select('*').order('created_at', { ascending: false })
+                ]);
+                
+                const tbody = document.getElementById("comments-table-body");
+                if (!tbody) {
+                    return;
+                }
+                
+                tbody.innerHTML = "";
+                const combined = [];
+                
+                if (reviews) {
+                    reviews.forEach(r => combined.push({...r, type: 'Review'}));
+                }
+                if (tickets) {
+                    tickets.forEach(t => combined.push({...t, type: 'Ticket'}));
+                }
+                
+                combined.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                
+                if (combined.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding: 3rem; color: var(--text-muted);">No feedback records found.</td></tr>`;
+                    return;
+                }
+                
+                combined.forEach(item => {
+                    const tr = document.createElement("tr");
+                    const name = item.user_name || item.name || "Unknown Identity";
+                    const content = item.comment || item.message || item.inquiry || "";
+                    const table = item.type === 'Review' ? 'reviews' : 'inquiries';
+                    
+                    tr.innerHTML = `
+                        <td><span class="badge ${item.type === 'Review' ? 'badge-info' : 'badge-warning'}">${item.type}</span></td>
+                        <td>${sanitizeString(name)}</td>
+                        <td><div style="max-width:300px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${sanitizeString(content)}">${sanitizeString(content)}</div></td>
+                        <td style="text-align:right;">
+                            <button class="btn btn-danger btn-icon" onclick="deleteRecord('${table}', '${item.id}')" title="Purge Record"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (err) {
+                console.error("Comments Load Error:", err);
+            }
+        }
+
+        // ==========================================================================
+        // Subsystem: Registered Users Controller
+        // ==========================================================================
+
+        async function loadUsers() {
+            try {
+                const { data, error } = await window.supabase.from('profiles').select('*').order('created_at', { ascending: false });
+                if (error) {
+                    throw error;
+                }
+                
+                rawUsersCache = data || [];
+                window.renderUsersTable();
+            } catch (err) {
+                console.error("Users Load Error:", err);
+            }
+        }
+
+        window.renderUsersTable = function() {
+            const tbody = document.getElementById("users-table-body");
+            if (!tbody) {
+                return;
+            }
+            
+            const query = document.getElementById("user-search")?.value.toLowerCase().trim() || "";
+            
+            const filtered = rawUsersCache.filter(u => {
+                const searchStr = `${u.full_name || u.name} ${u.email} ${u.phone_number}`.toLowerCase();
+                return searchStr.includes(query);
+            });
+            
+            tbody.innerHTML = "";
+            
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 3rem; color: var(--text-muted);">No users match the specific matrix.</td></tr>`;
+                return;
+            }
+            
+            filtered.forEach(u => {
+                const tr = document.createElement("tr");
+                let avatarHtml = `<div class="cell-placeholder" style="width:36px; height:36px; border-radius:50%;"><i class="fa-solid fa-user"></i></div>`;
+                
+                if (u.avatar_url) {
+                    avatarHtml = `<img src="${u.avatar_url}" class="cell-img" style="width:36px; height:36px; border-radius:50%;">`;
+                }
+                
+                tr.innerHTML = `
+                    <td style="text-align:center;">${avatarHtml}</td>
+                    <td>
+                        <div style="font-weight:600;">${sanitizeString(u.full_name || u.name || "N/A")}</div>
+                        <div class="font-mono text-xs text-muted">${String(u.id).substring(0,8).toUpperCase()}</div>
+                    </td>
+                    <td>
+                        <div>${sanitizeString(u.email || "N/A")}</div>
+                        <div class="text-xs text-muted">${sanitizeString(u.phone_number || "")}</div>
+                    </td>
+                    <td>${sanitizeString(u.address || u.location || "N/A")}</td>
+                    <td class="font-mono text-xs text-muted">${new Date(u.created_at).toLocaleDateString()}</td>
+                    <td style="text-align:right;">
+                        <button class="btn btn-outline btn-icon" onclick="openUserFormModal('${u.id}')" title="Modify Identity"><i class="fa-solid fa-pen"></i></button>
+                        <button class="btn btn-danger btn-icon" onclick="deleteRecord('profiles', '${u.id}')" title="Terminate Profile"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        };
+
+        window.openUserFormModal = function(id = null) {
+            const modal = document.getElementById('user-form-modal');
+            const form = document.getElementById('user-management-form');
+            form.reset();
+            
+            document.getElementById('user-id').value = "";
+            document.getElementById('user-form-title').innerText = "Add New Profile";
+            
+            if (id) {
+                const user = rawUsersCache.find(u => String(u.id) === String(id));
+                if (user) {
+                    document.getElementById('user-id').value = user.id;
+                    document.getElementById('user-name').value = user.full_name || user.name || "";
+                    document.getElementById('user-email').value = user.email || "";
+                    document.getElementById('user-phone').value = user.phone_number || "";
+                    document.getElementById('user-status').value = user.status || "Active";
+                    document.getElementById('user-location').value = user.location || user.address || "";
+                    document.getElementById('user-dest').value = user.default_destination || "";
+                    document.getElementById('user-form-title').innerText = "Edit Profile";
+                }
+            }
+            modal.classList.add('active');
+        };
+
+        window.closeUserFormModal = function() {
             document.getElementById('user-form-modal').classList.remove('active');
+        };
+
+        async function saveUserProfile() {
+            try {
+                const id = document.getElementById('user-id').value;
+                const payload = {
+                    full_name: document.getElementById('user-name').value,
+                    email: document.getElementById('user-email').value,
+                    phone_number: document.getElementById('user-phone').value,
+                    status: document.getElementById('user-status').value,
+                    address: document.getElementById('user-location').value,
+                    default_destination: document.getElementById('user-dest').value
+                };
+                
+                if (id) {
+                    const { error } = await window.supabase.from('profiles').update(payload).eq('id', id);
+                    if (error) {
+                        throw error;
+                    }
+                    showToast("Profile successfully updated.", "success");
+                } else {
+                    const { error } = await window.supabase.from('profiles').insert([payload]);
+                    if (error) {
+                        throw error;
+                    }
+                    showToast("Profile identity created.", "success");
+                }
+                
+                closeUserFormModal();
+                loadUsers();
+                loadAnalyticsDashboard();
+            } catch (err) {
+                console.error("User Save Error:", err);
+                showToast("Failed to save profile vector.", "error");
+            }
         }
-        
-        function openPaymentFormModal() {
-            document.getElementById('payment-form-modal').classList.add('active');
+
+        // ==========================================================================
+        // Subsystem: Payment Gateways Configurator
+        // ==========================================================================
+
+        async function loadPayments() {
+            try {
+                const { data, error } = await window.supabase.from('payment_gateways').select('*').order('created_at', { ascending: true });
+                
+                if (error && error.code !== '42P01') {
+                    throw error;
+                }
+                
+                rawPaymentsCache = data || [];
+                const tbody = document.getElementById("payments-table-body");
+                
+                if (!tbody) {
+                    return;
+                }
+                
+                tbody.innerHTML = "";
+                
+                if (rawPaymentsCache.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 3rem; color: var(--text-muted);">No payment gateways established.</td></tr>`;
+                    return;
+                }
+                
+                rawPaymentsCache.forEach(p => {
+                    const tr = document.createElement("tr");
+                    tr.innerHTML = `
+                        <td><span class="badge badge-neutral">${sanitizeString(p.type)}</span></td>
+                        <td style="font-weight:600;">${sanitizeString(p.name)}</td>
+                        <td>${sanitizeString(p.account_name)}</td>
+                        <td class="font-mono text-sm">${sanitizeString(p.account_number)}</td>
+                        <td><span class="badge ${p.active ? 'badge-success' : 'badge-danger'}">${p.active ? 'Visible' : 'Hidden'}</span></td>
+                        <td style="text-align:right;">
+                            <button class="btn btn-outline btn-icon" onclick="openPaymentFormModal('${p.id}')" title="Configure"><i class="fa-solid fa-pen"></i></button>
+                            <button class="btn btn-danger btn-icon" onclick="deleteRecord('payment_gateways', '${p.id}')" title="Purge Gateway"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (err) {
+                console.error("Payments Load Error:", err);
+            }
         }
-        
-        function closePaymentFormModal() {
+
+        window.openPaymentFormModal = function(id = null) {
+            const modal = document.getElementById('payment-form-modal');
+            const form = document.getElementById('payment-management-form');
+            form.reset();
+            
+            document.getElementById('payment-id').value = "";
+            document.getElementById('payment-form-title').innerText = "Configure Gateway";
+            
+            if (id) {
+                const p = rawPaymentsCache.find(x => String(x.id) === String(id));
+                if (p) {
+                    document.getElementById('payment-id').value = p.id;
+                    document.getElementById('payment-type').value = p.type || "Mobile Money";
+                    document.getElementById('payment-name').value = p.name || "";
+                    document.getElementById('payment-account-name').value = p.account_name || "";
+                    document.getElementById('payment-account-number').value = p.account_number || "";
+                    document.getElementById('payment-status').value = p.active ? "true" : "false";
+                    document.getElementById('payment-form-title').innerText = "Edit Gateway";
+                }
+            }
+            
+            modal.classList.add('active');
+        };
+
+        window.closePaymentFormModal = function() {
             document.getElementById('payment-form-modal').classList.remove('active');
+        };
+
+        async function savePaymentGateway() {
+            try {
+                const id = document.getElementById('payment-id').value;
+                const payload = {
+                    type: document.getElementById('payment-type').value,
+                    name: document.getElementById('payment-name').value,
+                    account_name: document.getElementById('payment-account-name').value,
+                    account_number: document.getElementById('payment-account-number').value,
+                    active: document.getElementById('payment-status').value === "true"
+                };
+                
+                if (id) {
+                    const { error } = await window.supabase.from('payment_gateways').update(payload).eq('id', id);
+                    if (error) {
+                        throw error;
+                    }
+                    showToast("Gateway configuration updated.", "success");
+                } else {
+                    const { error } = await window.supabase.from('payment_gateways').insert([payload]);
+                    if (error) {
+                        throw error;
+                    }
+                    showToast("New gateway deployed.", "success");
+                }
+                
+                closePaymentFormModal();
+                loadPayments();
+            } catch (err) {
+                console.error("Payment Save Error:", err);
+                showToast("Failed to compile gateway settings.", "error");
+            }
         }
-        
-        function renderUsersTable() {}
-        function loadInventoryControlMatrix() {}
-        function loadOrderProjects() {}
-        function loadOrdersQueue() {}
-        function loadCustomerComments() {}
-        function loadUsers() {}
-        function loadAnnouncements() {}
-        function loadPayments() {}
-        function loadContactSettings() {}
-        function saveContactSettings() {}
-        function renderOrdersTable() {}
-        function setupInventorySearchMatrix() {}
+
+        // ==========================================================================
+        // Subsystem: Platform Contact Vectors Settings
+        // ==========================================================================
+
+        async function loadContactSettings() {
+            try {
+                const { data, error } = await window.supabase.from('site_settings').select('*').limit(1);
+                
+                if (error && error.code !== '42P01') {
+                    throw error;
+                }
+                
+                if (data && data.length > 0) {
+                    const settings = data[0];
+                    document.getElementById('contact-whatsapp').value = settings.whatsapp || "";
+                    document.getElementById('contact-facebook').value = settings.facebook || "";
+                    document.getElementById('contact-instagram').value = settings.instagram || "";
+                    document.getElementById('contact-phone').value = settings.phone || "";
+                    document.getElementById('contact-email').value = settings.email || "";
+                    document.getElementById('contact-address').value = settings.address || "";
+                }
+            } catch (err) {
+                console.error("Settings Load Error:", err);
+            }
+        }
+
+        async function saveContactSettings() {
+            try {
+                const payload = {
+                    whatsapp: document.getElementById('contact-whatsapp').value,
+                    facebook: document.getElementById('contact-facebook').value,
+                    instagram: document.getElementById('contact-instagram').value,
+                    phone: document.getElementById('contact-phone').value,
+                    email: document.getElementById('contact-email').value,
+                    address: document.getElementById('contact-address').value,
+                    id: 1
+                };
+                
+                const { error } = await window.supabase.from('site_settings').upsert([payload]);
+                
+                if (error) {
+                    throw error;
+                }
+                
+                showToast("Contact telemetry correctly synchronized.", "success");
+            } catch (err) {
+                console.error("Settings Save Error:", err);
+                showToast("Failed to compile and sync settings.", "error");
+            }
+        }
     </script>
 </body>
 </html>
