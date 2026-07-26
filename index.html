@@ -1567,7 +1567,7 @@
 
                 <div class="form-group" style="margin-top: 1rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">
                     <label class="form-label"><i class="fa-solid fa-money-bill-transfer text-success"></i> Select Payment Gateway</label>
-                    <select id="checkout-payment-method" class="form-control" required onchange="updatePaymentInstructions()">
+                    <select id="checkout-payment_gateways" class="form-control" required onchange="updatePaymentInstructions()">
                         <option value="" disabled selected>Loading gateways...</option>
                         </select>
                 </div>
@@ -1901,7 +1901,7 @@
         // ==========================================
         async function fetchPaymentMethods() {
             try {
-                const { data, error } = await window.supabase.from('payment_methods').select('*').eq('active', true);
+                const { data, error } = await window.supabase.from('payment_gateways').select('*').eq('active', true);
                 if (!error && data) {
                     localPaymentMethods = data;
                 }
@@ -3037,7 +3037,7 @@
             document.getElementById('cust-qty').value = 1;
             document.getElementById('cust-notes').value = '';
 
-            const paymentSelect = document.getElementById('checkout-payment-method');
+            const paymentSelect = document.getElementById('checkout-payment_gateways');
             paymentSelect.innerHTML = '<option value="" disabled selected>Select Gateway...</option>';
             localPaymentMethods.forEach(p => {
                 paymentSelect.innerHTML += `<option value="${p.id}">${p.name} (${p.provider_type})</option>`;
@@ -3056,7 +3056,7 @@
         }
 
         window.updatePaymentInstructions = () => {
-            const selId = document.getElementById('checkout-payment-method').value;
+            const selId = document.getElementById('checkout-payment_gateways').value;
             const method = localPaymentMethods.find(m => String(m.id) === selId);
             const instBox = document.getElementById('payment-instructions');
             
@@ -3086,7 +3086,7 @@
                 try {
                     const productId = document.getElementById("form-product-id").value;
                     const requestedQty = parseInt(document.getElementById("cust-qty").value, 10);
-                    const paymentId = document.getElementById("checkout-payment-method").value;
+                    const paymentId = document.getElementById("checkout-payment_gateways").value;
                     
                     if(!paymentId) throw new Error("A secure payment gateway must be selected.");
 
