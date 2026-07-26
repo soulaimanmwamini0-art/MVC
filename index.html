@@ -811,7 +811,7 @@
             align-items: center;
         }
 
-        #chat-messages {
+        #support_messages {
             flex: 1;
             padding: 1rem;
             overflow-y: auto;
@@ -1655,7 +1655,7 @@
             <button onclick="toggleChatWidget()" style="background:none; border:none; color:white; cursor:pointer; font-size: 1.2rem; transition: transform 0.2s;"><i class="fa-solid fa-angle-down"></i></button>
         </div>
         
-        <div id="chat-messages">
+        <div id="support_messages">
             </div>
         
         <form id="chat-input-area" onsubmit="sendChatMessage(event)">
@@ -2654,11 +2654,11 @@
         }
 
         async function loadChatHistory() {
-            const box = document.getElementById('chat-messages');
+            const box = document.getElementById('support_messages');
             box.innerHTML = '<div class="chat-empty-state"><i class="fa-solid fa-spinner fa-spin text-accent" style="font-size:2rem;"></i><p>Synchronizing secure channel...</p></div>';
             
             try {
-                const { data, error } = await window.supabase.from('chat_messages')
+                const { data, error } = await window.supabase.from('support_messages')
                     .select('*')
                     .eq('user_id', currentUser.id)
                     .order('created_at', { ascending: true });
@@ -2672,7 +2672,7 @@
         }
 
         function renderChatMessages(messages) {
-            const box = document.getElementById('chat-messages');
+            const box = document.getElementById('support_messages');
             box.innerHTML = ''; 
             
             if (!messages || messages.length === 0) {
@@ -2720,7 +2720,7 @@
             const tempId = 'temp-' + Date.now();
             const timeStr = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
             
-            const box = document.getElementById('chat-messages');
+            const box = document.getElementById('support_messages');
             if(box.querySelector('.chat-empty-state')) box.innerHTML = ''; 
             
             box.innerHTML += `
@@ -2733,7 +2733,7 @@
             box.scrollTo({ top: box.scrollHeight, behavior: 'smooth' });
 
             try {
-                const { data, error } = await window.supabase.from('chat_messages').insert([{
+                const { data, error } = await window.supabase.from('support_messages').insert([{
                     user_id: currentUser.id, sender: currentUser.email, message: DOMPurify.sanitize(rawHtml)
                 }]).select();
                 if(error) throw error;
@@ -2761,7 +2761,7 @@
             if(!confirm("Warning: Terminal purge of transmission log. Proceed?")) return;
             
             try {
-                const { error } = await window.supabase.from('chat_messages')
+                const { error } = await window.supabase.from('support_messages')
                     .delete()
                     .eq('id', msgId)
                     .eq('user_id', currentUser.id)
@@ -2772,7 +2772,7 @@
                 const wrap = document.getElementById(`msg-wrap-${msgId}`);
                 if(wrap) wrap.remove();
                 
-                const box = document.getElementById('chat-messages');
+                const box = document.getElementById('support_messages');
                 if(box.children.length === 0) {
                      box.innerHTML = `
                     <div class="chat-empty-state">
@@ -2789,15 +2789,15 @@
         }
 
         function subscribeToChat() {
-            window.supabase.channel('public:chat_messages')
-                .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_messages', filter: `user_id=eq.${currentUser.id}` }, payload => {
+            window.supabase.channel('public:support_messages')
+                .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'support_messages', filter: `user_id=eq.${currentUser.id}` }, payload => {
                     const msg = payload.new;
                     const isSelf = msg.sender === currentUser.email || msg.sender === 'user';
                     
                     // Check if optimistic render is already tracking this message by ID update
                     if (document.getElementById(`msg-wrap-${msg.id}`)) return;
 
-                    const box = document.getElementById('chat-messages');
+                    const box = document.getElementById('support_messages');
                     if(box.querySelector('.chat-empty-state')) box.innerHTML = '';
                     
                     const timeStr = new Date(msg.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
@@ -2826,7 +2826,7 @@
                         setTimeout(() => { icon.classList.remove('fa-bell', 'fa-shake'); icon.classList.add('fa-headset'); }, 3000);
                     }
                 })
-                .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'chat_messages' }, payload => {
+                .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'support_messages' }, payload => {
                     const wrap = document.getElementById(`msg-wrap-${payload.old.id}`);
                     if(wrap) wrap.remove();
                 })
