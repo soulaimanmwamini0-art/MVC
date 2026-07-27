@@ -3,191 +3,535 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Control Center | Mwamini Ecosystem</title>
-
+    <title>Mwamini Admin Operations Terminal</title>
+    
     <link rel="stylesheet" href="style.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap-grid.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         :root {
-            --sidebar-width: 250px;
-            --border-color: #e2e8f0;
-            --bg-surface: #ffffff;
-            --bg-primary: #f8fafc;
-            --text-main: #0f172a;
+            --sidebar-width: 260px;
             --accent: #1e3a8a;
-            --accent-hover: #1d4ed8;
+            --accent-hover: #1e40af;
+            --bg-primary: #f8fafc;
+            --bg-surface: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
             --danger: #ef4444;
             --success: #10b981;
+            --warning: #f59e0b;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
-        body { margin:0; font-family:system-ui, -apple-system, sans-serif; background:var(--bg-primary); color:var(--text-main); display:flex; height:100vh; overflow:hidden; }
-        
-        #admin-sidebar { width: var(--sidebar-width); background: var(--bg-surface); border-right: 1px solid var(--border-color); display:flex; flex-direction:column; flex-shrink:0; }
-        .sidebar-brand { padding: 1.25rem; font-weight:800; font-size:1.1rem; color:var(--accent); border-bottom:1px solid var(--border-color); display:flex; align-items:center; gap:0.5rem; }
-        .sidebar-menu { list-style:none; padding:1rem 0; margin:0; flex:1; overflow-y:auto; }
-        .sidebar-menu li a { display:flex; align-items:center; gap:0.75rem; padding:0.75rem 1.25rem; color:var(--text-main); text-decoration:none; font-weight:600; font-size:0.875rem; transition:background 0.2s; }
-        .sidebar-menu li a:hover, .sidebar-menu li a.active { background: var(--bg-primary); color: var(--accent); }
+        [data-theme="dark"] {
+            --bg-primary: #0f172a;
+            --bg-surface: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --accent: #3b82f6;
+        }
 
-        #admin-main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
-        header.admin-header { height:60px; background:var(--bg-surface); border-bottom:1px solid var(--border-color); display:flex; align-items:center; justify-content:space-between; padding:0 1.5rem; }
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+        }
 
-        .admin-content { flex:1; padding:1.5rem; overflow-y:auto; }
-        .admin-tab-view { display:none; }
-        .admin-tab-view.active { display:block; }
+        .admin-sidebar {
+            width: var(--sidebar-width);
+            background: var(--bg-surface);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0; bottom: 0; left: 0;
+            z-index: 100;
+        }
 
-        .kpi-card { background:var(--bg-surface); border:1px solid var(--border-color); border-radius:8px; padding:1.25rem; }
-        .kpi-title { font-size:0.8rem; text-transform:uppercase; color:var(--text-muted); font-weight:700; }
-        .kpi-value { font-size:1.75rem; font-weight:800; color:var(--accent); margin-top:0.25rem; }
+        .admin-brand {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 800;
+            color: var(--accent);
+        }
 
-        .data-table { width:100%; border-collapse:collapse; background:var(--bg-surface); border:1px solid var(--border-color); border-radius:8px; overflow:hidden; font-size:0.875rem; }
-        .data-table th, .data-table td { padding:0.75rem 1rem; text-align:left; border-bottom:1px solid var(--border-color); }
-        .data-table th { background:var(--bg-primary); font-weight:700; }
+        .nav-menu {
+            list-style: none;
+            padding: 1rem 0;
+            margin: 0;
+            flex: 1;
+            overflow-y: auto;
+        }
 
-        .modal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:none; align-items:center; justify-content:center; z-index:1000; }
-        .modal.active { display:flex; }
-        .modal-content { background:var(--bg-surface); padding:1.5rem; border-radius:8px; width:100%; max-width:500px; }
-        .form-control { width:100%; padding:0.5rem 0.75rem; border:1px solid var(--border-color); border-radius:6px; margin-bottom:0.75rem; }
-        .btn { padding:0.5rem 1rem; border-radius:6px; border:none; cursor:pointer; font-weight:600; display:inline-flex; align-items:center; gap:0.5rem; }
-        .btn-primary { background:var(--accent); color:white; }
-        .btn-danger { background:var(--danger); color:white; }
+        .nav-item {
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: var(--accent-hover);
+            color: white;
+        }
+
+        .admin-main {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .admin-topbar {
+            background: var(--bg-surface);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 90;
+        }
+
+        .admin-content {
+            padding: 2rem;
+            flex: 1;
+        }
+
+        .tab-pane { display: none; }
+        .tab-pane.active { display: block; }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg-surface);
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-md);
+        }
+
+        .stat-val {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--accent);
+            margin-top: 0.5rem;
+        }
+
+        .data-table-container {
+            background: var(--bg-surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            overflow-x: auto;
+            box-shadow: var(--shadow-md);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.875rem;
+        }
+
+        .data-table th, .data-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .data-table th {
+            background: var(--bg-primary);
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-md);
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.875rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary { background: var(--accent); color: white; }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-success { background: var(--success); color: white; }
+        .btn-outline { background: transparent; border: 1px solid var(--border-color); color: var(--text-main); }
+
+        .modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s;
+            z-index: 1000; padding: 1rem;
+        }
+
+        .modal.active { opacity: 1; pointer-events: auto; }
+
+        .modal-content {
+            background: var(--bg-surface);
+            padding: 2rem;
+            border-radius: var(--radius-lg);
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .toast-container {
+            position: fixed; top: 20px; right: 20px; z-index: 9999;
+            display: flex; flex-direction: column; gap: 10px;
+        }
+
+        .toast-ui {
+            padding: 1rem 1.5rem;
+            background: var(--bg-surface);
+            border-left: 4px solid var(--accent);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-md);
+        }
     </style>
 </head>
 <body>
-    <script>
-        // Clearance Protocol Guard
-        if (sessionStorage.getItem("admin_matrix_clearance") !== "authorized") {
-            window.location.replace("login.html");
-        }
-    </script>
+    <div id="toast-container" class="toast-container"></div>
 
-    <aside id="admin-sidebar">
-        <div class="sidebar-brand"><i class="fa-solid fa-shield-halved"></i> Admin Matrix</div>
-        <ul class="sidebar-menu">
-            <li><a href="#" onclick="switchTab('dashboard')" class="active" id="nav-dashboard"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
-            <li><a href="#" onclick="switchTab('products')" id="nav-products"><i class="fa-solid fa-box"></i> Products Catalog</a></li>
-            <li><a href="#" onclick="switchTab('equipment')" id="nav-equipment"><i class="fa-solid fa-tractor"></i> Machinery</a></li>
-            <li><a href="#" onclick="switchTab('fabrication')" id="nav-fabrication"><i class="fa-solid fa-gears"></i> Fabrication</a></li>
-            <li><a href="#" onclick="switchTab('requests')" id="nav-requests"><i class="fa-solid fa-clipboard-list"></i> User Requests</a></li>
-            <li><a href="#" onclick="switchTab('announcements')" id="nav-announcements"><i class="fa-solid fa-bullhorn"></i> Broadcasts</a></li>
-            <li><a href="#" onclick="switchTab('orders')" id="nav-orders"><i class="fa-solid fa-shopping-cart"></i> Orders & Sales</a></li>
+    <aside class="admin-sidebar">
+        <div class="admin-brand">
+            <i class="fa-solid fa-shield-halved fa-lg"></i> Mwamini Admin
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item active" onclick="switchTab('overview')"><i class="fa-solid fa-chart-line"></i> Overview</li>
+            <li class="nav-item" onclick="switchTab('products')"><i class="fa-solid fa-box"></i> Products Catalog</li>
+            <li class="nav-item" onclick="switchTab('orders')"><i class="fa-solid fa-cart-shopping"></i> Orders Pipeline</li>
+            <li class="nav-item" onclick="switchTab('announcements')"><i class="fa-solid fa-bullhorn"></i> Broadcasts</li>
+            <li class="nav-item" onclick="switchTab('stories')"><i class="fa-solid fa-newspaper"></i> Platform Stories</li>
+            <li class="nav-item" onclick="switchTab('users')"><i class="fa-solid fa-users"></i> Users Matrix</li>
+            <li class="nav-item" onclick="switchTab('gateways')"><i class="fa-solid fa-credit-card"></i> Payment Gateways</li>
+            <li class="nav-item" onclick="switchTab('settings')"><i class="fa-solid fa-gear"></i> Contact Settings</li>
         </ul>
+        <div style="padding: 1.5rem; border-top: 1px solid var(--border-color);">
+            <button class="btn btn-outline" style="width: 100%;" onclick="window.location.href='index.html'">
+                <i class="fa-solid fa-arrow-left"></i> Main Portal
+            </button>
+        </div>
     </aside>
 
-    <main id="admin-main">
-        <header class="admin-header">
-            <span style="font-weight:700;">Mwamini Operational Terminal</span>
-            <div style="display:flex; gap:1rem; align-items:center;">
-                <span id="admin-user-display" style="font-size:0.85rem; font-weight:600;">admin@mwamini.com</span>
-                <button onclick="terminateAdminSession()" class="btn btn-danger" style="padding:0.35rem 0.75rem; font-size:0.8rem;"><i class="fa-solid fa-power-off"></i> Logout</button>
+    <main class="admin-main">
+        <header class="admin-topbar">
+            <h2 id="current-tab-title" style="margin:0;">Overview Dashboard</h2>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <button id="theme-toggle" class="btn btn-outline" style="border-radius: 50%; width: 40px; height: 40px; padding:0;">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <span id="admin-user-display" style="font-weight: 600;">Admin User</span>
+                <button class="btn btn-danger" onclick="logoutAdmin()"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
             </div>
         </header>
 
         <div class="admin-content">
-            <!-- Dashboard View -->
-            <section id="tab-dashboard" class="admin-tab-view active">
-                <div class="row g-3">
-                    <div class="col-md-3"><div class="kpi-card"><div class="kpi-title">Total Products</div><div class="kpi-value" id="kpi-products">0</div></div></div>
-                    <div class="col-md-3"><div class="kpi-card"><div class="kpi-title">Pending Orders</div><div class="kpi-value" id="kpi-orders">0</div></div></div>
-                    <div class="col-md-3"><div class="kpi-card"><div class="kpi-title">User Requests</div><div class="kpi-value" id="kpi-requests">0</div></div></div>
-                    <div class="col-md-3"><div class="kpi-card"><div class="kpi-title">Machinery Units</div><div class="kpi-value" id="kpi-equipment">0</div></div></div>
-                </div>
-
-                <div class="row g-3 style-gap" style="margin-top:1.5rem;">
-                    <div class="col-md-8">
-                        <div class="kpi-card">
-                            <h4 style="margin-bottom:1rem;">Activity Telemetry</h4>
-                            <canvas id="analyticsChart" height="120"></canvas>
-                        </div>
+            <!-- TAB 1: OVERVIEW -->
+            <div id="tab-overview" class="tab-pane active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span style="color:var(--text-muted); font-size:0.875rem;">Total Orders</span>
+                        <div class="stat-val" id="stat-orders-count">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <span style="color:var(--text-muted); font-size:0.875rem;">Active Products</span>
+                        <div class="stat-val" id="stat-products-count">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <span style="color:var(--text-muted); font-size:0.875rem;">Registered Users</span>
+                        <div class="stat-val" id="stat-users-count">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <span style="color:var(--text-muted); font-size:0.875rem;">Total Inquiries</span>
+                        <div class="stat-val" id="stat-inquiries-count">0</div>
                     </div>
                 </div>
-            </section>
 
-            <!-- Products Management View -->
-            <section id="tab-products" class="admin-tab-view">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-                    <h3>Products Inventory</h3>
-                    <button onclick="openProductModal()" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Add Product</button>
+                <h3>Recent Orders Summary</h3>
+                <div class="data-table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Ref ID</th>
+                                <th>Customer</th>
+                                <th>Product</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recent-orders-tbody">
+                        </tbody>
+                    </table>
                 </div>
-                <table class="data-table">
-                    <thead><tr><th>Title</th><th>Category</th><th>Price ($)</th><th>Stock</th><th>Actions</th></tr></thead>
-                    <tbody id="tbl-products"></tbody>
-                </table>
-            </section>
+            </div>
 
-            <!-- Equipment Management View -->
-            <section id="tab-equipment" class="admin-tab-view">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-                    <h3>Machinery & Equipment</h3>
-                    <button onclick="openEquipmentModal()" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Add Machine</button>
+            <!-- TAB 2: PRODUCTS -->
+            <div id="tab-products" class="tab-pane">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h3>Catalog Management</h3>
+                    <button class="btn btn-primary" onclick="openProductModal()"><i class="fa-solid fa-plus"></i> Add Product</button>
                 </div>
-                <table class="data-table">
-                    <thead><tr><th>Name</th><th>Rate/Day ($)</th><th>Availability</th><th>Actions</th></tr></thead>
-                    <tbody id="tbl-equipment"></tbody>
-                </table>
-            </section>
-
-            <!-- Fabrication Management View -->
-            <section id="tab-fabrication" class="admin-tab-view">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-                    <h3>Fabrication Projects</h3>
-                    <button onclick="openFabricationModal()" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Add Project</button>
+                <div class="data-table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th>Price (USD)</th>
+                                <th>Stock Qty</th>
+                                <th style="text-align: right;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-products-tbody"></tbody>
+                    </table>
                 </div>
-                <table class="data-table">
-                    <thead><tr><th>Project Title</th><th>Progress (%)</th><th>Description</th><th>Actions</th></tr></thead>
-                    <tbody id="tbl-fabrication"></tbody>
-                </table>
-            </section>
+            </div>
 
-            <!-- User Requests View -->
-            <section id="tab-requests" class="admin-tab-view">
-                <h3>Farmer & Client Requests</h3>
-                <table class="data-table" style="margin-top:1rem;">
-                    <thead><tr><th>Requester</th><th>Phone</th><th>Service</th><th>Location</th><th>Status</th></tr></thead>
-                    <tbody id="tbl-requests"></tbody>
-                </table>
-            </section>
+            <!-- TAB 3: ORDERS -->
+            <div id="tab-orders" class="tab-pane">
+                <h3>Order Fulfillment Operations</h3>
+                <div class="data-table-container" style="margin-top: 1.5rem;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Ref ID</th>
+                                <th>Customer</th>
+                                <th>Phone</th>
+                                <th>Destination</th>
+                                <th>Product</th>
+                                <th>Qty</th>
+                                <th>Status</th>
+                                <th style="text-align: right;">Operations</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-orders-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
 
-            <!-- Announcements View -->
-            <section id="tab-announcements" class="admin-tab-view">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+            <!-- TAB 4: ANNOUNCEMENTS -->
+            <div id="tab-announcements" class="tab-pane">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
                     <h3>Broadcast Announcements</h3>
-                    <button onclick="openAnnouncementModal()" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Create Broadcast</button>
+                    <button class="btn btn-primary" onclick="openAnnouncementModal()"><i class="fa-solid fa-plus"></i> New Broadcast</button>
                 </div>
-                <table class="data-table">
-                    <thead><tr><th>Title</th><th>Content</th><th>Actions</th></tr></thead>
-                    <tbody id="tbl-announcements"></tbody>
-                </table>
-            </section>
+                <div class="data-table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Content Preview</th>
+                                <th>Status</th>
+                                <th style="text-align: right;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-announcements-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
 
-            <!-- Orders View -->
-            <section id="tab-orders" class="admin-tab-view">
-                <h3>Sales & Orders</h3>
-                <table class="data-table" style="margin-top:1rem;">
-                    <thead><tr><th>Customer</th><th>Phone</th><th>Quantity</th><th>Destination</th><th>Status</th></tr></thead>
-                    <tbody id="tbl-orders"></tbody>
-                </table>
-            </section>
+            <!-- TAB 5: STORIES -->
+            <div id="tab-stories" class="tab-pane">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h3>Platform Stories & Innovations</h3>
+                    <button class="btn btn-primary" onclick="openStoryModal()"><i class="fa-solid fa-plus"></i> Publish Story</button>
+                </div>
+                <div class="data-table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Author</th>
+                                <th>Date</th>
+                                <th style="text-align: right;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-stories-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB 6: USERS -->
+            <div id="tab-users" class="tab-pane">
+                <h3>Registered User Directory</h3>
+                <div class="data-table-container" style="margin-top: 1.5rem;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Phone</th>
+                                <th>Location</th>
+                                <th>Role</th>
+                                <th>Account Status</th>
+                                <th style="text-align: right;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-users-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB 7: GATEWAYS -->
+            <div id="tab-gateways" class="tab-pane">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h3>Payment Gateways</h3>
+                    <button class="btn btn-primary" onclick="openGatewayModal()"><i class="fa-solid fa-plus"></i> Add Gateway</button>
+                </div>
+                <div class="data-table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Gateway Name</th>
+                                <th>Type</th>
+                                <th>Account Details</th>
+                                <th>Status</th>
+                                <th style="text-align: right;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-gateways-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB 8: SETTINGS -->
+            <div id="tab-settings" class="tab-pane">
+                <h3>Platform Contact Settings</h3>
+                <form id="admin-settings-form" style="max-width: 600px; margin-top: 1.5rem; background: var(--bg-surface); padding: 2rem; border-radius: var(--radius-lg); border: 1px solid var(--border-color);">
+                    <div style="margin-bottom: 1rem;">
+                        <label style="display:block; margin-bottom:0.5rem; font-weight:600;">Address</label>
+                        <input type="text" id="set-address" class="form-control" style="width:100%; padding:0.75rem; border:1px solid var(--border-color); border-radius:var(--radius-md);" placeholder="Kigali, Rwanda">
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <label style="display:block; margin-bottom:0.5rem; font-weight:600;">Facebook URL</label>
+                        <input type="text" id="set-facebook" class="form-control" style="width:100%; padding:0.75rem; border:1px solid var(--border-color); border-radius:var(--radius-md);">
+                    </div>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label style="display:block; margin-bottom:0.5rem; font-weight:600;">Instagram URL</label>
+                        <input type="text" id="set-instagram" class="form-control" style="width:100%; padding:0.75rem; border:1px solid var(--border-color); border-radius:var(--radius-md);">
+                    </div>
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save"></i> Save Settings</button>
+                </form>
+            </div>
         </div>
     </main>
 
-    <!-- Modals -->
+    <!-- Product Modal -->
     <div class="modal" id="product-modal">
         <div class="modal-content">
-            <h4 id="product-modal-title">Add Product</h4>
-            <form id="product-form" onsubmit="saveProduct(event)">
+            <h3 id="product-modal-title">Add / Edit Product</h3>
+            <form id="product-form" style="display:flex; flex-direction:column; gap:1rem; margin-top:1rem;">
                 <input type="hidden" id="prod-id">
-                <label>Title</label><input type="text" id="prod-title" class="form-control" required>
-                <label>Category</label><input type="text" id="prod-category" class="form-control" required>
-                <label>Price ($)</label><input type="number" step="0.01" id="prod-price" class="form-control" required>
-                <label>Stock</label><input type="number" id="prod-stock" class="form-control" value="10">
-                <div style="display:flex; gap:0.5rem; margin-top:1rem;">
-                    <button type="submit" class="btn btn-primary" style="flex:1;">Save</button>
-                    <button type="button" onclick="closeModal('product-modal')" class="btn" style="background:#cbd5e1;">Cancel</button>
+                <input type="text" id="prod-title" placeholder="Product Title" required style="padding:0.75rem; border:1px solid var(--border-color); border-radius:var(--radius-md);">
+                <select id="prod-category" required style="padding:0.75rem; border:1px solid var(--border-color); border-radius:var(--radius-md);">
+                    <option value="Grains">Grains</option>
+                    <option value="Agriculture">Agriculture</option>
+                    <option value="Construction">Construction</option>
+                    <option value="Electronics">Electronics</option>
+                    <option value="Electrical">Electrical</option>
+                    <option value="Food Materials">Food Materials</option>
+                    <option value="Services">Services</option>
+                    <option value="Others">Others</option>
+                </select>
+                <input type="number" id="prod-price" step="0.01" placeholder="Price in USD" required style="padding:0.75rem; border:1px solid var(--border-color); border-radius:var(--radius-md);">
+                <input type="number" id="prod-quantity" placeholder="Stock Quantity" required style="padding:0.75rem; border:1px solid var(--border-color); border-radius:var(--radius-md);">
+                <div>
+                    <label style="display:block; margin-bottom:0.5rem;">Product Media</label>
+                    <input type="file" id="prod-file" accept="image/*,video/*">
+                </div>
+                <div>
+                    <label style="display:block; margin-bottom:0.5rem;">Description</label>
+                    <div id="prod-desc-editor" style="height:150px;"></div>
+                </div>
+                <div style="display:flex; gap:1rem; justify-content:flex-end;">
+                    <button type="button" class="btn btn-outline" onclick="closeProductModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Announcement Modal -->
+    <div class="modal" id="announcement-modal">
+        <div class="modal-content">
+            <h3>New Broadcast Announcement</h3>
+            <form id="announcement-form" style="display:flex; flex-direction:column; gap:1rem; margin-top:1rem;">
+                <input type="text" id="anc-title" placeholder="Announcement Title" required style="padding:0.75rem; border:1px solid var(--border-color); border-radius:var(--radius-md);">
+                <div>
+                    <label style="display:block; margin-bottom:0.5rem;">Content</label>
+                    <div id="anc-content-editor" style="height:150px;"></div>
+                </div>
+                <div style="display:flex; gap:1rem; justify-content:flex-end;">
+                    <button type="button" class="btn btn-outline" onclick="closeAnnouncementModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Broadcast</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Story Modal -->
+    <div class="modal" id="story-modal">
+        <div class="modal-content">
+            <h3>Publish Story</h3>
+            <form id="story-form" style="display:flex; flex-direction:column; gap:1rem; margin-top:1rem;">
+                <input type="text" id="story-title" placeholder="Story Title" required style="padding:0.75rem; border:1px solid var(--border-color); border-radius:var(--radius-md);">
+                <input type="text" id="story-author" placeholder="Author Name" style="padding:0.75rem; border:1px solid var(--border-color); border-radius:var(--radius-md);">
+                <div>
+                    <label style="display:block; margin-bottom:0.5rem;">Story Content</label>
+                    <div id="story-content-editor" style="height:150px;"></div>
+                </div>
+                <div style="display:flex; gap:1rem; justify-content:flex-end;">
+                    <button type="button" class="btn btn-outline" onclick="closeStoryModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Publish</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Gateway Modal -->
+    <div class="modal" id="gateway-modal">
+        <div class="modal-content">
+            <h3>Payment Gateway</h3>
+            <form id="gateway-form" style="display:flex; flex-direction:column; gap:1rem; margin-top:1rem;">
+                <input type="text" id="gw-name" placeholder="Gateway Name (e.g. Mobile Money)" required style="padding:0.75rem; border:1px solid var(--border-color); border-radius:var(--radius-md);">
+                <input type="text" id="gw-type" placeholder="Type (e.g. Momo / Bank / Crypto)" required style="padding:0.75rem; border:1px solid var(--border-color); border-radius:var(--radius-md);">
+                <input type="text" id="gw-details" placeholder="Account Details / Phone Number" style="padding:0.75rem; border:1px solid var(--border-color); border-radius:var(--radius-md);">
+                <textarea id="gw-instructions" placeholder="Payment Instructions for customer" style="padding:0.75rem; border:1px solid var(--border-color); border-radius:var(--radius-md); height:80px;"></textarea>
+                <div style="display:flex; gap:1rem; justify-content:flex-end;">
+                    <button type="button" class="btn btn-outline" onclick="closeGatewayModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Gateway</button>
                 </div>
             </form>
         </div>
@@ -195,127 +539,377 @@
 
     <script src="supabase-config.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            initChart();
-            loadAdminData();
-        });
-
-        function switchTab(tabId) {
-            document.querySelectorAll('.admin-tab-view').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.sidebar-menu a').forEach(el => el.classList.remove('active'));
-            document.getElementById(`tab-${tabId}`).classList.add('active');
-            document.getElementById(`nav-${tabId}`).classList.add('active');
+        function escapeHTML(str) {
+            if (!str) return '';
+            return String(str).replace(/[&<>"']/g, function(m) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+            });
         }
 
-        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+        let prodQuill, ancQuill, storyQuill;
 
-        function terminateAdminSession() {
-            sessionStorage.removeItem("admin_matrix_clearance");
-            window.location.replace("login.html");
-        }
-
-        async function loadAdminData() {
-            if (!window.supabase) return;
-
-            const { data: prods } = await window.supabase.from('products').select('*');
-            document.getElementById('kpi-products').innerText = prods?.length || 0;
-            renderTable('tbl-products', prods, p => `
-                <td>${DOMPurify.sanitize(p.title)}</td>
-                <td>${DOMPurify.sanitize(p.category)}</td>
-                <td>$${p.price}</td>
-                <td>${p.stock_quantity || 0}</td>
-                <td><button onclick="deleteRow('products', '${p.id}')" class="btn btn-danger" style="padding:2px 8px; font-size:0.75rem;"><i class="fa-solid fa-trash"></i></button></td>
-            `);
-
-            const { data: eq } = await window.supabase.from('equipment').select('*');
-            document.getElementById('kpi-equipment').innerText = eq?.length || 0;
-            renderTable('tbl-equipment', eq, e => `
-                <td>${DOMPurify.sanitize(e.name)}</td>
-                <td>$${e.rental_rate_daily}</td>
-                <td>${e.availability_status || 'Available'}</td>
-                <td><button onclick="deleteRow('equipment', '${e.id}')" class="btn btn-danger" style="padding:2px 8px; font-size:0.75rem;"><i class="fa-solid fa-trash"></i></button></td>
-            `);
-
-            const { data: fab } = await window.supabase.from('fabrication_updates').select('*');
-            renderTable('tbl-fabrication', fab, f => `
-                <td>${DOMPurify.sanitize(f.project_title)}</td>
-                <td>${f.progress_percentage}%</td>
-                <td>${DOMPurify.sanitize(f.status_description || '')}</td>
-                <td><button onclick="deleteRow('fabrication_updates', '${f.id}')" class="btn btn-danger" style="padding:2px 8px; font-size:0.75rem;"><i class="fa-solid fa-trash"></i></button></td>
-            `);
-
-            const { data: reqs } = await window.supabase.from('user_requests').select('*');
-            document.getElementById('kpi-requests').innerText = reqs?.length || 0;
-            renderTable('tbl-requests', reqs, r => `
-                <td>${DOMPurify.sanitize(r.requester_name)}</td>
-                <td>${DOMPurify.sanitize(r.phone)}</td>
-                <td>${DOMPurify.sanitize(r.service_type)}</td>
-                <td>${DOMPurify.sanitize(r.location)}</td>
-                <td><span style="font-weight:700; color:var(--accent);">${r.status}</span></td>
-            `);
-
-            const { data: orders } = await window.supabase.from('orders').select('*');
-            document.getElementById('kpi-orders').innerText = orders?.length || 0;
-            renderTable('tbl-orders', orders, o => `
-                <td>${DOMPurify.sanitize(o.customer_name)}</td>
-                <td>${DOMPurify.sanitize(o.customer_phone)}</td>
-                <td>${o.quantity}</td>
-                <td>${DOMPurify.sanitize(o.destination)}</td>
-                <td><span style="font-weight:700; color:var(--success);">${o.status}</span></td>
-            `);
-
-            const { data: anc } = await window.supabase.from('announcements').select('*');
-            renderTable('tbl-announcements', anc, a => `
-                <td>${DOMPurify.sanitize(a.title)}</td>
-                <td>${DOMPurify.sanitize(a.content)}</td>
-                <td><button onclick="deleteRow('announcements', '${a.id}')" class="btn btn-danger" style="padding:2px 8px; font-size:0.75rem;"><i class="fa-solid fa-trash"></i></button></td>
-            `);
-        }
-
-        function renderTable(elementId, items, rowTemplate) {
-            const tbody = document.getElementById(elementId);
-            if (!items || !items.length) {
-                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:gray;">No records found.</td></tr>`;
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (sessionStorage.getItem("admin_matrix_clearance") !== "authorized") {
+                window.location.replace("login.html");
                 return;
             }
-            tbody.innerHTML = items.map(item => `<tr>${rowTemplate(item)}</tr>`).join('');
+
+            document.getElementById('admin-user-display').innerText = sessionStorage.getItem("admin_authenticated_user") || "Admin User";
+
+            prodQuill = new Quill('#prod-desc-editor', { theme: 'snow' });
+            ancQuill = new Quill('#anc-content-editor', { theme: 'snow' });
+            storyQuill = new Quill('#story-content-editor', { theme: 'snow' });
+
+            document.getElementById('theme-toggle').addEventListener('click', () => {
+                const root = document.documentElement;
+                const nextTheme = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+                root.setAttribute('data-theme', nextTheme);
+            });
+
+            loadOverviewStats();
+            loadProducts();
+            loadOrders();
+            loadAnnouncements();
+            loadStories();
+            loadUsers();
+            loadGateways();
+            loadSettings();
+
+            document.getElementById('product-form').addEventListener('submit', saveProduct);
+            document.getElementById('announcement-form').addEventListener('submit', saveAnnouncement);
+            document.getElementById('story-form').addEventListener('submit', saveStory);
+            document.getElementById('gateway-form').addEventListener('submit', saveGateway);
+            document.getElementById('admin-settings-form').addEventListener('submit', saveSettings);
+        });
+
+        function showToast(msg, type = "success") {
+            const container = document.getElementById("toast-container");
+            const toast = document.createElement("div");
+            toast.className = `toast-ui`;
+            toast.innerText = msg;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
         }
 
-        async function deleteRow(table, id) {
-            if (!confirm("Are you sure you want to delete this entry?")) return;
-            await window.supabase.from(table).delete().eq('id', id);
-            loadAdminData();
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+            
+            const titles = {
+                overview: 'Overview Dashboard',
+                products: 'Products Catalog Management',
+                orders: 'Order Fulfillment Pipeline',
+                announcements: 'Broadcast Announcements',
+                stories: 'Platform Stories',
+                users: 'User Matrix Directory',
+                gateways: 'Payment Gateways',
+                settings: 'Platform Settings'
+            };
+            document.getElementById('current-tab-title').innerText = titles[tabName] || 'Admin Dashboard';
+        }
+
+        function logoutAdmin() {
+            sessionStorage.clear();
+            window.location.replace('login.html');
+        }
+
+        async function loadOverviewStats() {
+            const { count: oCount } = await window.supabase.from('orders').select('*', { count: 'exact', head: true });
+            const { count: pCount } = await window.supabase.from('products').select('*', { count: 'exact', head: true });
+            const { count: uCount } = await window.supabase.from('profiles').select('*', { count: 'exact', head: true });
+            const { count: iCount } = await window.supabase.from('inquiries').select('*', { count: 'exact', head: true });
+
+            document.getElementById('stat-orders-count').innerText = oCount || 0;
+            document.getElementById('stat-products-count').innerText = pCount || 0;
+            document.getElementById('stat-users-count').innerText = uCount || 0;
+            document.getElementById('stat-inquiries-count').innerText = iCount || 0;
+        }
+
+        async function loadProducts() {
+            const { data } = await window.supabase.from('products').select('*').order('created_at', { ascending: false });
+            const tbody = document.getElementById('admin-products-tbody');
+            tbody.innerHTML = '';
+            if(data) {
+                data.forEach(p => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><strong>${escapeHTML(p.title)}</strong></td>
+                            <td>${escapeHTML(p.category)}</td>
+                            <td>$${p.price}</td>
+                            <td>${p.quantity}</td>
+                            <td style="text-align:right;">
+                                <button class="btn btn-danger" onclick="deleteProduct('${p.id}')"><i class="fa-solid fa-trash"></i></button>
+                            </td>
+                        </tr>`;
+                });
+            }
         }
 
         function openProductModal() { document.getElementById('product-modal').classList.add('active'); }
+        function closeProductModal() { document.getElementById('product-modal').classList.remove('active'); }
 
         async function saveProduct(e) {
             e.preventDefault();
-            const payload = {
-                title: document.getElementById('prod-title').value,
-                category: document.getElementById('prod-category').value,
-                price: parseFloat(document.getElementById('prod-price').value),
-                stock_quantity: parseInt(document.getElementById('prod-stock').value)
-            };
-            await window.supabase.from('products').insert([payload]);
-            closeModal('product-modal');
-            loadAdminData();
+            const title = document.getElementById('prod-title').value.trim();
+            const category = document.getElementById('prod-category').value;
+            const price = parseFloat(document.getElementById('prod-price').value);
+            const quantity = parseInt(document.getElementById('prod-quantity').value);
+            const description = prodQuill.root.innerHTML;
+            const fileInput = document.getElementById('prod-file');
+
+            let imageUrl = null;
+            if(fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                const fp = `products/prod-${Date.now()}-${file.name.replace(/[^a-z0-9.]/gi, '_')}`;
+                await window.supabase.storage.from('product-assets').upload(fp, file);
+                imageUrl = window.supabase.storage.from('product-assets').getPublicUrl(fp).data.publicUrl;
+            }
+
+            await window.supabase.from('products').insert({
+                title, category, price, quantity, description, image_url: imageUrl
+            });
+
+            showToast("Product saved.");
+            closeProductModal();
+            loadProducts();
+            loadOverviewStats();
         }
 
-        function initChart() {
-            const ctx = document.getElementById('analyticsChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                    datasets: [{
-                        label: 'Inbound Requests',
-                        data: [12, 19, 15, 25, 22, 30],
-                        borderColor: '#1e3a8a',
-                        tension: 0.3
-                    }]
-                }
-            });
+        async function deleteProduct(id) {
+            if(!confirm("Delete product permanently?")) return;
+            await window.supabase.from('products').delete().eq('id', id);
+            showToast("Product deleted.");
+            loadProducts();
+        }
+
+        async function loadOrders() {
+            const { data } = await window.supabase.from('orders').select('*').order('created_at', { ascending: false });
+            const tbody = document.getElementById('admin-orders-tbody');
+            const recentTbody = document.getElementById('recent-orders-tbody');
+            tbody.innerHTML = '';
+            if(recentTbody) recentTbody.innerHTML = '';
+
+            if(data) {
+                data.forEach((o, index) => {
+                    const row = `
+                        <tr>
+                            <td>${String(o.id).substring(0,8).toUpperCase()}</td>
+                            <td>${escapeHTML(o.customer_name)}</td>
+                            <td>${escapeHTML(o.customer_phone)}</td>
+                            <td>${escapeHTML(o.delivery_location)}</td>
+                            <td>${escapeHTML(o.product_title)}</td>
+                            <td>${o.quantity}</td>
+                            <td>
+                                <select onchange="updateOrderStatus('${o.id}', this.value)" style="padding:0.25rem; border-radius:4px;">
+                                    <option value="Pending" ${o.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                                    <option value="Processing" ${o.status === 'Processing' ? 'selected' : ''}>Processing</option>
+                                    <option value="Shipped" ${o.status === 'Shipped' ? 'selected' : ''}>Shipped</option>
+                                    <option value="Delivered" ${o.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
+                                    <option value="Cancelled" ${o.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+                                </select>
+                            </td>
+                            <td style="text-align:right;">
+                                <button class="btn btn-danger" onclick="deleteOrder('${o.id}')"><i class="fa-solid fa-trash"></i></button>
+                            </td>
+                        </tr>`;
+                    tbody.innerHTML += row;
+
+                    if(index < 5 && recentTbody) {
+                        recentTbody.innerHTML += `
+                            <tr>
+                                <td>${String(o.id).substring(0,8).toUpperCase()}</td>
+                                <td>${escapeHTML(o.customer_name)}</td>
+                                <td>${escapeHTML(o.product_title)}</td>
+                                <td>${o.currency} ${o.total_price}</td>
+                                <td><strong>${o.status}</strong></td>
+                            </tr>`;
+                    }
+                });
+            }
+        }
+
+        async function updateOrderStatus(id, status) {
+            await window.supabase.from('orders').update({ status }).eq('id', id);
+            showToast("Order status updated.");
+            loadOrders();
+        }
+
+        async function deleteOrder(id) {
+            if(!confirm("Delete order log?")) return;
+            await window.supabase.from('orders').delete().eq('id', id);
+            showToast("Order deleted.");
+            loadOrders();
+        }
+
+        async function loadAnnouncements() {
+            const { data } = await window.supabase.from('announcements').select('*').order('created_at', { ascending: false });
+            const tbody = document.getElementById('admin-announcements-tbody');
+            tbody.innerHTML = '';
+            if(data) {
+                data.forEach(a => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><strong>${escapeHTML(a.title || 'Broadcast')}</strong></td>
+                            <td>${DOMPurify.sanitize(a.content).substring(0, 80)}...</td>
+                            <td>${a.active ? 'Active' : 'Inactive'}</td>
+                            <td style="text-align:right;">
+                                <button class="btn btn-danger" onclick="deleteAnnouncement('${a.id}')"><i class="fa-solid fa-trash"></i></button>
+                            </td>
+                        </tr>`;
+                });
+            }
+        }
+
+        function openAnnouncementModal() { document.getElementById('announcement-modal').classList.add('active'); }
+        function closeAnnouncementModal() { document.getElementById('announcement-modal').classList.remove('active'); }
+
+        async function saveAnnouncement(e) {
+            e.preventDefault();
+            const title = document.getElementById('anc-title').value.trim();
+            const content = ancQuill.root.innerHTML;
+
+            await window.supabase.from('announcements').insert({ title, content, active: true });
+            showToast("Announcement published.");
+            closeAnnouncementModal();
+            loadAnnouncements();
+        }
+
+        async function deleteAnnouncement(id) {
+            await window.supabase.from('announcements').delete().eq('id', id);
+            showToast("Announcement deleted.");
+            loadAnnouncements();
+        }
+
+        async function loadStories() {
+            const { data } = await window.supabase.from('stories').select('*').order('created_at', { ascending: false });
+            const tbody = document.getElementById('admin-stories-tbody');
+            tbody.innerHTML = '';
+            if(data) {
+                data.forEach(s => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><strong>${escapeHTML(s.title)}</strong></td>
+                            <td>${escapeHTML(s.author || 'Mwamini Team')}</td>
+                            <td>${new Date(s.created_at).toLocaleDateString()}</td>
+                            <td style="text-align:right;">
+                                <button class="btn btn-danger" onclick="deleteStory('${s.id}')"><i class="fa-solid fa-trash"></i></button>
+                            </td>
+                        </tr>`;
+                });
+            }
+        }
+
+        function openStoryModal() { document.getElementById('story-modal').classList.add('active'); }
+        function closeStoryModal() { document.getElementById('story-modal').classList.remove('active'); }
+
+        async function saveStory(e) {
+            e.preventDefault();
+            const title = document.getElementById('story-title').value.trim();
+            const author = document.getElementById('story-author').value.trim();
+            const content = storyQuill.root.innerHTML;
+
+            await window.supabase.from('stories').insert({ title, author, content });
+            showToast("Story published.");
+            closeStoryModal();
+            loadStories();
+        }
+
+        async function deleteStory(id) {
+            await window.supabase.from('stories').delete().eq('id', id);
+            showToast("Story deleted.");
+            loadStories();
+        }
+
+        async function loadUsers() {
+            const { data } = await window.supabase.from('profiles').select('*');
+            const tbody = document.getElementById('admin-users-tbody');
+            tbody.innerHTML = '';
+            if(data) {
+                data.forEach(u => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><strong>${escapeHTML(u.full_name || 'Anonymous')}</strong></td>
+                            <td>${escapeHTML(u.phone || 'N/A')}</td>
+                            <td>${escapeHTML(u.location || 'N/A')}</td>
+                            <td>${escapeHTML(u.role || 'user')}</td>
+                            <td>${escapeHTML(u.account_status || 'Active')}</td>
+                            <td style="text-align:right;">
+                                <button class="btn btn-outline" onclick="toggleUserStatus('${u.id}', '${u.account_status}')">Toggle Status</button>
+                            </td>
+                        </tr>`;
+                });
+            }
+        }
+
+        async function toggleUserStatus(id, currentStatus) {
+            const nextStatus = currentStatus === 'Disabled' ? 'Active' : 'Disabled';
+            await window.supabase.from('profiles').update({ account_status: nextStatus }).eq('id', id);
+            showToast(`User status set to ${nextStatus}.`);
+            loadUsers();
+        }
+
+        async function loadGateways() {
+            const { data } = await window.supabase.from('payment_gateways').select('*');
+            const tbody = document.getElementById('admin-gateways-tbody');
+            tbody.innerHTML = '';
+            if(data) {
+                data.forEach(g => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><strong>${escapeHTML(g.name)}</strong></td>
+                            <td>${escapeHTML(g.type)}</td>
+                            <td>${escapeHTML(g.account_details || 'N/A')}</td>
+                            <td>${g.active ? 'Active' : 'Disabled'}</td>
+                            <td style="text-align:right;">
+                                <button class="btn btn-danger" onclick="deleteGateway('${g.id}')"><i class="fa-solid fa-trash"></i></button>
+                            </td>
+                        </tr>`;
+                });
+            }
+        }
+
+        function openGatewayModal() { document.getElementById('gateway-modal').classList.add('active'); }
+        function closeGatewayModal() { document.getElementById('gateway-modal').classList.remove('active'); }
+
+        async function saveGateway(e) {
+            e.preventDefault();
+            const name = document.getElementById('gw-name').value.trim();
+            const type = document.getElementById('gw-type').value.trim();
+            const account_details = document.getElementById('gw-details').value.trim();
+            const instructions = document.getElementById('gw-instructions').value.trim();
+
+            await window.supabase.from('payment_gateways').insert({ name, type, account_details, instructions, active: true });
+            showToast("Gateway added.");
+            closeGatewayModal();
+            loadGateways();
+        }
+
+        async function deleteGateway(id) {
+            await window.supabase.from('payment_gateways').delete().eq('id', id);
+            showToast("Gateway deleted.");
+            loadGateways();
+        }
+
+        async function loadSettings() {
+            const { data } = await window.supabase.from('platform_settings').select('*').eq('category', 'contact').maybeSingle();
+            if(data && data.payload) {
+                document.getElementById('set-address').value = data.payload.address || '';
+                document.getElementById('set-facebook').value = data.payload.facebook || '';
+                document.getElementById('set-instagram').value = data.payload.instagram || '';
+            }
+        }
+
+        async function saveSettings(e) {
+            e.preventDefault();
+            const payload = {
+                address: document.getElementById('set-address').value.trim(),
+                facebook: document.getElementById('set-facebook').value.trim(),
+                instagram: document.getElementById('set-instagram').value.trim()
+            };
+
+            await window.supabase.from('platform_settings').upsert({ category: 'contact', payload });
+            showToast("Settings saved successfully.");
         }
     </script>
 </body>
