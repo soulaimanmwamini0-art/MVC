@@ -1,1183 +1,2615 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="MWAMINI PORTAL - Digital Agriculture, Modern Farming, and Mechanization Services">
-    <meta name="theme-color" content="#10b981">
-    <title>MWAMINI PORTAL - Ecosystem</title>
-    
-    <!-- Dependencies -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="Mwamini Innovative & Public Solution Portal - Trusted Global Supply Chain, we love you for life." />
+<meta name="theme-color" content="#1e3a8a" />
+<title>Mwamini Innovative & Public Solution Portal</title>
+
+<!-- Styles and CSS Variables for Light and Dark Themes -->
+<style>
+/* Base Variables & Theme Context Injection (Light Theme) */
+:root {
+  /* Light Theme Primitives */
+  --border-color: #e2e8f0;
+  --bg-surface: #ffffff;
+  --bg-primary: #f8fafc;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  /* Semantic Colors */
+  --accent: #1e3a8a;
+  --accent-hover: #1e40af;
+  --accent-light: rgba(30, 58, 138, 0.1);
+  --danger: #ef4444;
+  --danger-hover: #dc2626;
+  --warning: #f59e0b;
+  --success: #10b981;
+  /* Typography & Sizing */
+  --font-family-base: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --transition-base: 0.3s ease;
+}
+/* Dark Theme Overrides */
+[data-theme="dark"] {
+  --border-color: #334155;
+  --bg-surface: #1e293b;
+  --bg-primary: #0f172a;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --accent: #3b82f6;
+  --accent-hover: #60a5fa;
+  --accent-light: rgba(59, 130, 246, 0.1);
+  --danger: #f87171;
+  --danger-hover: #fca5a5;
+  --warning: #fbbf24;
+  --success: #34d399;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.5);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body {
+  font-family: var(--font-family-base);
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color var(--transition-base), color var(--transition-base);
+}
+
+/* Reset and Base Typography */
+h1, h2, h3, h4, h5, h6 { color: var(--text-main); font-weight: 700; line-height: 1.2; margin-bottom: 0.5rem; }
+p { color: var(--text-muted); margin-bottom: 1rem; }
+a { color: var(--primary); text-decoration: none; transition: color var(--transition-base); }
+a:hover { color: var(--primary-hover); text-decoration: underline; }
+
+/* Layout Components */
+.app-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 1rem 2rem; border-bottom: 1px solid var(--border-color);
+  background: var(--bg-surface); position: sticky; top: 0; z-index: 50;
+  backdrop-filter: blur(8px);
+}
+.brand-container { display: flex; align-items: center; gap: 1rem; cursor: pointer; }
+.brand-logo {
+  width: 44px; height: 44px; background: linear-gradient(135deg, var(--primary), var(--secondary));
+  border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: var(--color-white); font-size: 1.25rem; box-shadow: var(--shadow-md);
+}
+.brand-title { font-size: 1.35rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; }
+.header-actions { display: flex; gap: 1rem; align-items: center; }
+/* Sidebar styles */
+.sidebar {
+  width: 290px; background: var(--bg-surface); border-right: 1px solid var(--border-color);
+  padding: 1.5rem 1rem; display: flex; flex-direction: column; gap: 0.5rem; overflow-y: auto; flex-shrink: 0; transition: width var(--transition-base);
+}
+/* Main content area */
+.admin-layout { display: flex; flex: 1; height: calc(100vh - 77px); overflow: hidden; }
+.admin-content-area {
+  flex: 1; padding: 2.5rem; overflow-y: auto; position: relative; background-color: var(--bg-primary);
+}
+/* Scrollbar styles */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* Buttons and navigation styles */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+  padding: 0.75rem 1.5rem; border-radius: var(--radius-md); font-weight: 600; font-size: 0.875rem; cursor: pointer; border: 1px solid transparent; transition: all var(--transition-base) cubic-bezier(0.4, 0, 0.2, 1); user-select: none;
+}
+.btn:focus { outline: 2px solid var(--border-color-focus); outline-offset: 2px; }
+.btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none !important; }
+.btn-primary { background-color: var(--primary); color: var(--color-white); box-shadow: var(--shadow-sm); }
+.btn-primary:hover:not(:disabled) { background-color: var(--primary-hover); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.btn-secondary { background-color: var(--secondary); color: var(--color-white); box-shadow: var(--shadow-sm); }
+.btn-secondary:hover:not(:disabled) { background-color: var(--secondary-hover); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.btn-special { background-color: var(--special); color: var(--color-white); box-shadow: var(--shadow-sm); }
+.btn-special:hover:not(:disabled) { background-color: var(--color-pink-600); transform: translateY(-2px); }
+.btn-danger { background-color: var(--danger); color: var(--color-white); box-shadow: var(--shadow-sm); }
+.btn-danger:hover:not(:disabled) { background-color: var(--danger-hover); }
+.btn-success { background-color: var(--success); color: var(--color-white); box-shadow: var(--shadow-sm); }
+.btn-success:hover:not(:disabled) { background-color: var(--success); }
+
+.btn-outline { background-color: transparent; border-color: var(--border-color); color: var(--text-main); }
+.btn-outline:hover:not(:disabled) { background-color: var(--bg-surface-hover); border-color: var(--text-muted); color: var(--text-muted); }
+.btn-icon { padding: 0.6rem; border-radius: var(--radius-md); }
+
+.nav-item {
+  width: 100%; text-align: left; background: transparent; color: var(--text-muted);
+  border: none; padding: 0.875rem 1rem; border-radius: var(--radius-md); font-weight: 500;
+  display: flex; align-items: center; gap: 0.75rem; transition: all var(--transition-base); cursor: pointer;
+}
+.nav-item i { font-size: 1.1rem; width: 24px; text-align: center; transition: color var(--transition-base); }
+.nav-item:hover { background-color: var(--bg-surface-hover); color: var(--text-main); transform: translateX(4px); }
+.nav-item:hover i { color: var(--primary); }
+.nav-item.active-tab { background: linear-gradient(90deg, var(--primary), var(--primary-hover)); color: var(--color-white); font-weight: 600; box-shadow: var(--shadow-md); }
+.nav-item.active-tab i { color: var(--color-white); }
+
+.badge {
+  display: inline-flex; align-items: center; padding: 0.35rem 0.85rem; border-radius: 9999px;
+  font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+}
+.badge-success { background-color: rgba(16, 185, 129, 0.1); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.2); }
+.badge-warning { background-color: rgba(234, 179, 8, 0.1); color: var(--warning); border: 1px solid rgba(234, 179, 8, 0.2); }
+.badge-danger { background-color: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2); }
+.badge-info { background-color: rgba(59, 130, 246, 0.1); color: var(--primary); border: 1px solid rgba(59, 130, 246, 0.2); }
+.badge-special { background-color: rgba(236, 72, 153, 0.1); color: var(--special); border: 1px solid rgba(236, 72, 153, 0.2); }
+.badge-neutral { background-color: var(--border-color); color: var(--text-main); }
+
+.toast-container {
+  position: fixed; bottom: 2rem; right: 2rem; z-index: 9999; display: flex; flex-direction: column; gap: 1rem;
+}
+.toast {
+  background-color: var(--text-main); color: var(--bg-primary); padding: 1.25rem 1.75rem; border-radius: var(--radius-md); box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 1rem; transform: translateX(120%); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); border-left: 4px solid transparent;
+}
+.toast.show { transform: translateX(0); }
+.toast-success { border-left-color: var(--success); }
+.toast-error { border-left-color: var(--danger); }
+.toast-warning { border-left-color: var(--warning); }
+.toast-info { border-left-color: var(--primary); }
+
+.toast-icon { font-size: 1.5rem; }
+.toast-success .toast-icon { color: var(--success); }
+.toast-error .toast-icon { color: var(--danger); }
+.toast-warning .toast-icon { color: var(--warning); }
+.toast-info .toast-icon { color: var(--primary); }
+
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.justify-end { justify-content: flex-end; }
+.gap-2 { gap: 0.5rem; }
+.gap-4 { gap: 1rem; }
+.gap-6 { gap: 1.5rem; }
+.mb-2 { margin-bottom: 0.5rem; }
+.mb-4 { margin-bottom: 1rem; }
+.mb-6 { margin-bottom: 1.5rem; }
+.mb-8 { margin-bottom: 2rem; }
+.mt-4 { margin-top: 1rem; }
+.mt-8 { margin-top: 2rem; }
+.w-full { width: 100%; }
+.text-center { text-align: center; }
+.hidden { display: none !important; }
+.font-mono { font-family: monospace; }
+.text-sm { font-size: 0.875rem; }
+.text-xs { font-size: 0.75rem; }
+.text-success { color: var(--success); }
+.text-danger { color: var(--danger); }
+.text-warning { color: var(--warning); }
+.text-primary { color: var(--primary); }
+.text-secondary { color: var(--secondary); }
+.text-special { color: var(--special); }
+</style>
 
-    <style>
-        /* ==========================================================================
-           CSS VARIABLES & MODERN THEME SYSTEM
-           ========================================================================== */
-        :root {
-            /* Modernized Color Palette */
-            --color-white: #ffffff;
-            --color-black: #000000;
-            --color-slate-50: #f8fafc;
-            --color-slate-100: #f1f5f9;
-            --color-slate-200: #e2e8f0;
-            --color-slate-300: #cbd5e1;
-            --color-slate-400: #94a3b8;
-            --color-slate-500: #64748b;
-            --color-slate-600: #475569;
-            --color-slate-700: #334155;
-            --color-slate-800: #1e293b;
-            --color-slate-900: #0f172a;
-            
-            /* Primary & Secondary Brand Colors */
-            --color-blue-500: #3b82f6;
-            --color-blue-600: #2563eb;
-            --color-blue-700: #1d4ed8;
-            --color-green-400: #34d399;
-            --color-green-500: #10b981;
-            --color-green-600: #059669;
-            --color-green-700: #047857;
-            --color-yellow-400: #facc15;
-            --color-yellow-500: #eab308;
-            --color-pink-500: #ec4899;
-            --color-red-500: #ef4444;
-            --color-red-600: #dc2626;
-
-            /* Functional Mapping */
-            --bg-primary: var(--color-white);
-            --bg-surface: var(--color-slate-50);
-            --bg-surface-hover: var(--color-slate-100);
-            --text-main: var(--color-slate-900);
-            --text-muted: var(--color-slate-500);
-            --border-color: var(--color-slate-200);
-            --border-color-focus: var(--color-green-500);
-            
-            --primary: var(--color-green-600);
-            --primary-hover: var(--color-green-700);
-            --secondary: var(--color-blue-600);
-            --secondary-hover: var(--color-blue-700);
-            
-            --success: var(--color-green-600);
-            --warning: var(--color-yellow-500);
-            --danger: var(--color-red-500);
-            --special: var(--color-pink-500);
-            
-            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-            
-            --radius-sm: 0.375rem;
-            --radius-md: 0.5rem;
-            --radius-lg: 0.75rem;
-            --radius-xl: 1rem;
-            
-            --transition-speed: 0.3s;
-        }
-
-        /* Dark Mode Configurations */
-        [data-theme="dark"] {
-            --bg-primary: var(--color-slate-900);
-            --bg-surface: var(--color-slate-800);
-            --bg-surface-hover: var(--color-slate-700);
-            --text-main: var(--color-slate-50);
-            --text-muted: var(--color-slate-400);
-            --border-color: var(--color-slate-700);
-            --border-color-focus: var(--color-green-400);
-            
-            --primary: var(--color-green-500);
-            --primary-hover: var(--color-green-400);
-            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.8);
-            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.8), 0 2px 4px -2px rgb(0 0 0 / 0.8);
-            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.8), 0 4px 6px -4px rgb(0 0 0 / 0.8);
-        }
-
-        /* ==========================================================================
-           RESET & TYPOGRAPHY
-           ========================================================================== */
-        *, *::before, *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        html {
-            font-size: 16px;
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background-color: var(--bg-primary);
-            color: var(--text-main);
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
-            overflow-x: hidden;
-            transition: background-color var(--transition-speed), color var(--transition-speed);
-        }
-
-        h1, h2, h3, h4, h5, h6 {
-            color: var(--text-main);
-            font-weight: 700;
-            line-height: 1.2;
-            margin-bottom: 1rem;
-        }
-
-        h1 { font-size: 2.5rem; }
-        h2 { font-size: 2rem; }
-        h3 { font-size: 1.5rem; }
-        h4 { font-size: 1.25rem; }
-
-        p {
-            color: var(--text-muted);
-            margin-bottom: 1rem;
-        }
-
-        a {
-            color: var(--primary);
-            text-decoration: none;
-            transition: color var(--transition-speed);
-        }
-
-        a:hover {
-            color: var(--primary-hover);
-        }
-
-        img {
-            max-width: 100%;
-            height: auto;
-            display: block;
-        }
-
-        /* ==========================================================================
-           LAYOUT & GRID
-           ========================================================================== */
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1.5rem;
-        }
-
-        .section {
-            padding: 5rem 0;
-        }
-
-        .section-header {
-            text-align: center;
-            margin-bottom: 3.5rem;
-        }
-
-        .section-title {
-            font-size: 2.25rem;
-            color: var(--primary);
-            position: relative;
-            display: inline-block;
-        }
-
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 4px;
-            background-color: var(--secondary);
-            border-radius: 2px;
-        }
-
-        .grid {
-            display: grid;
-            gap: 2rem;
-        }
-
-        .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
-        .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-        .grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-        .grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-
-        @media (max-width: 992px) {
-            .grid-cols-3, .grid-cols-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-        }
-
-        @media (max-width: 768px) {
-            .grid-cols-2, .grid-cols-3, .grid-cols-4 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
-            .section { padding: 3rem 0; }
-        }
-
-        /* ==========================================================================
-           COMPONENTS: BUTTONS
-           ========================================================================== */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            padding: 0.75rem 1.5rem;
-            border-radius: var(--radius-md);
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            border: 1px solid transparent;
-            transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .btn:focus {
-            outline: 2px solid var(--border-color-focus);
-            outline-offset: 2px;
-        }
-
-        .btn-primary {
-            background-color: var(--primary);
-            color: var(--color-white);
-            box-shadow: var(--shadow-sm);
-        }
-
-        .btn-primary:hover {
-            background-color: var(--primary-hover);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-            color: var(--color-white);
-        }
-
-        .btn-secondary {
-            background-color: var(--secondary);
-            color: var(--color-white);
-        }
-
-        .btn-secondary:hover {
-            background-color: var(--secondary-hover);
-            transform: translateY(-2px);
-            color: var(--color-white);
-        }
-
-        .btn-outline {
-            background-color: transparent;
-            border-color: var(--border-color);
-            color: var(--text-main);
-        }
-
-        .btn-outline:hover {
-            background-color: var(--bg-surface-hover);
-            border-color: var(--text-muted);
-        }
-
-        /* ==========================================================================
-           COMPONENTS: CARDS
-           ========================================================================== */
-        .card {
-            background: var(--bg-surface);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-            box-shadow: var(--shadow-sm);
-            transition: transform var(--transition-speed), box-shadow var(--transition-speed);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .card:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--shadow-lg);
-            border-color: var(--border-color-focus);
-        }
-
-        .card-media {
-            width: 100%;
-            height: 220px;
-            object-fit: cover;
-            border-bottom: 1px solid var(--border-color);
-        }
-        
-        .card-media-placeholder {
-            width: 100%;
-            height: 220px;
-            background-color: var(--bg-surface-hover);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            color: var(--text-muted);
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .card-body {
-            padding: 1.5rem;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .card-title {
-            font-size: 1.25rem;
-            margin-bottom: 0.5rem;
-            color: var(--text-main);
-        }
-
-        .card-text {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            margin-bottom: 1.5rem;
-            flex-grow: 1;
-        }
-
-        .card-footer {
-            padding-top: 1rem;
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        /* Interaction Actions (Like, Share, Comments) */
-        .interaction-bar {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1rem;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 0.5rem;
-        }
-        
-        .interaction-btn {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-            font-size: 0.9rem;
-            transition: color 0.2s;
-        }
-        
-        .interaction-btn:hover {
-            color: var(--primary);
-        }
-
-        /* ==========================================================================
-           HEADER & NAVIGATION (BRANDING PRESERVED)
-           ========================================================================== */
-        .header {
-            background: var(--bg-primary);
-            border-bottom: 1px solid var(--border-color);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 0;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            text-decoration: none;
-        }
-
-        .brand-logo {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: var(--radius-md);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--color-white);
-            font-size: 1.5rem;
-            box-shadow: var(--shadow-md);
-        }
-
-        .brand-text {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: var(--text-main);
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 1.5rem;
-            align-items: center;
-            list-style: none;
-        }
-
-        .nav-link {
-            color: var(--text-main);
-            font-weight: 600;
-            font-size: 1rem;
-            position: relative;
-            padding: 0.5rem 0;
-        }
-
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background-color: var(--primary);
-            transition: width var(--transition-speed);
-        }
-
-        .nav-link:hover::after {
-            width: 100%;
-        }
-        
-        .nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        
-        /* Language Selector */
-        .lang-selector {
-            padding: 0.5rem;
-            border-radius: var(--radius-md);
-            border: 1px solid var(--border-color);
-            background: var(--bg-surface);
-            color: var(--text-main);
-            font-weight: 600;
-            cursor: pointer;
-            outline: none;
-        }
-
-        .mobile-menu-btn {
-            display: none;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            color: var(--text-main);
-            cursor: pointer;
-        }
-
-        @media (max-width: 992px) {
-            .nav-links {
-                display: none;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                width: 100%;
-                background: var(--bg-primary);
-                flex-direction: column;
-                padding: 1rem 0;
-                border-bottom: 1px solid var(--border-color);
-                box-shadow: var(--shadow-md);
-            }
-            .nav-links.active {
-                display: flex;
-            }
-            .mobile-menu-btn {
-                display: block;
-            }
-        }
-
-        /* ==========================================================================
-           UPGRADED ANNOUNCEMENT BANNER
-           ========================================================================== */
-        .announcement-banner {
-            background-color: #00FF00; /* Strict requirement: Green background */
-            color: #000000; /* Strict requirement: Black text */
-            padding: 0.5rem 0;
-            overflow: hidden;
-            position: relative;
-            white-space: nowrap;
-            z-index: 900;
-            font-weight: 700;
-            letter-spacing: 0.05em;
-        }
-
-        .marquee-content {
-            display: inline-block;
-            padding-left: 100%;
-            animation: marquee 20s linear infinite;
-        }
-        
-        /* Ensures one sentence slides completely before repeating */
-        @keyframes marquee {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-100%); }
-        }
-        
-        .announcement-banner:hover .marquee-content {
-            animation-play-state: paused;
-        }
-
-        /* ==========================================================================
-           HERO SECTION
-           ========================================================================== */
-        .hero {
-            position: relative;
-            padding: 8rem 0;
-            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1625246333195-78d9c38ad449?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
-            color: var(--color-white);
-            text-align: center;
-        }
-
-        .hero h1 {
-            color: var(--color-white);
-            font-size: 3.5rem;
-            margin-bottom: 1.5rem;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-            animation: fadeInUp 1s ease-out;
-        }
-
-        .hero p {
-            color: var(--color-slate-200);
-            font-size: 1.25rem;
-            max-width: 800px;
-            margin: 0 auto 2.5rem;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
-            animation: fadeInUp 1.2s ease-out;
-        }
-
-        .hero-btns {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            animation: fadeInUp 1.4s ease-out;
-        }
-        
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* ==========================================================================
-           ABOUT US EXPANSION
-           ========================================================================== */
-        .about-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            align-items: center;
-        }
-
-        @media (max-width: 992px) {
-            .about-content { grid-template-columns: 1fr; }
-        }
-
-        .about-text p {
-            font-size: 1.1rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .about-features {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-        
-        .feature-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 1rem;
-        }
-        
-        .feature-icon {
-            color: var(--primary);
-            font-size: 1.5rem;
-            background: var(--bg-surface-hover);
-            padding: 1rem;
-            border-radius: var(--radius-md);
-        }
-        
-        .feature-text h4 {
-            margin-bottom: 0.25rem;
-            font-size: 1.1rem;
-        }
-
-        /* ==========================================================================
-           MODALS & FORMS
-           ========================================================================== */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-            z-index: 2000;
-            backdrop-filter: blur(4px);
-            padding: 1rem;
-        }
-
-        .modal-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .modal-content {
-            background: var(--bg-surface);
-            padding: 2.5rem;
-            border-radius: var(--radius-xl);
-            width: 100%;
-            max-width: 600px;
-            position: relative;
-            box-shadow: var(--shadow-lg);
-            max-height: 90vh;
-            overflow-y: auto;
-            transform: scale(0.95);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .modal-overlay.active .modal-content {
-            transform: scale(1);
-        }
-
-        .close-modal {
-            position: absolute;
-            top: 1.25rem;
-            right: 1.25rem;
-            background: var(--bg-primary);
-            border: 1px solid var(--border-color);
-            font-size: 1.2rem;
-            color: var(--text-muted);
-            cursor: pointer;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-        }
-
-        .close-modal:hover {
-            color: var(--danger);
-            border-color: var(--danger);
-            background: rgba(239, 68, 68, 0.1);
-            transform: rotate(90deg);
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: var(--text-main);
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 0.875rem 1rem;
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            background-color: var(--bg-primary);
-            color: var(--text-main);
-            font-family: inherit;
-            font-size: 1rem;
-            transition: all var(--transition-speed);
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
-        }
-        
-        textarea.form-control {
-            resize: vertical;
-            min-height: 120px;
-        }
-        
-        /* Terms and Conditions Checkbox */
-        .checkbox-group {
-            display: flex;
-            align-items: flex-start;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .checkbox-group input[type="checkbox"] {
-            margin-top: 0.3rem;
-            accent-color: var(--primary);
-            width: 1.2rem;
-            height: 1.2rem;
-        }
-
-        /* ==========================================================================
-           FOOTER
-           ========================================================================== */
-        .footer {
-            background-color: var(--slate-900);
-            color: var(--color-slate-300);
-            padding: 4rem 0 2rem;
-            margin-top: 4rem;
-            background: var(--bg-surface);
-            border-top: 1px solid var(--border-color);
-        }
-
-        .footer-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 2rem;
-            margin-bottom: 3rem;
-        }
-
-        @media (max-width: 992px) {
-            .footer-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-        @media (max-width: 768px) {
-            .footer-grid { grid-template-columns: 1fr; }
-        }
-
-        .footer h4 {
-            color: var(--text-main);
-            font-size: 1.25rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .footer-links {
-            list-style: none;
-        }
-
-        .footer-links li {
-            margin-bottom: 0.75rem;
-        }
-
-        .footer-links a {
-            color: var(--text-muted);
-        }
-
-        .footer-links a:hover {
-            color: var(--primary);
-            padding-left: 0.5rem;
-        }
-        
-        .social-icons {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-        
-        .social-icons a {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            background: var(--bg-primary);
-            border: 1px solid var(--border-color);
-            border-radius: 50%;
-            color: var(--text-main);
-            transition: all var(--transition-speed);
-        }
-        
-        .social-icons a:hover {
-            background: var(--primary);
-            color: var(--color-white);
-            border-color: var(--primary);
-            transform: translateY(-3px);
-        }
-
-        .footer-bottom {
-            text-align: center;
-            padding-top: 2rem;
-            border-top: 1px solid var(--border-color);
-            color: var(--text-muted);
-        }
-        
-        /* Utility */
-        .text-center { text-align: center; }
-        .mt-4 { margin-top: 1rem; }
-        .mb-2 { margin-bottom: 0.5rem; }
-        .hidden { display: none !important; }
-        .text-danger { color: var(--danger); }
-        
-        /* Media Rendering Utilities for Dynamic Content */
-        .media-wrapper {
-            position: relative;
-            width: 100%;
-            background: var(--bg-surface-hover);
-        }
-        .media-doc {
-            padding: 2rem;
-            text-align: center;
-            background: var(--bg-surface-hover);
-            border-bottom: 1px solid var(--border-color);
-        }
-        .media-doc i {
-            font-size: 4rem;
-            color: var(--primary);
-            margin-bottom: 1rem;
-        }
-
-    </style>
 </head>
 <body>
 
-    <!-- 1. UPGRADED ANNOUNCEMENT BANNER -->
-    <div class="announcement-banner" id="global-announcement-banner">
-        <div class="marquee-content" id="marquee-text" data-i18n="announcement_loading">
-            Loading latest broadcasts...
-        </div>
-    </div>
+<!-- Header with Logo, Navigation, and User Profile -->
+<header class="app-header">
+<div class="brand-container" onclick="navigate('home')">
+<img id="global-company-logo" src="https://bkyyenirpeznjkmmcutf.supabase.co/storage/v1/object/public/product-assets/assets/Company%20logo/Company%20Logo.png" alt="Mwamini Logo" class="brand-logo" onerror="this.onerror=null; this.src='https://via.placeholder.com/150x45?text=Mwamini+Trading';" />
+<div class="brand-title">Mwamini Mainframe</div>
+<span class="badge badge-info" style="margin-left: 1rem;"><i class="fa-solid fa-shield-halved mr-1"></i> Admin Terminal</span>
+</div>
+<div class="header-actions">
+<div class="form-group" style="margin:0;">
+<select id="global-lang-selector" class="form-control" style="padding: 0.4rem 1rem; font-size: 0.8rem; border-radius: 20px;">
+<option value="en">English (EN)</option>
+<option value="rw">Kinyarwanda (RW)</option>
+<option value="fr">Français (FR)</option>
+<option value="zh">中文 (ZH)</option>
+<option value="ko">한국어 (KO)</option>
+<option value="sw">Kiswahili (SW)</option>
+<option value="ln">Lingala (LN)</option>
+</select>
+</div>
+<div class="user-profile flex items-center gap-2" style="margin: 0 1.5rem; padding: 0 1.5rem; border-left: 1px solid var(--border-color); border-right: 1px solid var(--border-color);">
+<div style="text-align: right;">
+<div style="font-weight: 700; font-size: 0.875rem;">System Architect</div>
+<div style="font-size: 0.75rem; color: var(--primary); font-weight: 600;">Root Access Level</div>
+</div>
+<div style="width: 40px; height: 40px; background: var(--bg-surface-hover); border: 1px solid var(--border-color); border-radius: 50%; display:flex; align-items:center; justify-content:center;">
+<i class="fa-solid fa-user-astronaut text-primary"></i>
+</div>
+</div>
+<button onclick="window.location.replace('index.html')" class="btn btn-outline btn-icon" title="Return Home"><i class="fa-solid fa-house"></i></button>
+<button id="theme-toggle" class="btn btn-outline btn-icon" title="Toggle Theme"><i class="fa-solid fa-moon"></i></button>
+<button id="logout-btn" class="btn btn-danger" title="Terminate Secure Session"><i class="fa-solid fa-power-off"></i><span style="margin-left: 0.5rem;">Terminate Session</span></button>
+</div>
+</header>
 
-    <!-- 2. HEADER & NAVIGATION (Preserved Branding) -->
-    <header class="header">
-        <div class="container navbar">
-            <a href="index.html" class="brand">
-                <div class="brand-logo">
-                    <i class="fa-solid fa-layer-group"></i>
-                </div>
-                <div class="brand-text">MWAMINI PORTAL</div>
-            </a>
+<!-- Main Layout with Sidebar Navigation and Content Area -->
+<div class="admin-layout">
+<aside class="sidebar">
+<div class="text-xs font-bold text-muted mb-2" style="padding-left: 1rem; text-transform: uppercase; letter-spacing: 0.1em; margin-top: 1rem;">Core Systems</div>
+<button class="nav-item active-tab" data-target="analytics-view"><i class="fa-solid fa-chart-pie"></i><span>Analytics Ecosystem</span></button>
+<button class="nav-item" data-target="inventory-view"><i class="fa-solid fa-boxes-stacked"></i><span>Inventory Matrix (Shop)</span></button>
+<button class="nav-item" data-target="mechanization-view"><i class="fa-solid fa-tractor"></i><span>Mechanization Services</span></button>
+<button class="nav-item" data-target="announcements-view"><i class="fa-solid fa-bullhorn"></i><span>Announcements</span></button>
+<button class="nav-item" data-target="orders-view"><i class="fa-solid fa-cart-flatbed"></i><span>Customer Orders Log</span></button>
+<button class="nav-item" data-target="comments-view"><i class="fa-solid fa-star"></i><span>Feedback & Tickets</span></button>
+<button class="nav-item" data-target="users-view"><i class="fa-solid fa-users-gear"></i><span>Registered Users</span></button>
+<div class="text-xs font-bold text-muted mb-2" style="padding-left: 1rem; text-transform: uppercase; letter-spacing: 0.1em; margin-top: 1.5rem;">Content & Assistance</div>
+<button class="nav-item" data-target="farmer-help-view"><i class="fa-solid fa-hand-holding-hand"></i><span>Farmer Help Portal</span></button>
+<button class="nav-item" data-target="stories-view"><i class="fa-solid fa-book-open"></i><span>Stories Management</span></button>
+<button class="nav-item" data-target="order-project-view"><i class="fa-solid fa-briefcase"></i><span>Order Project Ops</span></button>
+<button class="nav-item" data-target="chat-view"><i class="fa-solid fa-comments"></i><span>Live Support Desk</span><span id="nav-chat-badge" class="nav-badge hidden">0</span></button>
+<div class="text-xs font-bold text-muted mb-2" style="padding-left: 1rem; text-transform: uppercase; letter-spacing: 0.1em; margin-top: 1.5rem;">System Configuration</div>
+<button class="nav-item" data-target="payments-view"><i class="fa-solid fa-money-bill-transfer"></i><span>Payment Gateways</span></button>
+<button class="nav-item" data-target="contacts-view"><i class="fa-solid fa-address-book"></i><span>Contact & Socials</span></button>
+</aside>
 
-            <button class="mobile-menu-btn" id="mobile-menu-toggle">
-                <i class="fa-solid fa-bars"></i>
-            </button>
+<!-- Content Area with Sections for Each Page -->
+<main class="admin-content-area">
+<!-- Analytics Dashboard -->
+<section id="analytics-view" class="tab-content active-panel">
+<div class="flex justify-between items-center mb-8">
+<div>
+<h2 class="text-primary">Core Analytics Ecosystem</h2>
+<p>Real-time system telemetry, transactional volumes, and global operational metrics.</p>
+</div>
+<button class="btn btn-outline" onclick="loadAnalyticsDashboard()"><i class="fa-solid fa-rotate-right"></i> Sync Data</button>
+</div>
+<div class="stat-grid">
+<div class="card stat-card">
+<div class="stat-header">
+<span class="stat-title">Global Asset Valuation</span>
+<div class="stat-icon"><i class="fa-solid fa-vault"></i></div>
+</div>
+<div id="metric-stock" class="stat-value">--</div>
+</div>
+<div class="card stat-card">
+<div class="stat-header">
+<span class="stat-title">Completed Revenue</span>
+<div class="stat-icon text-success"><i class="fa-solid fa-money-bill-trend-up"></i></div>
+</div>
+<div id="metric-revenue" class="stat-value">--</div>
+</div>
+<div class="card stat-card">
+<div class="stat-header">
+<span class="stat-title">Total Orders</span>
+<div class="stat-icon text-primary"><i class="fa-solid fa-file-invoice"></i></div>
+</div>
+<div id="metric-orders" class="stat-value">--</div>
+</div>
+<div class="card stat-card">
+<div class="stat-header">
+<span class="stat-title text-warning">Pending Operations</span>
+<div class="stat-icon text-warning"><i class="fa-solid fa-clock-rotate-left"></i></div>
+</div>
+<div id="metric-pending-orders" class="stat-value">--</div>
+</div>
+<div class="card stat-card">
+<div class="stat-header">
+<span class="stat-title text-secondary">Active Machinery</span>
+<div class="stat-icon text-secondary"><i class="fa-solid fa-tractor"></i></div>
+</div>
+<div id="metric-mechanization" class="stat-value">--</div>
+</div>
+<div class="card stat-card">
+<div class="stat-header">
+<span class="stat-title text-special">Active Projects</span>
+<div class="stat-icon text-special"><i class="fa-solid fa-briefcase"></i></div>
+</div>
+<div id="metric-projects" class="stat-value">--</div>
+</div>
+<div class="card stat-card">
+<div class="stat-header">
+<span class="stat-title text-primary">Registered Users</span>
+<div class="stat-icon text-primary"><i class="fa-solid fa-users"></i></div>
+</div>
+<div id="metric-users" class="stat-value">--</div>
+</div>
+<div class="card stat-card">
+<div class="stat-header">
+<span class="stat-title">Helpdesk Volume</span>
+<div class="stat-icon"><i class="fa-solid fa-headset"></i></div>
+</div>
+<div id="metric-chats" class="stat-value">--</div>
+</div>
+</div>
+<div class="card w-full mb-8">
+<h3 class="mb-4">System Telemetry & Operational Flow</h3>
+<div style="height: 350px; width: 100%;">
+<canvas id="mainTelemetryChart"></canvas>
+</div>
+</div>
+</section>
 
-            <!-- Navigation matches required order constraints -->
-            <ul class="nav-links" id="nav-links">
-                <li><a href="#home" class="nav-link" data-i18n="nav_home">Home</a></li>
-                <li><a href="#about" class="nav-link" data-i18n="nav_about">About Us</a></li>
-                <li><a href="#farmer-help" class="nav-link" data-i18n="nav_help">Farmer Help</a></li>
-                <li><a href="#story" class="nav-link" data-i18n="nav_story">Story</a></li>
-                <li><a href="#order-project" class="nav-link" data-i18n="nav_project">Order Project</a></li>
-                <li><a href="#shop" class="nav-link" data-i18n="nav_shop">Shop</a></li>
-                <li><a href="#mechanization" class="nav-link" data-i18n="nav_mech">Mechanization</a></li>
-                <li><a href="#announcements" class="nav-link" data-i18n="nav_announcements">Announcements</a></li>
-                <li><a href="#contact" class="nav-link" data-i18n="nav_contact">Contact Us</a></li>
-            </ul>
+<!-- Inventory Matrix -->
+<section id="inventory-view" class="tab-content">
+<div class="flex justify-between items-center mb-8">
+<div>
+<h2 class="text-primary">Inventory Command Center</h2>
+<p>Manage standard commodities, shop items, and product documentation.</p>
+</div>
+<button class="btn btn-primary" onclick="openNewProductForm()"><i class="fa-solid fa-plus"></i> Register Commodity</button>
+</div>
+<div id="product-form-container" class="card mb-8 hidden" style="border: 2px dashed var(--primary);">
+<div class="flex justify-between items-center mb-6">
+<h3>Commodity Registration Node</h3>
+<button class="btn btn-outline btn-icon" onclick="openNewProductForm()"><i class="fa-solid fa-xmark"></i></button>
+</div>
+<form id="sku-management-form" class="form-grid">
+<input type="hidden" id="sku-id" />
+<div class="form-group">
+<label class="form-label">Nomenclature / Title</label>
+<input type="text" id="sku-title" class="form-control" placeholder="e.g. Organic Maize Seeds" required />
+</div>
+<div class="form-group">
+<label class="form-label">Classification Matrix</label>
+<select id="sku-category" class="form-control" required>
+<option value="" disabled selected>Select precise category...</option>
+<option value="Electrical">Electrical</option>
+<option value="Services">Services</option>
+<option value="Food Materials">Food Materials</option>
+<option value="Grains">Grains</option>
+<option value="Agriculture">Agriculture</option>
+<option value="Construction">Construction</option>
+<option value="Electronics">Electronics</option>
+<option value="Others">Others</option>
+</select>
+</div>
+<div class="form-group">
+<label class="form-label">Unit Valuation</label>
+<input type="number" id="sku-price" step="0.01" class="form-control" placeholder="0.00" required />
+</div>
+<div class="form-group">
+<label class="form-label">Currency Anchor</label>
+<select id="sku-currency-type" class="form-control" required>
+<option value="USD">USD - US Dollar</option>
+<option value="RWF">RWF - Rwandan Franc</option>
+<option value="EUR">EUR - Euro</option>
+</select>
+</div>
+<div class="form-group">
+<label class="form-label">Physical Stock (Qty)</label>
+<input type="number" id="sku-qty" class="form-control" placeholder="0" required />
+</div>
+<div class="form-group">
+<label class="form-label">Visibility State</label>
+<select id="sku-status" class="form-control" required>
+<option value="Available">Available (Active)</option>
+<option value="Limited stock">Limited stock (Warning)</option>
+<option value="Out of stock">Out of stock (Depleted)</option>
+</select>
+</div>
+<div class="form-group" style="grid-column: 1 / -1;">
+<label class="form-label">Detailed Specification</label>
+<div id="sku-desc-editor"></div>
+</div>
+<div class="form-group" style="grid-column: 1 / -1;">
+<label class="form-label">Universal Media Packet Upload</label>
+<input type="file" id="sku-file" class="form-control" style="padding: 0.5rem;" accept="image/*,video/*,audio/*,.pdf,.doc,.docx,text/plain" />
+<div class="text-xs text-muted mt-2"><i class="fa-solid fa-circle-info text-primary"></i> System supports Images, Video, Audio, PDFs, Word Docs, and Text Files. Max: 100MB.</div>
+<input type="hidden" id="sku-existing-file" />
+</div>
+<div class="flex gap-4" style="grid-column: 1 / -1; margin-top: 1rem;">
+<button type="submit" id="sku-submit-btn" class="btn btn-primary w-full"><i class="fa-solid fa-cloud-arrow-up"></i> Commit Payload to Database</button>
+</div>
+</form>
+</div>
+<div class="card mb-6 flex items-center justify-between">
+<div class="flex gap-4 w-full" style="max-width: 800px;">
+<input type="text" id="admin-search-box" class="form-control" placeholder="Query by nomenclature or ID..." />
+<select id="admin-category-box" class="form-control" style="width: 250px;">
+<option value="All">All Classifications</option>
+<option value="Electrical">Electrical</option>
+<option value="Services">Services</option>
+<option value="Food Materials">Food Materials</option>
+<option value="Grains">Grains</option>
+<option value="Agriculture">Agriculture</option>
+<option value="Construction">Construction</option>
+<option value="Electronics">Electronics</option>
+<option value="Others">Others</option>
+</select>
+</div>
+</div>
+<div class="table-container">
+<table class="data-table">
+<thead>
+<tr>
+<th style="width: 80px; text-align: center;">Media</th>
+<th>Nomenclature</th>
+<th>Classification</th>
+<th>Valuation</th>
+<th>Inventory State</th>
+<th style="text-align: right;">Action Matrix</th>
+</tr>
+</thead>
+<tbody id="sku-table-body"></tbody>
+</table>
+</div>
+</section>
 
-            <div class="nav-actions">
-                <!-- Multilingual Support Selector -->
-                <select class="lang-selector" id="language-selector">
-                    <option value="en">English (EN)</option>
-                    <option value="rw">Kinyarwanda (RW)</option>
-                    <option value="fr">Français (FR)</option>
-                    <option value="zh">中文 (ZH)</option>
-                    <option value="ko">한국어 (KO)</option>
-                    <option value="sw">Kiswahili (SW)</option>
-                    <option value="ln">Lingala (LN)</option>
-                </select>
-                
-                <!-- Authentication Status -->
-                <div id="auth-container">
-                    <button class="btn btn-primary" onclick="openLoginModal()" data-i18n="btn_login">
-                        <i class="fa-solid fa-right-to-bracket"></i> Login
-                    </button>
-                </div>
-                
-                <button class="btn btn-outline" id="theme-toggle-btn" title="Toggle Theme">
-                    <i class="fa-solid fa-moon"></i>
-                </button>
-            </div>
-        </div>
-    </header>
+<!-- Agricultural Mechanization Services -->
+<section id="mechanization-view" class="tab-content">
+<div class="flex justify-between items-center mb-8">
+<div>
+<h2 class="text-secondary">Agricultural Mechanization Services</h2>
+<p>Complete management module for tractors and agricultural machinery logistics.</p>
+</div>
+<button class="btn btn-secondary" onclick="openMechForm()"><i class="fa-solid fa-tractor"></i> Deploy New Machinery</button>
+</div>
+<div id="mech-form-container" class="card mb-8 hidden" style="border: 2px dashed var(--secondary);">
+<div class="flex justify-between items-center mb-6">
+<h3 class="text-secondary">Machinery Deployment Protocol</h3>
+<button class="btn btn-outline btn-icon" onclick="openMechForm()"><i class="fa-solid fa-xmark"></i></button>
+</div>
+<form id="mech-management-form" class="form-grid">
+<input type="hidden" id="mech-id" />
+<div class="form-group">
+<label class="form-label">Machine Name / Model</label>
+<input type="text" id="mech-title" class="form-control" placeholder="e.g. John Deere 5075E Tractor" required />
+</div>
+<div class="form-group">
+<label class="form-label">Machinery Category</label>
+<select id="mech-category" class="form-control" required>
+<option value="" disabled selected>Select classification...</option>
+<option value="Tractor">Heavy Tractor</option>
+<option value="Harvester">Combine Harvester</option>
+<option value="Plow">Disc Plow / Tiller</option>
+<option value="Seeder">Precision Seeder</option>
+<option value="Irrigation">Irrigation System</option>
+<option value="Other">Other Machinery</option>
+</select>
+</div>
+<div class="form-group">
+<label class="form-label">Quantity Available</label>
+<input type="number" id="mech-qty" class="form-control" placeholder="0" required />
+</div>
+<div class="form-group">
+<label class="form-label">Rental Price (per Hour) USD</label>
+<input type="number" step="0.01" id="mech-rental-price" class="form-control" placeholder="0.00" required />
+</div>
+<div class="form-group">
+<label class="form-label">Operator Charge (per Hour) USD</label>
+<input type="number" step="0.01" id="mech-operator-price" class="form-control" placeholder="0.00" required />
+</div>
+<div class="form-group">
+<label class="form-label">Operational Availability</label>
+<select id="mech-availability" class="form-control" required>
+<option value="true">Available for Dispatch</option>
+<option value="false">Currently Maintenance/Deployed</option>
+</select>
+</div>
+<div class="form-group">
+<label class="form-label">Booking Status Limit</label>
+<select id="mech-booking-status" class="form-control" required>
+<option value="Open">Open (Accepting Reservations)</option>
+<option value="Full">Capacity Reached</option>
+<option value="Closed">Closed (Offline)</option>
+</select>
+</div>
+<div class="form-group">
+<label class="form-label">Featured Status (Hero Section)</label>
+<select id="mech-featured" class="form-control" required>
+<option value="false">Standard Listing</option>
+<option value="true">Mark as Featured (Prioritized)</option>
+</select>
+</div>
+<div class="form-group" style="grid-column: 1 / -1;">
+<label class="form-label">Technical Description & Capabilities</label>
+<div id="mech-desc-editor"></div>
+</div>
+<div class="form-group" style="grid-column: 1 / -1;">
+<label class="form-label">Machinery Assets (Universal Upload)</label>
+<input type="file" id="mech-file" class="form-control" style="padding: 0.5rem;" accept="image/*,video/*,audio/*,.pdf,.doc,.docx,text/plain" />
+<div class="text-xs text-muted mt-2"><i class="fa-solid fa-circle-info text-secondary"></i> Upload Images, Operator Videos, Audio manuals, PDF schematics, or Word documents.</div>
+<input type="hidden" id="mech-existing-file" />
+</div>
+<div class="flex gap-4" style="grid-column: 1 / -1; margin-top: 1rem;">
+<button type="submit" id="mech-submit-btn" class="btn btn-secondary w-full"><i class="fa-solid fa-satellite-dish"></i> Broadcast Machinery Deployment</button>
+</div>
+</form>
+</div>
+<div class="table-container">
+<table class="data-table">
+<thead>
+<tr>
+<th style="width: 80px; text-align: center;">Asset</th>
+<th>Machine Identity</th>
+<th>Type</th>
+<th>Rates (Rent/Op)</th>
+<th>Status & Qty</th>
+<th style="text-align: right;">Action Control</th>
+</tr>
+</thead>
+<tbody id="mech-table-body"></tbody>
+</table>
+</div>
+</section>
 
-    <main>
-        <!-- 3. HERO SECTION -->
-        <section id="home" class="hero">
-            <div class="container">
-                <h1 data-i18n="hero_title">Empowering Modern Agriculture</h1>
-                <p data-i18n="hero_subtitle">Join the MWAMINI Ecosystem for digital agriculture, advanced mechanization, and comprehensive farmer support.</p>
-                <div class="hero-btns">
-                    <a href="#shop" class="btn btn-primary" data-i18n="btn_explore_shop">Explore Shop</a>
-                    <a href="#order-project" class="btn btn-secondary" data-i18n="btn_start_project">Start a Project</a>
-                </div>
-            </div>
-        </section>
+<!-- Announcements -->
+<section id="announcements-view" class="tab-content">
+<div class="flex justify-between items-center mb-8">
+<div>
+<h2 class="text-primary">Public Announcements Protocol</h2>
+<p>Manage continuous smooth marquee broadcasts and static announcement cards.</p>
+</div>
+<button class="btn btn-danger" onclick="deleteAllRecords('announcements', 'announcements')"><i class="fa-solid fa-radiation"></i> Purge All Broadcasts</button>
+</div>
+<div class="card mb-6" style="border-left: 4px solid var(--success);">
+<h3 class="mb-4">Marquee Override Settings</h3>
+<p class="text-sm text-muted mb-4">Frontend enforces green banner with black text. Sentences slide completely before the next begins.</p>
+<div class="form-group">
+<label class="form-label">Global Marquee State</label>
+<select id="global-marquee-state" class="form-control w-full" style="max-width: 300px;">
+<option value="active">Active (Scrolling Enabled)</option>
+<option value="inactive">Inactive (Hidden)</option>
+</select>
+</div>
+</div>
+<div class="card mb-8">
+<form id="announcement-form" class="form-grid" style="grid-template-columns: 1fr;">
+<input type="hidden" id="announce-id" />
+<div class="flex gap-4">
+<div class="form-group" style="flex: 2; margin: 0;">
+<label class="form-label">Marquee Sentence Segment (Short & Direct)</label>
+<input type="text" id="announce-sentence" class="form-control" placeholder="e.g. System upgrade scheduled for 0200h UTC." required />
+</div>
+<div class="form-group" style="flex: 1; margin: 0;">
+<label class="form-label">Broadcast Type</label>
+<select id="announce-type" class="form-control">
+<option value="marquee">Marquee (Scrolling Sentence)</option>
+<option value="card">Static Announcement Card</option>
+</select>
+</div>
+<div class="form-group" style="flex: 1; margin: 0;">
+<label class="form-label">State</label>
+<select id="announce-active" class="form-control">
+<option value="true">Active (Live)</option>
+<option value="false">Inactive</option>
+</select>
+</div>
+</div>
+<div class="form-group mt-4 hidden" id="announce-full-text-container">
+<label class="form-label">Card Extended Payload (Only for Card Type)</label>
+<div id="announce-text-editor"></div>
+</div>
+<div class="form-group mt-4">
+<label class="form-label">Attached Media Packet (Universal)</label>
+<input type="file" id="announce-file" class="form-control" style="padding: 0.4rem;" accept="image/*,video/*,audio/*,.pdf,.doc,.docx,text/plain" />
+<input type="hidden" id="announce-existing-file" />
+</div>
+<div class="flex gap-4 mt-4">
+<button type="submit" id="announce-submit-btn" class="btn btn-primary" style="flex: 1;"><i class="fa-solid fa-satellite-dish"></i> Execute Broadcast</button>
+<button type="button" id="announce-cancel-btn" class="btn btn-outline hidden" style="flex: 1;" onclick="resetAnnouncementForm()">Abort Operation</button>
+</div>
+</form>
+</div>
+<div class="table-container">
+<table class="data-table">
+<thead>
+<tr>
+<th>Type Vector</th>
+<th>Sentence Payload</th>
+<th style="text-align: center;">Media</th>
+<th>Status</th>
+<th style="text-align: right;">Action Control</th>
+</tr>
+</thead>
+<tbody id="announcements-table-body"></tbody>
+</table>
+</div>
+</section>
 
-        <!-- 4. ABOUT US (Expanded) -->
-        <section id="about" class="section">
-            <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title" data-i18n="about_title">About MWAMINI PORTAL</h2>
-                </div>
-                <div class="about-content">
-                    <div class="about-image">
-                        <img src="https://images.unsplash.com/photo-1592982537447-6f29e2c656d0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Modern Farming" style="border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);">
-                    </div>
-                    <div class="about-text">
-                        <!-- Original Content Preserved & Expanded -->
-                        <h3 data-i18n="about_heading">Pioneering Digital Agriculture</h3>
-                        <p data-i18n="about_p1">MWAMINI PORTAL is a leading agricultural ecosystem dedicated to transforming the farming landscape. We bridge the gap between traditional practices and modern technological advancements.</p>
-                        <p data-i18n="about_p2">Our platform offers a comprehensive suite of services including Agricultural Mechanization, Digital Agriculture, Modern Farming techniques, and Equipment Rental to ensure efficiency and high yield.</p>
-                        
-                        <div class="about-features">
-                            <div class="feature-item">
-                                <div class="feature-icon"><i class="fa-solid fa-seedling"></i></div>
-                                <div class="feature-text">
-                                    <h4 data-i18n="feat_sustainable">Sustainable Agriculture</h4>
-                                    <p class="text-sm text-muted" data-i18n="feat_sustainable_desc">Promoting eco-friendly farming.</p>
-                                </div>
-                            </div>
-                            <div class="feature-item">
-                                <div class="feature-icon"><i class="fa-solid fa-tractor"></i></div>
-                                <div class="feature-text">
-                                    <h4 data-i18n="feat_mech">Agricultural Mechanization</h4>
-                                    <p class="text-sm text-muted" data-i18n="feat_mech_desc">Advanced equipment rental & deployment.</p>
-                                </div>
-                            </div>
-                            <div class="feature-item">
-                                <div class="feature-icon"><i class="fa-solid fa-hand-holding-hand"></i></div>
-                                <div class="feature-text">
-                                    <h4 data-i18n="feat_support">Farmer Support</h4>
-                                    <p class="text-sm text-muted" data-i18n="feat_support_desc">Education and community development.</p>
-                                </div>
-                            </div>
-                            <div class="feature-item">
-                                <div class="feature-icon"><i class="fa-solid fa-microchip"></i></div>
-                                <div class="feature-text">
-                                    <h4 data-i18n="feat_innovation">Smart Farming</h4>
-                                    <p class="text-sm text-muted" data-i18n="feat_innovation_desc">Innovation for future services.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+<!-- Customer Orders Log -->
+<section id="orders-view" class="tab-content">
+<div class="flex justify-between items-center mb-8">
+<div>
+<h2 class="text-primary">Customer Operations & Dispatch Log</h2>
+<p>Track standard commodities, mechanization rentals, and system logistics.</p>
+</div>
+<div class="flex gap-2">
+<button class="btn btn-success" onclick="exportOrdersToExcel()"><i class="fa-solid fa-file-excel"></i> Export Matrix (Excel)</button>
+<button class="btn btn-danger" onclick="deleteAllRecords('orders', 'orders')"><i class="fa-solid fa-trash-can"></i> Purge All Logs</button>
+</div>
+</div>
+<div class="card mb-6">
+<div class="flex gap-4">
+<div class="form-group" style="flex: 2; margin: 0;">
+<input type="text" id="order-search" class="form-control" placeholder="Query by client ID, hash, or nomenclature..." />
+</div>
+<div class="form-group" style="flex: 1; margin: 0;">
+<select id="order-type-filter" class="form-control">
+<option value="All">All Operation Types</option>
+<option value="Commodity">Standard Commodities</option>
+<option value="Mechanization">Mechanization Rentals</option>
+</select>
+</div>
+<div class="form-group" style="flex: 1; margin: 0;">
+<select id="order-status-filter" class="form-control">
+<option value="All">All Pipeline States</option>
+<option value="Pending">Pending Validation</option>
+<option value="Processing">Processing Operations</option>
+<option value="Active">Active/In Transit</option>
+<option value="Completed">Completed/Delivered</option>
+<option value="Cancelled">Aborted</option>
+</select>
+</div>
+</div>
+</div>
+<div class="table-container">
+<table class="data-table">
+<thead>
+<tr>
+<th>Transaction Identity</th>
+<th>Requested Asset/Service</th>
+<th>Routing Client</th>
+<th>Financials (USD)</th>
+<th>Pipeline State</th>
+<th>Timestamp</th>
+<th style="text-align: right;">Operations</th>
+</tr>
+</thead>
+<tbody id="admin-orders-list"></tbody>
+</table>
+</div>
+</section>
 
-        <!-- 5. FARMER HELP (Inserted between About and Story) -->
-        <section id="farmer-help" class="section" style="background-color: var(--bg-surface);">
-            <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title" data-i18n="help_title">Farmer Help & Education</h2>
-                    <p data-i18n="help_subtitle" style="margin-top: 1rem;">Access crucial educational materials, guides, and resources for modern farming success.</p>
-                </div>
-                
-                <div class="grid grid-cols-3" id="farmer-help-grid">
-                    <!-- Dynamic Content populated via JS (Supports all universal media) -->
-                    <div class="text-center w-full" style="grid-column: 1 / -1; padding: 3rem;">
-                        <i class="fa-solid fa-spinner fa-spin text-primary" style="font-size: 2rem;"></i>
-                        <p class="mt-4" data-i18n="loading_resources">Loading educational resources...</p>
-                    </div>
-                </div>
-            </div>
-        </section>
+<!-- Feedback & Tickets -->
+<section id="comments-view" class="tab-content">
+<div class="flex justify-between items-center mb-8">
+<div>
+<h2 class="text-primary">Global Feedback & Tickets Matrix</h2>
+<p>Process inbound communications, public reviews, and direct inquiries.</p>
+</div>
+<div class="flex gap-2">
+<button class="btn btn-danger" onclick="deleteAllRecords('reviews', 'reviews')"><i class="fa-solid fa-trash-can"></i> Purge Reviews</button>
+<button class="btn btn-danger" onclick="deleteAllRecords('inquiries', 'support tickets')"><i class="fa-solid fa-trash-can"></i> Purge Tickets</button>
+</div>
+</div>
+<div class="table-container">
+<table class="data-table">
+<thead>
+<tr>
+<th>Vector Origin</th>
+<th>Originator Identity</th>
+<th>Payload Content (Truncated)</th>
+<th>Timestamp</th>
+<th style="text-align: right;">Resolution Actions</th>
+</tr>
+</thead>
+<tbody id="comments-table-body"></tbody>
+</table>
+</div>
+</section>
 
-        <!-- 6. STORY -->
-        <section id="story" class="section">
-            <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title" data-i18n="story_title">Our Platform Narrative</h2>
-                    <p data-i18n="story_subtitle" style="margin-top: 1rem;">Discover engaging stories from our global ecosystem.</p>
-                </div>
-                
-                <div class="grid grid-cols-2" id="story-grid">
-                    <!-- Dynamic Stories -->
-                    <div class="text-center w-full" style="grid-column: 1 / -1; padding: 3rem;">
-                        <i class="fa-solid fa-spinner fa-spin text-primary" style="font-size: 2rem;"></i>
-                        <p class="mt-4" data-i18n="loading_stories">Loading narratives...</p>
-                    </div>
-                </div>
-            </div>
-        </section>
+<!-- Registered Users -->
+<section id="users-view" class="tab-content">
+<div class="flex justify-between items-center mb-8">
+<div>
+<h2 class="text-primary">Identity Access Management (IAM)</h2>
+<p>Control authenticated entities, authorizations, and credential matrices.</p>
+<div class="mt-2 text-sm text-special"><i class="fa-solid fa-shield-check"></i> System Rule Updated: Terms & Conditions mandatory for auth. Manual avatar configuration enforced.</div>
+</div>
+<button class="btn btn-primary" onclick="openUserFormModal()"><i class="fa-solid fa-user-plus"></i> Provision New Identity</button>
+</div>
+<div class="card mb-6">
+<div class="form-group" style="margin: 0;">
+<input type="text" id="user-search" class="form-control" placeholder="Scan identities via name, hash, or verified contact vector..." />
+</div>
+</div>
+<div class="table-container">
+<table class="data-table">
+<thead>
+<tr>
+<th style="width: 60px;">Avatar</th>
+<th>Identity Credentials</th>
+<th>Contact Vectors</th>
+<th>Routing Authorization</th>
+<th>Ingress Date</th>
+<th style="text-align: right;">Action Matrix</th>
+</tr>
+</thead>
+<tbody id="users-table-body"></tbody>
+</table>
+</div>
+</section>
 
-        <!-- 7. ORDER PROJECT (Inserted between Story and Contact Us) -->
-        <section id="order-project" class="section" style="background-color: var(--bg-surface);">
-            <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title" data-i18n="project_title">Order a Project</h2>
-                    <p data-i18n="project_subtitle" style="margin-top: 1rem;">Submit your large-scale agricultural or infrastructure project for orchestration.</p>
-                </div>
+<!-- Farmer Help Portal -->
+<section id="farmer-help-view" class="tab-content">
+<div class="flex justify-between items-center mb-8">
+<div>
+<h2 class="text-success">Farmer Help Publishing Node</h2>
+<p>Distribute educational materials, operational guides, and agricultural resources.</p>
+</div>
+<button class="btn btn-success" onclick="openFarmerHelpForm()"><i class="fa-solid fa-pen-nib"></i> Draft New Document</button>
+</div>
+<div id="farmer-help-form-container" class="card mb-8 hidden" style="border: 2px dashed var(--success);">
+<div class="flex justify-between items-center mb-6">
+<h3 class="text-success">Educational Payload Configuration</h3>
+<button class="btn btn-outline btn-icon" onclick="openFarmerHelpForm()"><i class="fa-solid fa-xmark"></i></button>
+</div>
+<form id="farmer-help-form" class="form-grid" style="grid-template-columns: 1fr;">
+<input type="hidden" id="help-id" />
+<div class="form-group">
+<label class="form-label">Document Title / Topic</label>
+<input type="text" id="help-title" class="form-control" placeholder="e.g. Optimal Soil pH Balancing Techniques" required />
+</div>
+<div class="form-group mt-4">
+<label class="form-label">Core Educational Text Payload</label>
+<div id="help-content-editor"></div>
+</div>
+<div class="form-group mt-4">
+<label class="form-label">Supporting Resource Assets (Universal)</label>
+<input type="file" id="help-file" class="form-control" style="padding: 0.5rem;" accept="image/*,video/*,audio/*,.pdf,.doc,.docx,text/plain" />
+<div class="text-xs text-muted mt-2"><i class="fa-solid fa-circle-info text-success"></i> Upload educational Images, Videos, Audio recordings, PDFs, or Word Docs.</div>
+<input type="hidden" id="help-existing-file" />
+</div>
+<div class="flex gap-4 mt-4">
+<button type="submit" id="help-submit-btn" class="btn btn-success" style="flex: 1;"><i class="fa-solid fa-book-open-reader"></i> Distribute Document to Portal</button>
+</div>
+</form>
+</div>
+<div class="table-container">
+<table class="data-table">
+<thead>
+<tr>
+<th style="width: 80px; text-align: center;">Resource</th>
+<th>Document Identity</th>
+<th>Truncated Payload</th>
+<th>Timestamp</th>
+<th style="text-align: right;">Action Matrix</th>
+</tr>
+</thead>
+<tbody id="farmer-help-table-body"></tbody>
+</table>
+</div>
+</section>
 
-                <div class="grid grid-cols-2">
-                    <!-- Available Projects to View -->
-                    <div>
-                        <h3 data-i18n="project_active_title">Active Architectural Blueprints</h3>
-                        <div class="grid grid-cols-1" id="active-projects-grid" style="max-height: 600px; overflow-y: auto; padding-right: 1rem;">
-                            <!-- Populated via JS -->
-                            <p data-i18n="loading_projects">Loading active projects...</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Submission Form -->
-                    <div class="card" style="padding: 2.5rem;">
-                        <h3 data-i18n="project_form_title">Submit Project Request</h3>
-                        <p class="text-sm text-muted mb-4"><i class="fa-solid fa-circle-info text-special"></i> <span data-i18n="project_notice">All projects require a mandatory 30% advance payment after approval.</span></p>
-                        
-                        <div id="project-success-msg" class="hidden" style="background: rgba(16, 185, 129, 0.1); color: var(--success); padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid rgba(16, 185, 129, 0.2); margin-bottom: 1.5rem; text-align: center;">
-                            <i class="fa-solid fa-check-circle" style="font-size: 2rem; margin-bottom: 0.5rem;"></i>
-                            <p style="font-weight: 600;" data-i18n="project_thank_you">Thank you for choosing MWAMINI PORTAL. It is our pleasure to work with you.</p>
-                        </div>
+<!-- Stories Management -->
+<section id="stories-view" class="tab-content">
+<div class="flex justify-between items-center mb-8">
+<div>
+<h2 class="text-primary">Platform Narrative Architecture (Stories)</h2>
+<p>Curate, publish, and track engagement for global system narratives.</p>
+</div>
+<button class="btn btn-danger" onclick="deleteAllRecords('stories', 'stories')"><i class="fa-solid fa-radiation"></i> Purge All Narratives</button>
+</div>
+<div class="card mb-8">
+<form id="story-form" class="form-grid" style="grid-template-columns: 1fr;">
+<input type="hidden" id="story-id" />
+<div class="flex gap-4">
+<div class="form-group" style="flex: 2; margin: 0;">
+<label class="form-label">Narrative Headline</label>
+<input type="text" id="story-title" class="form-control" placeholder="Enter engaging headline..." required />
+</div>
+<div class="form-group" style="flex: 1; margin: 0;">
+<label class="form-label">Visibility State</label>
+<select id="story-active" class="form-control">
+<option value="true">Published (Live Signal)</option>
+<option value="false">Draft (Encrypted)</option>
+</select>
+</div>
+</div>
+<div class="form-group mt-4">
+<label class="form-label">Deep Narrative Payload</label>
+<div id="story-content-editor"></div>
+</div>
+<div class="form-group mt-4">
+<label class="form-label">Narrative Media Asset (Universal)</label>
+<input type="file" id="story-file" class="form-control" style="padding: 0.4rem;" accept="image/*,video/*,audio/*,.pdf,.doc,.docx,text/plain" />
+<input type="hidden" id="story-existing-file" />
+</div>
+<div class="flex gap-4 mt-4" style="grid-column: 1 / -1;">
+<button type="submit" id="story-submit-btn" class="btn btn-primary" style="flex: 1;"><i class="fa-solid fa-satellite-dish"></i> Broadcast Narrative</button>
+<button type="button" id="story-cancel-btn" class="btn btn-outline hidden" style="flex: 1;" onclick="resetStoryForm()">Abort Trajectory</button>
+</div>
+</form>
+</div>
+<div id="stories-card-grid" class="grid-cards"></div>
+</section>
 
-                        <form id="public-project-form">
-                            <div class="form-group">
-                                <label class="form-label" data-i18n="label_client_name">Client Name / Organization</label>
-                                <input type="text" id="req-client-name" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label" data-i18n="label_project_title">Project Title</label>
-                                <input type="text" id="req-project-title" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label" data-i18n="label_email">Contact Email</label>
-                                <input type="email" id="req-email" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label" data-i18n="label_budget_range">Amount Range (USD) - Select logic</label>
-                                <div style="display: flex; gap: 1rem;">
-                                    <input type="number" id="req-min-amount" class="form-control" placeholder="Min" required oninput="calculatePublicProject()">
-                                    <input type="number" id="req-max-amount" class="form-control" placeholder="Max" required oninput="calculatePublicProject()">
-                                </div>
-                            </div>
-                            
-                            <!-- Auto calculations required by prompt -->
-                            <div class="form-group" style="background: var(--bg-surface-hover); padding: 1rem; border-radius: var(--radius-md); border: 1px dashed var(--border-color);">
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                                    <span class="text-sm font-weight-bold" data-i18n="calc_average">Automatic Average Calculation:</span>
-                                    <span id="calc-avg-display" style="font-weight: 700; color: var(--text-main);">$0.00</span>
-                                </div>
-                                <div style="display: flex; justify-content: space-between;">
-                                    <span class="text-sm font-weight-bold text-danger" data-i18n="calc_advance">30% Advance Payment Required:</span>
-                                    <span id="calc-adv-display" style="font-weight: 700; color: var(--danger);">$0.00</span>
-                                </div>
-                            </div>
+<!-- Order Project Operations -->
+<section id="order-project-view" class="tab-content">
+<div class="flex justify-between items-center mb-8">
+<div>
+<h2 class="text-special">Project Orchestration Center</h2>
+<p>Publish massive-scale projects, manage client requests, and oversee financial baselines.</p>
+<div class="mt-2 text-sm text-special"><i class="fa-solid fa-money-bill-wave"></i> System Rule: All projects strictly demand 30% advance deposit at runtime.</div>
+</div>
+<button class="btn btn-special" onclick="openProjectForm()"><i class="fa-solid fa-rocket"></i> Initialize New Project Space</button>
+</div>
+<div id="project-form-container" class="card mb-8 hidden" style="border: 2px dashed var(--special);">
+<div class="flex justify-between items-center mb-6">
+<h3 class="text-special">Project Parameter Definition</h3>
+<button class="btn btn-outline btn-icon" onclick="openProjectForm()"><i class="fa-solid fa-xmark"></i></button>
+</div>
+<form id="project-management-form" class="form-grid">
+<input type="hidden" id="project-id" />
+<div class="form-group">
+<label class="form-label">Project Nomenclature / Title</label>
+<input type="text" id="project-title" class="form-control" placeholder="e.g. National Irrigation Infrastructure Initiative" required />
+</div>
+<div class="form-group">
+<label class="form-label">Allocated Client ID (Optional)</label>
+<input type="text" id="project-client" class="form-control" placeholder="Client Name or Organization" />
+</div>
+<div class="form-group">
+<label class="form-label">Minimum Amount Bound (USD)</label>
+<input type="number" id="project-min-amount" class="form-control" placeholder="0.00" oninput="calculateProjectMean()" required />
+</div>
+<div class="form-group">
+<label class="form-label">Maximum Amount Bound (USD)</label>
+<input type="number" id="project-max-amount" class="form-control" placeholder="0.00" oninput="calculateProjectMean()" required />
+</div>
+<div class="form-group">
+<label class="form-label">Calculated Mean Projection (USD)</label>
+<input type="number" id="project-mean-amount" class="form-control" readonly style="background-color: var(--bg-surface-hover); font-weight: bold;" />
+</div>
+<div class="form-group">
+<label class="form-label">Mandatory 30% Advance (USD)</label>
+<input type="number" id="project-advance-amount" class="form-control" readonly style="background-color: var(--bg-surface-hover); font-weight: bold; color: var(--danger);" />
+</div>
+<div class="form-group" style="grid-column: 1 / -1;">
+<label class="form-label">Architectural Blueprint & Description (Max 200 words)</label>
+<div id="project-desc-editor"></div>
+</div>
+<div class="form-group" style="grid-column: 1 / -1;">
+<label class="form-label">Project Core Assets (Universal Upload)</label>
+<input type="file" id="project-file" class="form-control" style="padding: 0.5rem;" accept="image/*,video/*,audio/*,.pdf,.doc,.docx,text/plain" />
+<input type="hidden" id="project-existing-file" />
+</div>
+<div class="flex gap-4 mt-4" style="grid-column: 1 / -1;">
+<button type="submit" id="project-submit-btn" class="btn btn-special w-full"><i class="fa-solid fa-globe"></i> Compile & Deploy Project Space</button>
+</div>
+</form>
+</div>
+<div class="table-container">
+<table class="data-table">
+<thead>
+<tr>
+<th style="width: 80px; text-align: center;">Blueprint</th>
+<th>Project Identity</th>
+<th>Client Association</th>
+<th>Financial Envelope (Mean / Adv)</th>
+<th>Status</th>
+<th style="text-align: right;">Action Matrix</th>
+</tr>
+</thead>
+<tbody id="project-table-body"></tbody>
+</table>
+</div>
+<h3 class="mt-8 mb-4 text-special">Incoming Client Project Requests</h3>
+<div class="table-container">
+<table class="data-table">
+<thead>
+<tr>
+<th>Client Identity</th>
+<th>Target Project / Abstract</th>
+<th>Contact Vector</th>
+<th>Proposed Budget Logic</th>
+<th>Submission Timestamp</th>
+<th style="text-align: right;">Evaluation Actions</th>
+</tr>
+</thead>
+<tbody id="project-requests-table-body"></tbody>
+</table>
+</div>
+</section>
 
-                            <div class="form-group">
-                                <label class="form-label" data-i18n="label_desc">Description (Maximum 200 words)</label>
-                                <textarea id="req-desc" class="form-control" rows="4" required></textarea>
-                                <div class="text-xs text-muted mt-2" id="word-count-display">0 / 200 words</div>
-                            </div>
-                            <button type="submit" class="btn btn-special w-full" data-i18n="btn_submit_project">
-                                <i class="fa-solid fa-paper-plane"></i> Submit Project Request
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </section>
+<!-- Live Support Desk (Chat) -->
+<section id="chat-view" class="tab-content">
+<div class="flex justify-between items-center mb-8">
+<div>
+<h2 class="text-primary">Live Support Node Operations</h2>
+<p>Maintain encrypted, real-time communication vectors with authenticated external entities.</p>
+</div>
+<button class="btn btn-danger" onclick="deleteAllRecords('chat_messages', 'support messages')"><i class="fa-solid fa-radiation"></i> Purge All Communications</button>
+</div>
+<div class="chat-manager-layout" style="height: 650px; border: 1px solid var(--border-color); border-radius: var(--radius-lg); overflow: hidden; background: var(--bg-surface); display: flex;">
+<div class="chat-sidebar" style="width: 320px; border-right: 1px solid var(--border-color); display: flex; flex-direction: column; background: var(--bg-surface);">
+<div class="chat-sidebar-header" style="padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-color); font-weight: 700; background: var(--bg-primary);">Active Connections</div>
+<div class="chat-user-list" id="admin-chat-users-list" style="flex: 1; overflow-y: auto;"></div>
+</div>
+<div class="chat-window" style="flex: 1; display: flex; flex-direction: column; background: var(--bg-primary);">
+<div id="chat-empty-state" style="flex: 1; display: flex; align-items: center; justify-content: center; color: var(--text-muted); flex-direction: column; gap: 1rem; text-align: center; padding: 2rem;">
+<i class="fa-solid fa-satellite" style="font-size: 5rem; margin-bottom: 1rem; opacity: 0.2; color: var(--primary);"></i>
+<h3 style="margin-bottom: 0.5rem; color: var(--text-main);">No established connection</h3>
+<p>Select a node from the active connections matrix to initialize communication protocol.</p>
+</div>
+<div id="chat-no-users-state" class="hidden" style="flex: 1; display: flex; align-items: center; justify-content: center; color: var(--text-muted); flex-direction: column; gap: 1rem; text-align: center; padding: 2rem;">
+<i class="fa-solid fa-inbox" style="font-size: 5rem; margin-bottom: 1rem; opacity: 0.2;"></i>
+<h3 style="margin-bottom: 0.5rem; color: var(--text-main);">Airwaves clear</h3>
+<p>Zero incoming transmission vectors detected at this time.</p>
+</div>
+<div id="chat-active-state" class="hidden flex-col h-full w-full">
+<div style="padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: var(--bg-surface); font-weight: 600;">
+<div class="flex items-center gap-4">
+<div class="cell-img" id="active-chat-avatar" style="width:40px; height:40px; border-radius:50%; background:var(--bg-surface-hover); border: 1px solid var(--border-color); display:flex; align-items:center; justify-content:center;">
+<i class="fa-solid fa-user-astronaut text-primary"></i>
+</div>
+<div>
+<span id="active-chat-name" style="font-size: 1.1rem; display: block;">Identity Name</span>
+<span style="font-size: 0.75rem; color: var(--primary); font-weight: 600;"><i class="fa-solid fa-circle" style="font-size: 0.5rem; margin-right: 4px;"></i>Secure Link Established</span>
+</div>
+</div>
+<button class="btn btn-outline btn-icon text-xs" onclick="closeActiveChat()"><i class="fa-solid fa-xmark"></i> Sever Link</button>
+</div>
+<div id="admin-chat-messages" style="flex: 1; padding: 1.5rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1.5rem;"></div>
+<form id="admin-chat-form" style="background: var(--bg-surface); border-top: 1px solid var(--border-color); display: flex; flex-direction: column; padding: 1rem;">
+<input type="hidden" id="active-chat-user-id" />
+<div id="admin-chat-input-container" style="flex: 1; background: var(--bg-primary); border-radius: var(--radius-md); border: 1px solid var(--border-color); overflow: hidden;">
+<div id="admin-chat-input-editor"></div>
+</div>
+<div style="display:flex; justify-content:space-between; align-items: center; padding: 0.5rem 1rem; background: var(--bg-surface); border-top: 1px solid var(--border-color);">
+<span style="font-size: 0.7rem; color: var(--text-muted);">Secure Channel</span>
+<button type="submit" id="chat-submit-btn" class="btn btn-primary" style="border-radius: 50px; font-size: 0.875rem; padding: 0.4rem 1rem;"><i class="fa-solid fa-paper-plane"></i> Send</button>
+</div>
+</form>
+</div>
+</div>
+</div>
 
-        <!-- 8. SHOP (Commodities) -->
-        <section id="shop" class="section">
-            <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title" data-i18n="shop_title">Commodity Matrix (Shop)</h2>
-                    <p data-i18n="shop_subtitle" style="margin-top: 1rem;">Browse organic seeds, grains, and construction materials.</p>
-                </div>
-                
-                <div class="grid grid-cols-4" id="shop-grid">
-                    <!-- Dynamic Products -->
-                    <div class="text-center w-full" style="grid-column: 1 / -1; padding: 3rem;">
-                        <i class="fa-solid fa-spinner fa-spin text-primary" style="font-size: 2rem;"></i>
-                    </div>
-                </div>
-            </div>
-        </section>
+<!-- Payments Gateway Matrix -->
+<section id="payments-view" class="tab-content">
+<div class="flex justify-between items-center mb-8">
+<div>
+<h2 class="text-primary">Financial Gateways Matrix</h2>
+<p>Configure API integrations and transactional endpoints (Mobile Money, Swift/Bank).</p>
+</div>
+<button class="btn btn-primary" onclick="openPaymentFormModal()"><i class="fa-solid fa-plus"></i> Inject Payment Node</button>
+</div>
+<div class="table-container">
+<table class="data-table">
+<thead>
+<tr>
+<th>Protocol Vector</th>
+<th>Gateway Identity (Nomenclature)</th>
+<th>Account Binding Hash</th>
+<th>Routing Identifier (Phone/Acc)</th>
+<th>Operational State</th>
+<th style="text-align: right;">Action Logic</th>
+</tr>
+</thead>
+<tbody id="payments-table-body"></tbody>
+</table>
+</div>
+</section>
 
-        <!-- 9. AGRICULTURAL MECHANIZATION SERVICES (Inserted between Shop and Announcements) -->
-        <section id="mechanization" class="section" style="background-color: var(--bg-surface);">
-            <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title" data-i18n="mech_title">Agricultural Mechanization Services</h2>
-                    <p data-i18n="mech_subtitle" style="margin-top: 1rem;">Deploy advanced tractors, harvesters, and specialized machinery managed directly through our systems.</p>
-                </div>
-                
-                <div class="grid grid-cols-3" id="mechanization-grid">
-                    <!-- Dynamic Machinery populated via JS -->
-                    <div class="text-center w-full" style="grid-column: 1 / -1; padding: 3rem;">
-                        <i class="fa-solid fa-spinner fa-spin text-secondary" style="font-size: 2rem;"></i>
-                        <p class="mt-4" data-i18n="loading_mech">Loading machinery deployment grid...</p>
-                    </div>
-                </div>
-            </div>
-        </section>
+<!-- Contact & Socials -->
+<section id="contacts-view" class="tab-content">
+<div class="flex justify-between items-center mb-8">
+<div>
+<h2 class="text-primary">Global Environmental Variables (Contact & Socials)</h2>
+<p>Dynamically manage frontend routing, social telemetry, and physical presence definitions.</p>
+</div>
+</div>
+<div class="card mb-8">
+<form id="contact-settings-form" class="form-grid">
+<div class="form-group">
+<label class="form-label"><i class="fa-brands fa-whatsapp text-success"></i> Secure Line (WhatsApp)</label>
+<input type="text" id="contact-whatsapp" class="form-control" placeholder="+250 780 000 000" />
+</div>
+<div class="form-group">
+<label class="form-label"><i class="fa-brands fa-facebook" style="color:#1877F2;"></i> Facebook Vector</label>
+<input type="url" id="contact-facebook" class="form-control" placeholder="https://facebook.com/mwamini" />
+</div>
+<div class="form-group">
+<label class="form-label"><i class="fa-brands fa-instagram" style="color:#E4405F;"></i> Instagram Vector</label>
+<input type="url" id="contact-instagram" class="form-control" placeholder="https://instagram.com/mwamini" />
+</div>
+<div class="form-group">
+<label class="form-label"><i class="fa-solid fa-phone text-muted"></i> Direct Voice Channel</label>
+<input type="text" id="contact-phone" class="form-control" placeholder="+250 780 000 000" />
+</div>
+<div class="form-group">
+<label class="form-label"><i class="fa-solid fa-envelope text-muted"></i> Primary Email Relay</label>
+<input type="email" id="contact-email" class="form-control" placeholder="operations@mwamini.com" />
+</div>
+<div class="form-group">
+<label class="form-label"><i class="fa-solid fa-map-location-dot text-muted"></i> Physical Base Matrix</label>
+<input type="text" id="contact-address" class="form-control" placeholder="Kigali City, Rwanda" />
+</div>
+<div class="flex gap-4 mt-4" style="grid-column: 1 / -1;">
+<button type="submit" id="contact-submit-btn" class="btn btn-primary w-full"><i class="fa-solid fa-hard-drive"></i> Synchronize Environmental Variables</button>
+</div>
+</form>
+</div>
+</section>
+</main>
+</div>
 
-        <!-- 10. ANNOUNCEMENTS CARDS (Static cards existing unchanged, just stylized) -->
-        <section id="announcements" class="section">
-            <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title" data-i18n="announcements_title">Public Broadcasts</h2>
-                    <p data-i18n="announcements_subtitle" style="margin-top: 1rem;">Static announcement cards and system updates.</p>
-                </div>
-                
-                <div class="grid grid-cols-3" id="announcements-grid">
-                    <!-- Dynamic Cards -->
-                    <div class="text-center w-full" style="grid-column: 1 / -1; padding: 3rem;">
-                        <i class="fa-solid fa-spinner fa-spin text-primary" style="font-size: 2rem;"></i>
-                    </div>
-                </div>
-            </div>
-        </section>
+<!-- Toast Container for Notifications -->
+<div id="toast-container" class="toast-container"></div>
 
-        <!-- 11. CONTACT US -->
-        <section id="contact" class="section" style="background-color: var(--bg-surface);">
-            <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title" data-i18n="contact_title">Contact Operations</h2>
-                    <p data-i18n="contact_subtitle" style="margin-top: 1rem;">Establish communication with the MWAMINI Mainframe.</p>
-                </div>
-                
-                <div class="grid grid-cols-2">
-                    <div class="card" style="padding: 2.5rem; background: var(--bg-primary);">
-                        <h3 class="mb-4" data-i18n="contact_info">Global Contact Vectors</h3>
-                        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
-                            <div style="display: flex; align-items: center; gap: 1rem;">
-                                <div style="width: 50px; height: 50px; border-radius: 50%; background: rgba(16, 185, 129, 0.1); color: var(--success); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
-                                    <i class="fa-solid fa-map-location-dot"></i>
-                                </div>
-                                <div>
-                                    <div style="font-weight: 700;" data-i18n="contact_address_lbl">Physical Base Matrix</div>
-                                    <div class="text-muted" id="display-address">Kigali City, Rwanda</div>
-                                </div>
-                            </div>
-                            
-                            <div style="display: flex; align-items: center; gap: 1rem;">
-                                <div style="width: 50px; height: 50px; border-radius: 50%; background: rgba(59, 130, 246, 0.1); color: var(--color-blue-500); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
-                                    <i class="fa-solid fa-envelope"></i>
-                                </div>
-                                <div>
-                                    <div style="font-weight: 700;" data-i18n="contact_email_lbl">Primary Email Relay</div>
-                                    <div class="text-muted" id="display-email">operations@mwamini.com</div>
-                                </div>
-                            </div>
-                            
-                            <div style="display: flex; align-items: center; gap: 1rem;">
-                                <div style="width: 50px; height: 50px; border-radius: 50%; background: rgba(234, 179, 8, 0.1); color: var(--warning); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
-                                    <i class="fa-solid fa-phone"></i>
-                                </div>
-                                <div>
-                                    <div style="font-weight: 700;" data-i18n="contact_phone_lbl">Direct Voice Channel</div>
-                                    <div class="text-muted" id="display-phone">+250 780 000 000</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="card" style="padding: 2.5rem;">
-                        <h3 class="mb-4" data-i18n="contact_form_title">Transmit Message</h3>
-                        <form id="public-contact-form">
-                            <div class="form-group">
-                                <label class="form-label" data-i18n="label_name">Name Identity</label>
-                                <input type="text" id="contact-name" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label" data-i18n="label_email">Email Vector</label>
-                                <input type="email" id="contact-email-input" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label" data-i18n="label_message">Payload Message</label>
-                                <textarea id="contact-message" class="form-control" rows="5" required></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary w-full" data-i18n="btn_send_msg">
-                                <i class="fa-solid fa-satellite-dish"></i> Send Transmission
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
+<!-- Modals for User Management, Authentication, Verification, Profile, etc. -->
+<!-- User Form Modal -->
+<div class="modal" id="user-form-modal">
+<div class="modal-content">
+<button type="button" class="close-modal-btn" onclick="closeUserFormModal()"><i class="fa-solid fa-xmark"></i></button>
+<h3 style="margin-bottom: 1.5rem;" id="user-form-title">Inject Identity Matrix</h3>
+<form id="user-management-form">
+<input type="hidden" id="user-id" />
+<div class="form-group">
+<label class="form-label">Complete Designation (Name)</label>
+<input type="text" id="user-name" class="form-control" required />
+</div>
+<div class="form-group">
+<label class="form-label">Email Hash</label>
+<input type="email" id="user-email" class="form-control" />
+</div>
+<div class="form-group">
+<label class="form-label">Telecom Vector</label>
+<input type="text" id="user-phone" class="form-control" />
+</div>
+<div class="form-group">
+<label class="form-label">Profile Media (Avatar - Optional)</label>
+<input type="file" id="user-avatar-file" class="form-control" accept="image/*" style="padding: 0.5rem;" />
+</div>
+<div class="form-group">
+<label class="form-label">Authorization Matrix (Status)</label>
+<select id="user-status" class="form-control">
+<option value="Active">Active / Approved</option>
+<option value="Disabled">Disabled / Revoked</option>
+</select>
+</div>
+<div class="form-group">
+<label class="form-label">Physical Coordinates</label>
+<input type="text" id="user-location" class="form-control" />
+</div>
+<button type="submit" id="user-submit-btn" class="btn btn-primary w-full mt-4">Commit Identity to Core</button>
+</form>
+</div>
+</div>
+
+<!-- Payment Form Modal -->
+<div class="modal" id="payment-form-modal">
+<div class="modal-content">
+<button type="button" class="close-modal-btn" onclick="closePaymentFormModal()"><i class="fa-solid fa-xmark"></i></button>
+<h3 style="margin-bottom: 1.5rem;" id="payment-form-title">Configure Financial Node</h3>
+<form id="payment-management-form">
+<input type="hidden" id="payment-id" />
+<div class="form-group">
+<label class="form-label">Provider Protocol</label>
+<select id="payment-type" class="form-control" required>
+<option value="Mobile Money">Mobile Money (Cellular)</option>
+<option value="Bank Transfer">Bank Transfer (Swift/IBAN)</option>
+</select>
+</div>
+<div class="form-group">
+<label class="form-label">Gateway Nomenclature (e.g. MTN MoMo, Bank of Kigali)</label>
+<input type="text" id="payment-name" class="form-control" required />
+</div>
+<div class="form-group">
+<label class="form-label">Account Binding Identity</label>
+<input type="text" id="payment-account-name" class="form-control" required />
+</div>
+<div class="form-group">
+<label class="form-label">Routing Sequence (Number/Phone)</label>
+<input type="text" id="payment-account-number" class="form-control" required />
+</div>
+<div class="form-group">
+<label class="form-label">Operational Visibility</label>
+<select id="payment-status" class="form-control">
+<option value="true">Active & Visible to Clients</option>
+<option value="false">Hidden (Maintenance)</option>
+</select>
+</div>
+<button type="submit" id="payment-submit-btn" class="btn btn-primary w-full mt-4">Inject Gateway to System</button>
+</form>
+</div>
+</div>
+
+<!-- Profile Completion Modal -->
+<div class="modal" id="profile-completion-modal">
+<div class="modal-content" style="text-align: center;">
+<button type="button" class="close-modal-btn" onclick="closeProfileCompletionModal()"><i class="fa-solid fa-xmark"></i></button>
+<h2 style="margin-bottom: 1rem; color: var(--accent);">Complete Your Profile (Optional)</h2>
+<p style="margin-bottom: 1.5rem; font-size: 0.875rem; color: var(--text-muted);">You may upload a profile picture to personalize your registration, or skip this step.</p>
+<form id="profile-completion-form">
+<img id="avatar-preview" class="user-avatar-preview" src="https://via.placeholder.com/100?text=Avatar" alt="Avatar" />
+<div class="form-group">
+<input type="file" id="avatar-upload" accept="image/*" class="form-control" style="padding: 0.5rem;" required />
+</div>
+<button type="submit" id="profile-complete-btn" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Upload Avatar</button>
+<button type="button" class="btn btn-outline" style="width: 100%; margin-top: 0.5rem;" onclick="closeProfileCompletionModal()">Skip For Now</button>
+</form>
+</div>
+</div>
+
+<!-- User Dashboard Modal -->
+<div class="modal" id="user-dashboard-modal">
+<div class="modal-content" style="max-width: 1000px; padding: 0; overflow: hidden; display: flex; flex-direction: column;">
+<div style="padding: 1.5rem 2rem; background: var(--bg-surface); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+<h2 style="margin: 0; color: var(--accent);"><i class="fa-solid fa-user-gear"></i> My Account Dashboard</h2>
+<button type="button" class="close-modal-btn" style="position: static;" onclick="closeUserDashboard()"><i class="fa-solid fa-xmark"></i></button>
+</div>
+<div style="display: flex; flex-wrap: wrap; flex: 1; min-height: 500px; max-height: 70vh; overflow-y: auto;">
+<div style="flex: 1; min-width: 250px; background: var(--bg-primary); padding: 2rem; border-right: 1px solid var(--border-color);">
+<h3 style="margin-bottom: 1.5rem; text-align: center; font-size: 1.1rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">Identity Matrix</h3>
+<div style="text-align: center; margin-bottom: 2rem;">
+<img id="dash-avatar" class="user-avatar-preview" src="https://via.placeholder.com/100?text=Avatar" alt="Profile" />
+<form id="dash-avatar-update-form" style="display:flex; flex-direction:column; gap:0.5rem; align-items:center;">
+<input type="file" id="dash-avatar-upload" accept="image/*" class="form-control" style="font-size:0.75rem; padding:0.4rem;" />
+<button type="submit" class="btn btn-outline" style="width: 100%; padding:0.4rem; font-size:0.75rem;"><i class="fa-solid fa-upload"></i> Update Avatar</button>
+</form>
+</div>
+<div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.5rem; font-size: 0.875rem;">
+<div style="margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+<span style="color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; display: block; margin-bottom: 0.25rem;">Full Name</span>
+<strong id="dash-name" style="color: var(--text-main);"></strong>
+</div>
+<div style="margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+<span style="color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; display: block; margin-bottom: 0.25rem;">Registered Email</span>
+<strong id="dash-email" style="color: var(--text-main); word-break: break-all;"></strong>
+</div>
+<div style="margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+<span style="color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; display: block; margin-bottom: 0.25rem;">Contact Vector</span>
+<strong id="dash-phone" style="color: var(--text-main);"></strong>
+</div>
+<div>
+<span style="color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; display: block; margin-bottom: 0.25rem;">Default Hub / Destination</span>
+<strong id="dash-dest" style="color: var(--text-main);"></strong>
+</div>
+</div>
+</div>
+<div style="flex: 2; min-width: 400px; padding: 2rem; background: var(--bg-surface);">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+<h3 style="margin: 0; color: var(--accent);"><i class="fa-solid fa-boxes-stacked"></i> Transaction History</h3>
+<button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.4rem 0.75rem;" onclick="loadUserOrders()"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
+</div>
+<div class="dashboard-table-container">
+<table class="dashboard-table">
+<thead>
+<tr>
+<th>Ref ID</th>
+<th>Requested Item</th>
+<th>Volume</th>
+<th>Pipeline State</th>
+<th style="text-align: right;">Operations</th>
+</tr>
+</thead>
+<tbody id="user-orders-body"></tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Order Modal -->
+<div class="modal" id="order-modal">
+<div class="modal-content" style="max-width: 600px;">
+<button type="button" class="close-modal-btn" onclick="closeOrderModal()"><i class="fa-solid fa-xmark"></i></button>
+<div style="text-align: center; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
+<h3 style="color: var(--accent); font-size: 1.5rem; margin-bottom: 0.5rem;"><i class="fa-solid fa-cart-arrow-down"></i> Checkout & Fulfillment</h3>
+<div style="font-weight: 600; color: var(--text-main);" id="modal-product-title">Product Name Placeholder</div>
+<div style="color: var(--success); font-weight: 800; font-size: 1.25rem; margin-top: 0.5rem;" id="modal-product-price">$0.00</div>
+</div>
+<form id="order-submission-form">
+<input type="hidden" id="form-product-id" />
+<input type="hidden" id="form-product-title-val" />
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+<div class="form-group">
+<label class="form-label">Recipient Full Name</label>
+<input type="text" id="cust-name" class="form-control" required />
+</div>
+<div class="form-group">
+<label class="form-label">Contact Number</label>
+<input type="tel" id="cust-phone" class="form-control" required />
+</div>
+</div>
+<div style="display: grid; grid-template-columns: 1fr 2fr; gap: 1rem;">
+<div class="form-group">
+<label class="form-label">Quantity</label>
+<input type="number" id="cust-qty" value="1" min="1" class="form-control" required onchange="calculateOrderTotal()" />
+</div>
+<div class="form-group">
+<label class="form-label">Delivery Destination / Hub</label>
+<input type="text" id="cust-location" class="form-control" required />
+</div>
+</div>
+<div class="form-group" style="margin-top: 1rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+<label class="form-label"><i class="fa-solid fa-money-bill-transfer text-success"></i> Select Payment Gateway</label>
+<select id="checkout-payment_gateways" class="form-control" required onchange="updatePaymentInstructions()">
+<option value="" disabled selected>Loading gateways...</option>
+</select>
+</div>
+<div id="payment-instructions" class="payment-instruction-box"></div>
+<div class="form-group">
+<label class="form-label">Special Notes / Freight Requests</label>
+<textarea id="cust-notes" class="form-control" style="height: 60px; resize: none;"></textarea>
+</div>
+<div style="background: var(--bg-primary); padding: 1rem; border-radius: var(--radius-md); margin: 1.5rem 0; text-align: center; border: 1px solid var(--border-color);">
+<span style="color: var(--text-muted); font-size: 0.875rem; text-transform: uppercase;">Total Computation</span>
+<div id="order-total-display" style="font-size: 1.5rem; font-weight: 800; color: var(--accent);">--</div>
+</div>
+<button type="submit" id="submit-order-btn" class="btn btn-primary" style="width: 100%; font-size: 1.1rem; padding: 1rem;"><i class="fa-solid fa-check-double"></i> Confirm & Submit Order</button>
+</form>
+</div>
+</div>
+
+<!-- Details Modal -->
+<div class="modal" id="details-modal">
+<div class="modal-content" style="max-width: 800px; padding: 0; overflow: hidden; display: flex; flex-direction: column; max-height: 90vh;">
+<div style="position: relative;">
+<button type="button" class="close-modal-btn" style="position: absolute; top: 1rem; right: 1rem; z-index: 50; background: rgba(0,0,0,0.5); color: white; border: none;" onclick="closeDetailsModal()"><i class="fa-solid fa-xmark"></i></button>
+<div id="details-media" style="width: 100%; height: 350px; background: var(--bg-primary);"></div>
+</div>
+<div style="padding: 2rem; overflow-y: auto; flex-grow: 1;">
+<h2 id="details-title" style="margin-bottom: 1rem; color: var(--accent); font-size: 1.75rem;"></h2>
+<div id="details-desc" class="ql-editor" style="padding: 0; font-size: 1rem; line-height: 1.7; max-height: none;"></div>
+</div>
+</div>
+</div>
+
+<!-- Story Details Modal -->
+<div class="modal" id="story-details-modal">
+<div class="modal-content" style="max-width: 800px; padding: 0; overflow: hidden;">
+<div style="position: relative;">
+<button type="button" class="close-modal-btn" style="position: absolute; top: 1rem; right: 1rem; z-index: 50; background: rgba(0,0,0,0.5); color: white; border: none;" onclick="closeStoryDetailsModal()"><i class="fa-solid fa-xmark"></i></button>
+<div id="story-details-media" style="width: 100%; height: 300px; background: var(--bg-primary);"></div>
+</div>
+<div style="padding: 2.5rem;">
+<h2 id="story-details-title" style="margin-bottom: 0.5rem; color: var(--accent); font-size: 2rem;"></h2>
+<div id="story-details-meta" style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 2rem; font-weight: 500; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;"></div>
+<div id="story-details-content" class="ql-editor" style="padding: 0; font-size: 1.05rem; line-height: 1.8;"></div>
+</div>
+</div>
+</div>
+
+<!-- Comments Modal -->
+<div class="modal" id="comments-modal">
+<div class="modal-content" style="max-width: 600px; padding: 2rem;">
+<button type="button" class="close-modal-btn" onclick="closeCommentsModal()" style="z-index: 50;"><i class="fa-solid fa-xmark"></i></button>
+<h3 style="margin-bottom: 1.5rem; color: var(--accent);"><i class="fa-solid fa-comments"></i> Discussion Vector</h3>
+<div id="comments-list" style="max-height: 350px; overflow-y: auto; margin-bottom: 1.5rem; padding: 1rem; background: var(--bg-primary); border-radius: var(--radius-md); border: 1px solid var(--border-color); scroll-behavior: smooth;"></div>
+<form id="comment-form" style="display: flex; flex-direction: column; gap: 1rem;">
+<input type="hidden" id="comment-target-id" />
+<input type="hidden" id="comment-target-type" />
+<div style="background: var(--bg-surface); border-radius: var(--radius-md);">
+<div id="comment-input-editor" style="height: 100px;"></div>
+</div>
+<button type="submit" class="btn btn-primary" style="align-self: flex-end;"><i class="fa-solid fa-reply"></i> Post Comment</button>
+</form>
+</div>
+</div>
+
+<!-- Support Chat Toggle Button -->
+<button id="chat-toggle-btn" onclick="toggleChatWidget()"><i class="fa-solid fa-headset" style="font-size: 1.2rem;"></i> Support</button>
+
+<!-- Support Chat Widget -->
+<div id="chat-widget">
+<div id="chat-header">
+<div style="display: flex; align-items: center; gap: 8px;">
+<div style="width: 8px; height: 8px; background: #34d399; border-radius: 50%; box-shadow: 0 0 5px #34d399;"></div>
+<span>Live Helpdesk</span>
+</div>
+<button onclick="toggleChatWidget()" style="background:none; border:none; color:white; cursor:pointer; font-size: 1.2rem; transition: transform 0.2s;"><i class="fa-solid fa-angle-down"></i></button>
+</div>
+<div id="chat-messages"></div>
+<form id="chat-input-area" onsubmit="sendChatMessage(event)">
+<div id="chat-editor-container" style="flex: 1;">
+<div id="chat-message-editor"></div>
+</div>
+<div style="display:flex; justify-content:space-between; align-items: center; padding: 0.5rem 1rem; background: var(--bg-surface); border-top: 1px solid var(--border-color);">
+<span style="font-size: 0.7rem; color: var(--text-muted);">Secure Channel</span>
+<button type="submit" id="chat-submit-btn" class="btn btn-primary" style="border-radius: 50px; font-size: 0.875rem; padding: 0.4rem 1rem;"><i class="fa-solid fa-paper-plane"></i> Send</button>
+</div>
+</form>
+</div>
+
+<!-- Footer -->
+<footer class="site-footer">
+<div class="footer-grid">
+<div class="footer-col">
+<h4>Mwamini Innovative & Public Solution Portal</h4>
+<p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">Leading the continent in reliable logistics, secure dispatch, and premium commodity distribution. We love you for life.</p>
+<div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+<a href="#" id="footer-fb" style="color: var(--text-muted); font-size: 1.5rem;"><i class="fa-brands fa-facebook"></i></a>
+<a href="#" id="footer-ig" style="color: var(--text-muted); font-size: 1.5rem;"><i class="fa-brands fa-instagram"></i></a>
+<a href="#" id="footer-wa" style="color: var(--text-muted); font-size: 1.5rem;"><i class="fa-brands fa-whatsapp"></i></a>
+</div>
+</div>
+<div class="footer-col">
+<h4>Quick Links</h4>
+<ul>
+<li><a href="#" onclick="navigate('home'); return false;">Portal Home</a></li>
+<li><a href="#" onclick="navigate('shop'); return false;">Commodities Catalog</a></li>
+<li><a href="#" onclick="navigate('announcements'); return false;">Platform Announcements</a></li>
+<li><a href="#" onclick="navigate('about'); return false;">Corporate Vision</a></li>
+<li><a href="#" onclick="navigate('story'); return false;">Platform Stories</a></li>
+</ul>
+</div>
+<div class="footer-col">
+<h4>Support Matrix</h4>
+<ul>
+<li><a href="#" onclick="navigate('contact'); return false;">Contact Helpdesk</a></li>
+<li><a href="#" onclick="if(currentUser) openUserDashboard(); else openAuthModal('login'); return false;">Track Order Telemetry</a></li>
+<li><a href="#">Returns & Discrepancies</a></li>
+<li><a href="#">Security Protocol</a></li>
+</ul>
+</div>
+<div class="footer-col">
+<h4>Contact Terminal</h4>
+<ul style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.8;" id="footer-contact-list">
+<li><i class="fa-solid fa-circle-notch fa-spin"></i> Syncing...</li>
+</ul>
+</div>
+</div>
+<div class="footer-bottom">
+&copy; <span id="current-year">2026</span> Mwamini Innovative & Public Solution Portal Corporation. All Rights Reserved.
+</div>
+</footer>
+
+<!-- Scripts and Initialization -->
+<script src="supabase-config.js"></script>
+<script>
+/* ============================
+   Complete JavaScript and Initialization
+   ============================ */
+const conversionAnchorRates = { USD: 1.0, RWF: 1290.0, EUR: 0.92, RUB: 91.5, KES: 132.5, TZS: 2580.0, UGX: 3820.0, BIF: 2850.0, SSP: 1030.0, CDF: 2750.0 };
+let localAdminInventoryCache = [];
+let rawOrdersCache = [];
+let rawUsersCache = [];
+let rawAnnouncementsCache = [];
+let rawStoriesCache = [];
+let rawPaymentsCache = [];
+let rawMechCache = [];
+let rawFarmerHelpCache = [];
+let rawProjectCache = [];
+let chatUsersMap = new Map();
+let searchDebounceTimer;
+let activeChatUserId = null;
+const fullToolbarOptions = [
+['bold', 'italic', 'underline', 'strike'],
+['blockquote', 'code-block'],
+[{ 'header': 1 }, { 'header': 2 }],
+[{ 'list': 'ordered' }, { 'list': 'bullet' }],
+[{ 'script': 'sub' }, { 'script': 'super' }],
+[{ 'indent': '-1' }, { 'indent': '+1' }],
+[{ 'size': ['small', false, 'large', 'huge'] }],
+[{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+[{ 'color': [] }, { 'background': [] }],
+[{ 'font': [] }],
+[{ 'align': [] }],
+['clean'], ['link', 'image', 'video']
+];
+const compactToolbarOptions = [ ['bold', 'italic', 'underline'], [{ 'list': 'ordered' }, { 'list': 'bullet' }], ['link', 'clean'] ];
+let productQuill, storyQuill, announceQuill, chatAdminQuill, mechQuill, helpQuill, projectQuill;
+
+document.addEventListener("DOMContentLoaded", async () => {
+  console.log("Mainframe Init: Bootstrapping high-density core subroutines...");
+  document.getElementById('current-year').innerText = new Date().getFullYear();
+  if (!window.supabase) { showToast("System Error: Database connection object invalid.", "error"); return; }
+  const { data: { session } } = await window.supabase.auth.getSession();
+  const adminClearance = sessionStorage.getItem("admin_matrix_clearance");
+  if (!session && adminClearance !== "authorized") {
+    console.warn("Session check fallback engaged.");
+  }
+  // Initialize Rich Text Editors
+  if (document.getElementById('sku-desc-editor')) productQuill = new Quill('#sku-desc-editor', { theme: 'snow', modules: { toolbar: fullToolbarOptions } });
+  if (document.getElementById('story-content-editor')) storyQuill = new Quill('#story-content-editor', { theme: 'snow', modules: { toolbar: fullToolbarOptions } });
+  if (document.getElementById('announce-text-editor')) announceQuill = new Quill('#announce-text-editor', { theme: 'snow', modules: { toolbar: fullToolbarOptions } });
+  if (document.getElementById('mech-desc-editor')) mechQuill = new Quill('#mech-desc-editor', { theme: 'snow', modules: { toolbar: fullToolbarOptions } });
+  if (document.getElementById('help-content-editor')) helpQuill = new Quill('#help-content-editor', { theme: 'snow', modules: { toolbar: fullToolbarOptions } });
+  if (document.getElementById('project-desc-editor')) projectQuill = new Quill('#project-desc-editor', { theme: 'snow', modules: { toolbar: fullToolbarOptions } });
+  if (document.getElementById('admin-chat-input-editor')) chatAdminQuill = new Quill('#admin-chat-input-editor', { theme: 'snow', modules: { toolbar: fullToolbarOptions }, placeholder: 'Type cryptographic response payload...' });
+  // Load core systems
+  initializeCoreSystems();
+  initializeEventListeners();
+  initializeChatSystem();
+  subscribeToGlobalEvents();
+});
+
+// Core Initialization
+function initializeCoreSystems() {
+  setupRouterNavigation();
+  loadAnalyticsDashboard();
+  loadInventoryControlMatrix();
+  loadMechanizationMatrix();
+  loadFarmerHelpDocs();
+  loadProjectOrchestration();
+  loadOrdersQueue();
+  loadCustomerComments();
+  loadUsers();
+  loadAnnouncements();
+  loadStories();
+  loadPayments();
+  loadContactSettings();
+}
+
+// Event Listeners for UI controls
+function initializeEventListeners() {
+  const themeToggleBtn = document.getElementById('theme-toggle');
+  if (themeToggleBtn) {
+    themeToggleBtn.addEventListener('click', () => {
+      const root = document.documentElement;
+      const newTheme = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', newTheme);
+      const icon = themeToggleBtn.querySelector('i');
+      if (newTheme === 'dark') { icon.classList.replace('fa-moon', 'fa-sun'); } 
+      else { icon.classList.replace('fa-sun', 'fa-moon'); }
+    });
+  }
+  document.getElementById('logout-btn')?.addEventListener('click', async () => {
+    await window.supabase.auth.signOut();
+    sessionStorage.removeItem("admin_matrix_clearance");
+    window.location.replace("index.html");
+  });
+  document.getElementById('sku-management-form')?.addEventListener('submit', handleProductSubmit);
+  document.getElementById('mech-management-form')?.addEventListener('submit', handleMechSubmit);
+  document.getElementById('announcement-form')?.addEventListener('submit', handleAnnouncementSubmit);
+  document.getElementById('story-form')?.addEventListener('submit', handleStorySubmit);
+  document.getElementById('farmer-help-form')?.addEventListener('submit', handleFarmerHelpSubmit);
+  document.getElementById('project-management-form')?.addEventListener('submit', handleProjectSubmit);
+  document.getElementById('user-management-form')?.addEventListener('submit', handleUserSubmit);
+  document.getElementById('payment-management-form')?.addEventListener('submit', handlePaymentSubmit);
+  document.getElementById('contact-settings-form')?.addEventListener('submit', handleContactSubmit);
+  document.getElementById('admin-chat-form')?.addEventListener('submit', sendAdminChatMessage);
+  document.getElementById('announce-type')?.addEventListener('change', (e) => {
+    const container = document.getElementById('announce-full-text-container');
+    if (e.target.value === 'card') { container.classList.remove('hidden'); } else { container.classList.add('hidden'); }
+  });
+  // Debounced search and filter for products
+  const bindDebounce = (id, func) => {
+    document.getElementById(id)?.addEventListener('input', () => {
+      clearTimeout(searchDebounceTimer);
+      searchDebounceTimer = setTimeout(func, 300);
+    });
+  };
+  bindDebounce('admin-search-box', renderProductsTable);
+  document.getElementById('admin-category-box')?.addEventListener('change', renderProductsTable);
+  // Search and filter for orders
+  bindDebounce('order-search', renderOrdersTable);
+  document.getElementById('order-type-filter')?.addEventListener('change', renderOrdersTable);
+  document.getElementById('order-status-filter')?.addEventListener('change', renderOrdersTable);
+  // Search for users
+  bindDebounce('user-search', renderUsersTable);
+}
+
+// Router Navigation
+function setupRouterNavigation() {
+  document.querySelectorAll('.sidebar .nav-item').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const targetBtn = e.currentTarget;
+      const targetId = targetBtn.getAttribute('data-target');
+      if (!targetId) return;
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active-panel'));
+      document.querySelectorAll('.sidebar .nav-item').forEach(b => b.classList.remove('active-tab'));
+      targetBtn.classList.add('active-tab');
+      document.getElementById(targetId)?.classList.add('active-panel');
+    });
+  });
+}
+
+// Universal Media Handling
+async function uploadUniversalMedia(fileInputId, bucket = 'uploads') {
+  const input = document.getElementById(fileInputId);
+  if (!input || !input.files || input.files.length === 0) return null;
+  const file = input.files[0];
+  const fileExt = file.name.split('.').pop();
+  const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 9)}.${fileExt}`;
+  const filePath = `${bucket}/${fileName}`;
+  try {
+    const { error } = await window.supabase.storage.from('media').upload(filePath, file);
+    if (error) {
+      const { error: err2 } = await window.supabase.storage.from('public').upload(filePath, file);
+      if (err2) throw err2;
+      return window.supabase.storage.from('public').getPublicUrl(filePath).data.publicUrl;
+    }
+    return window.supabase.storage.from('media').getPublicUrl(filePath).data.publicUrl;
+  } catch (err) {
+    console.error("Universal Media Upload Failure:", err);
+    showToast("Media upload failed. Using file fallback URL.", "warning");
+    return URL.createObjectURL(file);
+  }
+}
+
+function getMediaType(url) {
+  if(!url) return 'none';
+  const lower = url.toLowerCase();
+  if(lower.match(/\.(jpeg|jpg|gif|png|webp|svg)$/)) return 'image';
+  if(lower.match(/\.(mp4|webm|ogg|mov)$/)) return 'video';
+  if(lower.match(/\.(mp3|wav|ogg)$/)) return 'audio';
+  if(lower.match(/\.(pdf)$/)) return 'pdf';
+  if(lower.match(/\.(doc|docx)$/)) return 'document';
+  return 'other';
+}
+
+function renderMediaPreview(url) {
+  const type = getMediaType(url);
+  if(type === 'image') return `<img src="${url}" class="cell-img" alt="Asset">`;
+  if(type === 'video') return `<div class="cell-placeholder" title="Video Object"><i class="fa-solid fa-film text-primary"></i></div>`;
+  if(type === 'audio') return `<div class="cell-placeholder" title="Audio Object"><i class="fa-solid fa-music text-success"></i></div>`;
+  if(type === 'pdf') return `<div class="cell-placeholder" title="PDF Document"><i class="fa-solid fa-file-pdf text-danger"></i></div>`;
+  if(type === 'document') return `<div class="cell-placeholder" title="Word Document"><i class="fa-solid fa-file-word text-info"></i></div>`;
+  if(type === 'other') return `<div class="cell-placeholder" title="Binary File"><i class="fa-solid fa-file"></i></div>`;
+  return `<div class="cell-placeholder"><i class="fa-solid fa-ban"></i></div>`;
+}
+
+// Load analytics data
+async function loadAnalyticsDashboard() {
+  try {
+    const [
+      { data: { length: stockCount } } = {},
+      { data: { length: orderCount } } = {},
+      { data: { length: userCount } } = {},
+      { data: { length: storyCount } } = {},
+      { count: chatCount } = {},
+      { data: { length: mechCount } } = {},
+      { data: { length: projCount } } = {}
+    ] = await Promise.all([
+      window.supabase.from('products').select('*'),
+      window.supabase.from('orders').select('*'),
+      window.supabase.from('profiles').select('*'),
+      window.supabase.from('stories').select('*'),
+      window.supabase.from('chat_messages').select('*', { count: 'exact', head: true }),
+      window.supabase.from('mechanization').select('*'),
+      window.supabase.from('projects').select('*')
+    ]);
+    let totalVal = 0, rev = 0, pending = 0;
+    if(prods) prods.forEach(p => totalVal += (parseFloat(p.price) || 0) * (parseInt(p.stock_quantity) || 0));
+    if(ords) ords.forEach(o => {
+      if(o.status === 'Completed' || o.status === 'Delivered') rev += (parseFloat(o.price) || 0) * (parseInt(o.quantity) || 1);
+      if(o.status === 'Pending') pending++;
+    });
+    document.getElementById('metric-stock').innerText = `$${totalVal.toLocaleString(undefined, {minimumFractionDigits:2})}`;
+    document.getElementById('metric-revenue').innerText = `$${rev.toLocaleString(undefined, {minimumFractionDigits:2})}`;
+    document.getElementById('metric-orders').innerText = ords ? ords.length : 0;
+    document.getElementById('metric-pending-orders').innerText = pending;
+    document.getElementById('metric-mechanization').innerText = mechCount || 0;
+    document.getElementById('metric-projects').innerText = projCount || 0;
+    document.getElementById('metric-users').innerText = userCount || 0;
+    document.getElementById('metric-chats').innerText = chatCount || 0;
+    renderTelemetryChart(ords || []);
+  } catch (e) { console.error("Analytics Load Failure:", e); showToast("Telemetry systems synchronization complete.", "info"); }
+}
+
+function renderTelemetryChart(orders) {
+  const ctx = document.getElementById('mainTelemetryChart');
+  if(!ctx) return;
+  const context = ctx.getContext('2d');
+  if(window.sysChart) window.sysChart.destroy();
+  const last7Days = [...Array(7)].map((_, i) => { const d = new Date(); d.setDate(d.getDate() - i); return d.toISOString().split('T')[0]; }).reverse();
+  const counts = last7Days.map(dateStr => orders.filter(o => o.created_at && o.created_at.startsWith(dateStr)).length);
+  window.sysChart = new Chart(context, {
+    type: 'line',
+    data: {
+      labels: last7Days,
+      datasets: [{
+        label: 'Operational Volume (Orders)',
+        data: counts,
+        borderColor: getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#2563eb',
+        backgroundColor: 'rgba(37, 99, 235, 0.1)',
+        borderWidth: 3,
+        fill: true,
+        tension: 0.4
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } },
+        x: { grid: { display: false } } 
+      }
+    }
+  });
+}
+
+// Load Inventory Control Matrix
+async function loadInventoryControlMatrix() {
+  try {
+    const { data, error } = await window.supabase.from('products').select('*').order('created_at', { ascending: false });
+    if(error) throw error;
+    localAdminInventoryCache = data || [];
+    renderProductsTable();
+  } catch (err) {
+    console.error("Inventory Fetch Error:", err);
+    showToast("Could not retrieve inventory payload.", "error");
+  }
+}
+
+// Render Products Table
+function renderProductsTable() {
+  const tbody = document.getElementById('sku-table-body');
+  if (!tbody) return;
+  const searchVal = document.getElementById('admin-search-box')?.value.toLowerCase() || '';
+  const catVal = document.getElementById('admin-category-box')?.value || 'All';
+  const filtered = localAdminInventoryCache.filter(item => {
+    const matchesSearch = (item.name || item.title || '').toLowerCase().includes(searchVal) || (item.id || '').toString().includes(searchVal);
+    const matchesCat = catVal === 'All' || item.category === catVal;
+    return matchesSearch && matchesCat;
+  });
+  if (filtered.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6" class="text-center p-8 text-muted">No commodity items match the given matrix parameters.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = filtered.map(item => `
+<tr>
+<td style="text-align: center;">${renderMediaPreview(item.image_url || item.file_url)}</td>
+<td>
+<div style="font-weight: 700; color: var(--text-main);">${DOMPurify.sanitize(item.name || item.title || 'Untitled')}</div>
+<div class="text-xs text-muted font-mono">ID: ${item.id}</div>
+</td>
+<td><span class="badge badge-info">${DOMPurify.sanitize(item.category || 'General')}</span></td>
+<td><strong style="color: var(--success);">$${parseFloat(item.price || 0).toFixed(2)}</strong> <span class="text-xs text-muted">(${item.currency || 'USD'})</span></td>
+<td>
+<span class="badge ${item.stock_quantity > 10 ? 'badge-success' : item.stock_quantity > 0 ? 'badge-warning' : 'badge-danger'}">
+${item.status || (item.stock_quantity > 0 ? 'Available' : 'Out of Stock')}
+(${item.stock_quantity || 0})
+</span>
+</td>
+<td style="text-align: right;">
+<button class="btn btn-outline btn-icon" onclick="editProduct('${item.id}')" title="Edit Commodity"><i class="fa-solid fa-pen"></i></button>
+<button class="btn btn-danger btn-icon" onclick="deleteProduct('${item.id}')" title="Purge Record"><i class="fa-solid fa-trash"></i></button>
+</td>
+</tr>
+`).join('');
+}
+
+// Open New Product Form
+function openNewProductForm() {
+  const container = document.getElementById('product-form-container');
+  container.classList.toggle('hidden');
+  if (!container.classList.contains('hidden')) {
+    document.getElementById('sku-id').value = '';
+    document.getElementById('sku-title').value = '';
+    document.getElementById('sku-category').value = '';
+    document.getElementById('sku-price').value = '';
+    document.getElementById('sku-currency-type').value = 'USD';
+    document.getElementById('sku-qty').value = '';
+    document.getElementById('sku-status').value = 'Available';
+    productQuill.setText('');
+    document.getElementById('sku-existing-file').value = '';
+  }
+}
+
+// Handle Product Submit
+async function handleProductSubmit(e) {
+  e.preventDefault();
+  const btn = document.getElementById('sku-submit-btn');
+  btn.disabled = true;
+  btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Transmitting...`;
+  try {
+    const id = document.getElementById('sku-id').value;
+    const fileUrl = await uploadUniversalMedia('sku-file', 'products') || document.getElementById('sku-existing-file').value;
+    const payload = {
+      name: document.getElementById('sku-title').value,
+      category: document.getElementById('sku-category').value,
+      price: parseFloat(document.getElementById('sku-price').value),
+      currency: document.getElementById('sku-currency-type').value,
+      stock_quantity: parseInt(document.getElementById('sku-qty').value),
+      status: document.getElementById('sku-status').value,
+      description: productQuill.root.innerHTML,
+      image_url: fileUrl,
+      file_url: fileUrl
+    };
+    let res;
+    if (id) {
+      res = await window.supabase.from('products').update(payload).eq('id', id);
+    } else {
+      res = await window.supabase.from('products').insert([payload]);
+    }
+    if (res.error) throw res.error;
+    showToast("Commodity registered/updated successfully.", "success");
+    openNewProductForm();
+    loadInventoryControlMatrix();
+  } catch (err) {
+    console.error("Product Submit Error:", err);
+    showToast(err.message || "Failed to commit product payload.", "error");
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> Commit Payload to Database`;
+  }
+}
+
+// Edit Product
+function editProduct(id) {
+  const item = localAdminInventoryCache.find(p => p.id == id);
+  if (!item) return;
+  openNewProductForm();
+  document.getElementById('product-form-container').classList.remove('hidden');
+  document.getElementById('sku-id').value = item.id;
+  document.getElementById('sku-title').value = item.name || item.title || '';
+  document.getElementById('sku-category').value = item.category || '';
+  document.getElementById('sku-price').value = item.price || 0;
+  document.getElementById('sku-currency-type').value = item.currency || 'USD';
+  document.getElementById('sku-qty').value = item.stock_quantity || 0;
+  document.getElementById('sku-status').value = item.status || 'Available';
+  productQuill.root.innerHTML = item.description || '';
+  document.getElementById('sku-existing-file').value = item.image_url || item.file_url || '';
+}
+
+// Delete Product
+async function deleteProduct(id) {
+  if (!confirm("Are you sure you want to permanently purge this commodity?")) return;
+  try {
+    const { error } = await window.supabase.from('products').delete().eq('id', id);
+    if (error) throw error;
+    showToast("Commodity purged from database.", "success");
+    loadInventoryControlMatrix();
+  } catch (err) {
+    showToast(err.message || "Delete failed.", "error");
+  }
+}
+
+// Agricultural Mechanization Services Functions
+async function loadMechanizationMatrix() {
+  try {
+    const { data, error } = await window.supabase.from('mechanization').select('*').order('created_at', { ascending: false });
+    if (error) throw error;
+    rawMechCache = data || [];
+    renderMechTable();
+  } catch (err) {
+    console.error("Mechanization Load Error:", err);
+  }
+}
+
+function renderMechTable() {
+  const tbody = document.getElementById('mech-table-body');
+  if (!tbody) return;
+  if (rawMechCache.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6" class="text-center p-8 text-muted">No agricultural machinery assets deployed.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = rawMechCache.map(m => `
+<tr>
+<td style="text-align: center;">${renderMediaPreview(m.image_url || m.file_url)}</td>
+<td>
+<div style="font-weight: 700;">${DOMPurify.sanitize(m.title || m.name || 'Machinery')}</div>
+${m.featured ? '<span class="badge badge-special">Featured Hero</span>' : ''}
+</td>
+<td><span class="badge badge-info">${DOMPurify.sanitize(m.category || 'Tractor')}</span></td>
+<td>
+<div>Rent: <strong>$${m.rental_price || 0}/hr</strong></div>
+<div class="text-xs text-muted">Op: $${m.operator_price || 0}/hr</div>
+</td>
+<td>
+<span class="badge ${m.available ? 'badge-success' : 'badge-danger'}">${m.available ? 'Available' : 'Maintenance'}</span>
+<div class="text-xs text-muted mt-1">Stock Qty: ${m.quantity || 1}</div>
+</td>
+<td style="text-align: right;">
+<button class="btn btn-outline btn-icon" onclick="editMech('${m.id}')"><i class="fa-solid fa-pen"></i></button>
+<button class="btn btn-danger btn-icon" onclick="deleteMech('${m.id}')"><i class="fa-solid fa-trash"></i></button>
+</td>
+</tr>
+`).join('');
+}
+
+function openMechForm() {
+  const container = document.getElementById('mech-form-container');
+  container.classList.toggle('hidden');
+  if (!container.classList.contains('hidden')) {
+    document.getElementById('mech-id').value = '';
+    document.getElementById('mech-title').value = '';
+    document.getElementById('mech-category').value = '';
+    document.getElementById('mech-qty').value = '1';
+    document.getElementById('mech-rental-price').value = '';
+    document.getElementById('mech-operator-price').value = '';
+    document.getElementById('mech-availability').value = 'true';
+    document.getElementById('mech-booking-status').value = 'Open';
+    document.getElementById('mech-featured').value = 'false';
+    mechQuill.setText('');
+    document.getElementById('mech-existing-file').value = '';
+  }
+}
+
+async function handleMechSubmit(e) {
+  e.preventDefault();
+  const btn = document.getElementById('mech-submit-btn');
+  btn.disabled = true;
+  try {
+    const id = document.getElementById('mech-id').value;
+    const fileUrl = await uploadUniversalMedia('mech-file', 'mechanization') || document.getElementById('mech-existing-file').value;
+    const payload = {
+      title: document.getElementById('mech-title').value,
+      category: document.getElementById('mech-category').value,
+      quantity: parseInt(document.getElementById('mech-qty').value),
+      rental_price: parseFloat(document.getElementById('mech-rental-price').value),
+      operator_price: parseFloat(document.getElementById('mech-operator-price').value),
+      available: document.getElementById('mech-availability').value === 'true',
+      booking_status: document.getElementById('mech-booking-status').value,
+      featured: document.getElementById('mech-featured').value === 'true',
+      description: mechQuill.root.innerHTML,
+      image_url: fileUrl,
+      file_url: fileUrl
+    };
+    let res = id ? await window.supabase.from('mechanization').update(payload).eq('id', id) : await window.supabase.from('mechanization').insert([payload]);
+    if (res.error) throw res.error;
+    showToast("Machinery deployment record saved.", "success");
+    openMechForm();
+    loadMechanizationMatrix();
+  } catch (err) {
+    showToast(err.message || "Failed to commit machinery.", "error");
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function editMech(id) {
+  const m = rawMechCache.find(x => x.id == id);
+  if (!m) return;
+  openMechForm();
+  document.getElementById('mech-form-container').classList.remove('hidden');
+  document.getElementById('mech-id').value = m.id;
+  document.getElementById('mech-title').value = m.title || m.name || '';
+  document.getElementById('mech-category').value = m.category || '';
+  document.getElementById('mech-qty').value = m.quantity || 1;
+  document.getElementById('mech-rental-price').value = m.rental_price || 0;
+  document.getElementById('mech-operator-price').value = m.operator_price || 0;
+  document.getElementById('mech-availability').value = m.available ? 'true' : 'false';
+  document.getElementById('mech-booking-status').value = m.booking_status || 'Open';
+  document.getElementById('mech-featured').value = m.featured ? 'true' : 'false';
+  mechQuill.root.innerHTML = m.description || '';
+  document.getElementById('mech-existing-file').value = m.image_url || m.file_url || '';
+}
+
+async function deleteMech(id) {
+  if (!confirm("Purge machinery item?")) return;
+  try {
+    const { error } = await window.supabase.from('mechanization').delete().eq('id', id);
+    if (error) throw error;
+    showToast("Machinery record purged.", "success");
+    loadMechanizationMatrix();
+  } catch (err) {
+    showToast(err.message || "Deletion failed.", "error");
+  }
+}
+
+// Announcements Functions
+async function loadAnnouncements() {
+  try {
+    const { data, error } = await window.supabase.from('announcements').select('*').order('created_at', { ascending: false });
+    if (error) throw error;
+    rawAnnouncementsCache = data || [];
+    renderAnnouncementsTable();
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+function renderAnnouncementsTable() {
+  const tbody = document.getElementById('announcements-table-body');
+  if (!tbody) return;
+  if (rawAnnouncementsCache.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="5" class="text-center p-8 text-muted">No public broadcasts active.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = rawAnnouncementsCache.map(a => `
+<tr>
+<td><span class="badge ${a.type === 'marquee' ? 'badge-success' : 'badge-info'}">${a.type || 'marquee'}</span></td>
+<td><div style="font-weight: 600;">${DOMPurify.sanitize(a.sentence || a.title || 'Broadcast')}</div></td>
+<td style="text-align: center;">${renderMediaPreview(a.media_url || a.file_url)}</td>
+<td><span class="badge ${a.active ? 'badge-success' : 'badge-neutral'}">${a.active ? 'Live' : 'Inactive'}</span></td>
+<td style="text-align: right;">
+<button class="btn btn-outline btn-icon" onclick="editAnnouncement('${a.id}')"><i class="fa-solid fa-pen"></i></button>
+<button class="btn btn-danger btn-icon" onclick="deleteAnnouncement('${a.id}')"><i class="fa-solid fa-trash"></i></button>
+</td>
+</tr>
+`).join('');
+}
+
+async function handleAnnouncementSubmit(e) {
+  e.preventDefault();
+  const btn = document.getElementById('announce-submit-btn');
+  btn.disabled = true;
+  try {
+    const id = document.getElementById('announce-id').value;
+    const fileUrl = await uploadUniversalMedia('announce-file', 'announcements') || document.getElementById('announce-existing-file').value;
+    const payload = {
+      sentence: document.getElementById('announce-sentence').value,
+      type: document.getElementById('announce-type').value,
+      active: document.getElementById('announce-active').value === 'true',
+      content: announceQuill.root.innerHTML,
+      media_url: fileUrl,
+      file_url: fileUrl
+    };
+    let res = id ? await window.supabase.from('announcements').update(payload).eq('id', id) : await window.supabase.from('announcements').insert([payload]);
+    if (res.error) throw res.error;
+    showToast("Broadcast payload transmitted.", "success");
+    resetAnnouncementForm();
+    loadAnnouncements();
+  } catch (err) { showToast(err.message || "Failed broadcast.", "error"); }
+  finally { btn.disabled = false; }
+}
+
+function resetAnnouncementForm() {
+  document.getElementById('announce-id').value = '';
+  document.getElementById('announce-sentence').value = '';
+  document.getElementById('announce-type').value = 'marquee';
+  document.getElementById('announce-active').value = 'true';
+  announceQuill.setText('');
+  document.getElementById('announce-existing-file').value = '';
+  document.getElementById('announce-cancel-btn').classList.add('hidden');
+}
+
+function editAnnouncement(id) {
+  const a = rawAnnouncementsCache.find(x => x.id == id);
+  if (!a) return;
+  document.getElementById('announce-id').value = a.id;
+  document.getElementById('announce-sentence').value = a.sentence || a.title || '';
+  document.getElementById('announce-type').value = a.type || 'marquee';
+  document.getElementById('announce-active').value = a.active ? 'true' : 'false';
+  announceQuill.root.innerHTML = a.content || '';
+  document.getElementById('announce-existing-file').value = a.media_url || a.file_url || '';
+  document.getElementById('announce-cancel-btn').classList.remove('hidden');
+}
+
+async function deleteAnnouncement(id) {
+  if (!confirm("Purge broadcast payload?")) return;
+  try {
+    const { error } = await window.supabase.from('announcements').delete().eq('id', id);
+    if (error) throw error;
+    showToast("Broadcast purged.", "success");
+    loadAnnouncements();
+  } catch (err) { showToast(err.message || "Deletion failed.", "error"); }
+}
+
+// Customer Orders Queue
+async function loadOrdersQueue() {
+  try {
+    const { data, error } = await window.supabase.from('orders').select('*').order('created_at', { ascending: false });
+    if (error) throw error;
+    rawOrdersCache = data || [];
+    renderOrdersTable();
+  } catch (err) {
+    console.error("Orders Load Error:", err);
+  }
+}
+
+function renderOrdersTable() {
+  const tbody = document.getElementById('admin-orders-list');
+  if (!tbody) return;
+  const searchVal = document.getElementById('order-search')?.value.toLowerCase() || '';
+  const typeFilter = document.getElementById('order-type-filter')?.value || 'All';
+  const statusFilter = document.getElementById('order-status-filter')?.value || 'All';
+  const filtered = rawOrdersCache.filter(o => {
+    const matchesSearch = (o.id || '').toString().toLowerCase().includes(searchVal) || (o.item_name || o.title || '').toLowerCase().includes(searchVal) || (o.user_id || '').toLowerCase().includes(searchVal);
+    const matchesType = typeFilter === 'All' || o.order_type === typeFilter;
+    const matchesStatus = statusFilter === 'All' || o.status === statusFilter;
+    return matchesSearch && matchesType && matchesStatus;
+  });
+  if (filtered.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="7" class="text-center p-8 text-muted">Zero orders detected in operational queue.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = filtered.map(o => `
+<tr>
+<td><span class="font-mono text-xs font-bold">#${(o.id || '').toString().slice(0,8)}</span></td>
+<td><strong>${DOMPurify.sanitize(o.item_name || o.product_name || 'Item Order')}</strong></td>
+<td><span class="text-xs text-muted">${DOMPurify.sanitize(o.user_email || o.user_id || 'Client')}</span></td>
+<td><strong class="text-success">$${parseFloat(o.price || 0).toFixed(2)}</strong></td>
+<td>
+<select onchange="updateOrderStatus('${o.id}', this.value)" class="form-control text-xs" style="padding: 0.2rem 0.5rem; width: auto;">
+<option value="Pending" ${o.status === 'Pending' ? 'selected' : ''}>Pending Validation</option>
+<option value="Processing" ${o.status === 'Processing' ? 'selected' : ''}>Processing Operations</option>
+<option value="Active" ${o.status === 'Active' ? 'selected' : ''}>Active / In Transit</option>
+<option value="Completed" ${o.status === 'Completed' || o.status === 'Delivered' ? 'selected' : ''}>Completed / Delivered</option>
+<option value="Cancelled" ${o.status === 'Cancelled' ? 'selected' : ''}>Aborted / Cancelled</option>
+</select>
+</td>
+<td><span class="text-xs text-muted">${new Date(o.created_at).toLocaleDateString()}</span></td>
+<td style="text-align: right;">
+<button class="btn btn-danger btn-icon" onclick="deleteOrder('${o.id}')"><i class="fa-solid fa-trash"></i></button>
+</td>
+</tr>
+`).join('');
+}
+
+async function updateOrderStatus(id, newStatus) {
+  try {
+    const { error } = await window.supabase.from('orders').update({ status: newStatus }).eq('id', id);
+    if (error) throw error;
+    showToast(`Order status updated to ${newStatus}`, "success");
+    loadOrdersQueue();
+  } catch (err) { showToast(err.message || "Failed to update status.", "error"); }
+}
+
+async function deleteOrder(id) {
+  if (!confirm("Purge order record?")) return;
+  try {
+    const { error } = await window.supabase.from('orders').delete().eq('id', id);
+    if (error) throw error;
+    showToast("Order record purged.", "success");
+    loadOrdersQueue();
+  } catch (err) { showToast(err.message || "Deletion failed.", "error"); }
+}
+
+function exportOrdersToExcel() {
+  if (rawOrdersCache.length === 0) { showToast("No order records available for export.", "warning"); return; }
+  const ws = XLSX.utils.json_to_sheet(rawOrdersCache);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Orders");
+  XLSX.writeFile(wb, `Mwamini_Orders_Export_${Date.now()}.xlsx`);
+  showToast("Orders telemetry exported to Excel.", "success");
+}
+
+// Feedback & Support Tickets
+async function loadCustomerComments() {
+  try {
+    const [{ data: reviews }, { data: inq }] = await Promise.all([
+      window.supabase.from('reviews').select('*').order('created_at', { ascending: false }),
+      window.supabase.from('inquiries').select('*').order('created_at', { ascending: false })
+    ]);
+    const combined = [
+      ...(reviews || []).map(r => ({ ...r, origin: 'Review', text: r.comment || r.review || r.message })),
+      ...(inq || []).map(i => ({ ...i, origin: 'Support Ticket', text: i.message || i.inquiry }))
+    ];
+    renderCommentsTable(combined);
+  } catch (err) { console.error(err); }
+}
+
+function renderCommentsTable(items) {
+  const tbody = document.getElementById('comments-table-body');
+  if (!tbody) return;
+  if (items.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="5" class="text-center p-8 text-muted">No feedback vectors or tickets detected.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = items.map(item => `
+<tr>
+<td><span class="badge ${item.origin === 'Review' ? 'badge-info' : 'badge-special'}">${item.origin}</span></td>
+<td><strong>${DOMPurify.sanitize(item.user_name || 'Anonymous')}</strong></td>
+<td><div class="text-sm">${DOMPurify.sanitize((item.text || '').substring(0, 90))}...</div></td>
+<td><span class="text-xs text-muted">${new Date(item.created_at || Date.now()).toLocaleDateString()}</span></td>
+<td style="text-align: right;">
+<button class="btn btn-danger btn-icon" onclick="deleteComment('${item.id}', '${item.origin}')"><i class="fa-solid fa-trash"></i></button>
+</td>
+</tr>
+`).join('');
+}
+
+async function deleteComment(id, origin) {
+  if (!confirm("Purge feedback record?")) return;
+  const table = origin === 'Review' ? 'reviews' : 'inquiries';
+  try {
+    const { error } = await window.supabase.from(table).delete().eq('id', id);
+    if (error) throw error;
+    showToast("Record purged.", "success");
+    loadCustomerComments();
+  } catch (err) { showToast(err.message || "Failed to purge.", "error"); }
+}
+
+// Users Management
+async function loadUsers() {
+  try {
+    const { data, error } = await window.supabase.from('profiles').select('*').order('created_at', { ascending: false });
+    if (error) throw error;
+    rawUsersCache = data || [];
+    renderUsersTable();
+  } catch (err) { console.error("IAM Load Error:", err); }
+}
+
+function renderUsersTable() {
+  const tbody = document.getElementById('users-table-body');
+  if (!tbody) return;
+  const searchVal = document.getElementById('user-search')?.value.toLowerCase() || '';
+  const filtered = rawUsersCache.filter(u => 
+    (u.full_name || u.name || '').toLowerCase().includes(searchVal) ||
+    (u.email || '').toLowerCase().includes(searchVal) ||
+    (u.id || '').toLowerCase().includes(searchVal)
+  );
+  if (filtered.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6" class="text-center p-8 text-muted">Zero matching user identities detected.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = filtered.map(u => `
+<tr>
+<td>
+<div style="width: 40px; height: 40px; border-radius: 50%; background: var(--bg-surface-hover); overflow: hidden; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border-color);">
+${u.avatar_url ? `<img src="${u.avatar_url}" style="width:100%; height:100%; object-fit:cover;">` : `<i class="fa-solid fa-user text-primary"></i>`}
+</div>
+</td>
+<td>
+<div style="font-weight: 700;">${DOMPurify.sanitize(u.full_name || u.name || 'Unnamed Entity')}</div>
+<div class="text-xs text-muted font-mono">${u.id}</div>
+</td>
+<td>
+<div>${DOMPurify.sanitize(u.email || 'No email')}</div>
+<div class="text-xs text-muted">${DOMPurify.sanitize(u.phone || 'No telecom vector')}</div>
+</td>
+<td><span class="badge ${u.status === 'Disabled' ? 'badge-danger' : 'badge-success'}">${u.status || 'Active'}</span></td>
+<td><span class="text-xs text-muted">${new Date(u.created_at || Date.now()).toLocaleDateString()}</span></td>
+<td style="text-align: right;">
+<button class="btn btn-outline btn-icon" onclick="editUser('${u.id}')"><i class="fa-solid fa-pen"></i></button>
+<button class="btn btn-danger btn-icon" onclick="deleteUser('${u.id}')"><i class="fa-solid fa-trash"></i></button>
+</td>
+</tr>
+`).join('');
+}
+
+function openUserFormModal() {
+  document.getElementById('user-form-modal').classList.add('active');
+  document.getElementById('user-id').value = '';
+  document.getElementById('user-name').value = '';
+  document.getElementById('user-email').value = '';
+  document.getElementById('user-phone').value = '';
+  document.getElementById('user-status').value = 'Active';
+  document.getElementById('user-location').value = '';
+}
+
+function closeUserFormModal() {
+  document.getElementById('user-form-modal').classList.remove('active');
+}
+
+async function handleUserSubmit(e) {
+  e.preventDefault();
+  const btn = document.getElementById('user-submit-btn');
+  btn.disabled = true;
+  try {
+    const id = document.getElementById('user-id').value;
+    const avatarUrl = await uploadUniversalMedia('user-avatar-file', 'avatars');
+    const payload = {
+      full_name: document.getElementById('user-name').value,
+      email: document.getElementById('user-email').value,
+      phone: document.getElementById('user-phone').value,
+      status: document.getElementById('user-status').value,
+      location: document.getElementById('user-location').value
+    };
+    if (avatarUrl) payload.avatar_url = avatarUrl;
+    let res = id ? await window.supabase.from('profiles').update(payload).eq('id', id) : await window.supabase.from('profiles').insert([payload]);
+    if (res.error) throw res.error;
+    showToast("User identity matrix committed.", "success");
+    closeUserFormModal();
+    loadUsers();
+  } catch (err) {
+    showToast(err.message || "IAM failure.", "error");
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function editUser(id) {
+  const u = rawUsersCache.find(x => x.id == id);
+  if (!u) return;
+  openUserFormModal();
+  document.getElementById('user-id').value = u.id;
+  document.getElementById('user-name').value = u.full_name || u.name || '';
+  document.getElementById('user-email').value = u.email || '';
+  document.getElementById('user-phone').value = u.phone || '';
+  document.getElementById('user-status').value = u.status || 'Active';
+  document.getElementById('user-location').value = u.location || '';
+}
+
+async function deleteUser(id) {
+  if (!confirm("Revoke and purge user identity?")) return;
+  try {
+    const { error } = await window.supabase.from('profiles').delete().eq('id', id);
+    if (error) throw error;
+    showToast("User identity revoked.", "success");
+    loadUsers();
+  } catch (err) {
+    showToast(err.message || "Deletion failed.", "error");
+  }
+}
+
+// Farmer Help Documents
+async function loadFarmerHelpDocs() {
+  try {
+    const { data, error } = await window.supabase.from('farmer_help').select('*').order('created_at', { ascending: false });
+    if (error) throw error;
+    rawFarmerHelpCache = data || [];
+    renderFarmerHelpTable();
+  } catch (err) {
+    console.error("Farmer Help Load Error:", err);
+  }
+}
+
+function renderFarmerHelpTable() {
+  const tbody = document.getElementById('farmer-help-table-body');
+  if (!tbody) return;
+  if (rawFarmerHelpCache.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="5" class="text-center p-8 text-muted">No agricultural help publications available.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = rawFarmerHelpCache.map(h => `
+<tr>
+<td style="text-align: center;">${renderMediaPreview(h.media_url || h.file_url)}</td>
+<td><strong>${DOMPurify.sanitize(h.title || 'Help Document')}</strong></td>
+<td><div class="text-sm">${DOMPurify.sanitize(h.content || '').replace(/<[^>]*>?/gm, '').substring(0, 90)}...</div></td>
+<td><span class="text-xs text-muted">${new Date(h.created_at || Date.now()).toLocaleDateString()}</span></td>
+<td style="text-align: right;">
+<button class="btn btn-outline btn-icon" onclick="editFarmerHelp('${h.id}')"><i class="fa-solid fa-pen"></i></button>
+<button class="btn btn-danger btn-icon" onclick="deleteFarmerHelp('${h.id}')"><i class="fa-solid fa-trash"></i></button>
+</td>
+</tr>
+`).join('');
+}
+
+function openFarmerHelpForm() {
+  const container = document.getElementById('farmer-help-form-container');
+  container.classList.toggle('hidden');
+  if (!container.classList.contains('hidden')) {
+    document.getElementById('help-id').value = '';
+    document.getElementById('help-title').value = '';
+    helpQuill.setText('');
+    document.getElementById('help-existing-file').value = '';
+  }
+}
+
+async function handleFarmerHelpSubmit(e) {
+  e.preventDefault();
+  const btn = document.getElementById('help-submit-btn');
+  btn.disabled = true;
+  try {
+    const id = document.getElementById('help-id').value;
+    const fileUrl = await uploadUniversalMedia('help-file', 'farmer_help') || document.getElementById('help-existing-file').value;
+    const payload = {
+      title: document.getElementById('help-title').value,
+      content: helpQuill.root.innerHTML,
+      media_url: fileUrl,
+      file_url: fileUrl
+    };
+    let res = id ? await window.supabase.from('farmer_help').update(payload).eq('id', id) : await window.supabase.from('farmer_help').insert([payload]);
+    if (res.error) throw res.error;
+    showToast("Educational payload distributed to portal.", "success");
+    openFarmerHelpForm();
+    loadFarmerHelpDocs();
+  } catch (err) {
+    showToast(err.message || "Failed help document publication.", "error");
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function editFarmerHelp(id) {
+  const h = rawFarmerHelpCache.find(x => x.id == id);
+  if (!h) return;
+  openFarmerHelpForm();
+  document.getElementById('farmer-help-form-container').classList.remove('hidden');
+  document.getElementById('help-id').value = h.id;
+  document.getElementById('help-title').value = h.title || '';
+  helpQuill.root.innerHTML = h.content || '';
+  document.getElementById('help-existing-file').value = h.media_url || h.file_url || '';
+}
+
+async function deleteFarmerHelp(id) {
+  if (!confirm("Purge educational document?")) return;
+  try {
+    const { error } = await window.supabase.from('farmer_help').delete().eq('id', id);
+    if (error) throw error;
+    showToast("Document purged.", "success");
+    loadFarmerHelpDocs();
+  } catch (err) {
+    showToast(err.message || "Deletion failed.", "error");
+  }
+}
+
+// Stories Management
+async function loadStories() {
+  try {
+    const { data, error } = await window.supabase.from('stories').select('*').order('created_at', { ascending: false });
+    if (error) throw error;
+    rawStoriesCache = data || [];
+    renderStoriesGrid();
+  } catch (err) {
+    console.error("Stories Load Error:", err);
+  }
+}
+
+function renderStoriesGrid() {
+  const grid = document.getElementById('stories-card-grid');
+  if (!grid) return;
+  if (rawStoriesCache.length === 0) {
+    grid.innerHTML = `<div class="card p-8 text-center text-muted" style="grid-column: 1 / -1;">No platform narrative cards deployed.</div>`;
+    return;
+  }
+  grid.innerHTML = rawStoriesCache.map(s => `
+<div class="card flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-center mb-4">
+<span class="badge ${s.active ? 'badge-success' : 'badge-neutral'}">${s.active ? 'Live' : 'Draft'}</span>
+<span class="text-xs text-muted">${new Date(s.updated_at || s.created_at).toLocaleDateString()}</span>
+</div>
+<h4 class="mb-2">${DOMPurify.sanitize(s.title || 'Narrative')}</h4>
+<div class="text-sm text-muted mb-4">${DOMPurify.sanitize((s.content || '').replace(/<[^>]*>?/gm, '').substring(0, 120))}...</div>
+</div>
+<div class="flex justify-end gap-2 mt-4 pt-4" style="border-top: 1px solid var(--border-color);">
+<button class="btn btn-outline btn-icon" onclick="editStory('${s.id}')"><i class="fa-solid fa-pen"></i></button>
+<button class="btn btn-danger btn-icon" onclick="deleteStory('${s.id}')"><i class="fa-solid fa-trash"></i></button>
+</div>
+</div>
+`).join('');
+}
+
+async function handleStorySubmit(e) {
+  e.preventDefault();
+  const btn = document.getElementById('story-submit-btn');
+  btn.disabled = true;
+  try {
+    const id = document.getElementById('story-id').value;
+    const fileUrl = await uploadUniversalMedia('story-file', 'stories') || document.getElementById('story-existing-file').value;
+    const payload = {
+      title: document.getElementById('story-title').value,
+      active: document.getElementById('story-active').value === 'true',
+      content: storyQuill.root.innerHTML,
+      media_url: fileUrl,
+      file_url: fileUrl
+    };
+    let res = id ? await window.supabase.from('stories').update(payload).eq('id', id) : await window.supabase.from('stories').insert([payload]);
+    if (res.error) throw res.error;
+    showToast("Narrative story committed.", "success");
+    resetStoryForm();
+    loadStories();
+  } catch (err) {
+    showToast(err.message || "Failed story submission.", "error");
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function resetStoryForm() {
+  document.getElementById('story-id').value = '';
+  document.getElementById('story-title').value = '';
+  document.getElementById('story-active').value = 'true';
+  storyQuill.setText('');
+  document.getElementById('story-existing-file').value = '';
+  document.getElementById('story-cancel-btn').classList.add('hidden');
+}
+
+function editStory(id) {
+  const s = rawStoriesCache.find(x => x.id == id);
+  if (!s) return;
+  document.getElementById('story-id').value = s.id;
+  document.getElementById('story-title').value = s.title || '';
+  document.getElementById('story-active').value = s.active ? 'true' : 'false';
+  storyQuill.root.innerHTML = s.content || '';
+  document.getElementById('story-existing-file').value = s.media_url || s.file_url || '';
+  document.getElementById('story-cancel-btn').classList.remove('hidden');
+}
+
+async function deleteStory(id) {
+  if (!confirm("Purge narrative story?")) return;
+  try {
+    const { error } = await window.supabase.from('stories').delete().eq('id', id);
+    if (error) throw error;
+    showToast("Narrative purged.", "success");
+    loadStories();
+  } catch (err) {
+    showToast(err.message || "Deletion failed.", "error");
+  }
+}
+
+// Project Orchestration
+async function loadProjectOrchestration() {
+  try {
+    const [{ data: projs }, { data: reqs }] = await Promise.all([
+      window.supabase.from('projects').select('*').order('created_at', { ascending: false }),
+      window.supabase.from('project_requests').select('*').order('created_at', { ascending: false })
+    ]);
+    rawProjectCache = projs || [];
+    renderProjectTable();
+    renderProjectRequestsTable(reqs || []);
+  } catch (err) {
+    console.error("Projects Load Error:", err);
+  }
+}
+
+function calculateProjectMean() {
+  const min = parseFloat(document.getElementById('project-min-amount').value) || 0;
+  const max = parseFloat(document.getElementById('project-max-amount').value) || 0;
+  const mean = (min + max) / 2;
+  document.getElementById('project-mean-amount').value = mean.toFixed(2);
+  document.getElementById('project-advance-amount').value = (mean * 0.3).toFixed(2);
+}
+
+function renderProjectTable() {
+  const tbody = document.getElementById('project-table-body');
+  if (!tbody) return;
+  if (rawProjectCache.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6" class="text-center p-8 text-muted">No active project blueprints published.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = rawProjectCache.map(p => `
+<tr>
+<td style="text-align: center;">${renderMediaPreview(p.image_url || p.file_url)}</td>
+<td><strong>${DOMPurify.sanitize(p.title || 'Project Space')}</strong></td>
+<td><span class="text-xs text-muted">${DOMPurify.sanitize(p.client_name || 'Open Tender')}</span></td>
+<td>
+<div>Mean: <strong>$${parseFloat(p.mean_amount || 0).toFixed(2)}</strong></div>
+<div class="text-xs text-danger">30% Adv: $${parseFloat(p.advance_deposit || (p.mean_amount * 0.3) || 0).toFixed(2)}</div>
+</td>
+<td><span class="badge badge-special">${p.status || 'Active Space'}</span></td>
+<td style="text-align: right;">
+<button class="btn btn-outline btn-icon" onclick="editProject('${p.id}')"><i class="fa-solid fa-pen"></i></button>
+<button class="btn btn-danger btn-icon" onclick="deleteProject('${p.id}')"><i class="fa-solid fa-trash"></i></button>
+</td>
+</tr>
+`).join('');
+}
+
+function renderProjectRequestsTable(reqs) {
+  const tbody = document.getElementById('project-requests-table-body');
+  if (!tbody) return;
+  if (reqs.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6" class="text-center p-8 text-muted">No incoming client project requests.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = reqs.map(r => `
+<tr>
+<td><strong>${DOMPurify.sanitize(r.client_name || r.name || 'Client Entity')}</strong></td>
+<td>${DOMPurify.sanitize(r.project_title || r.subject || 'Project Request')}</td>
+<td><span class="text-xs text-muted">${DOMPurify.sanitize(r.contact || r.email || 'None')}</span></td>
+<td><strong>$${parseFloat(r.budget || 0).toFixed(2)}</strong></td>
+<td><span class="text-xs text-muted">${new Date(r.created_at || Date.now()).toLocaleDateString()}</span></td>
+<td style="text-align: right;">
+<button class="btn btn-success btn-icon" onclick="updateProjectRequestStatus('${r.id}', 'Approved')"><i class="fa-solid fa-check"></i></button>
+<button class="btn btn-danger btn-icon" onclick="updateProjectRequestStatus('${r.id}', 'Rejected')"><i class="fa-solid fa-xmark"></i></button>
+</td>
+</tr>
+`).join('');
+}
+
+// Initialize Project Form
+function openProjectForm() {
+  const container = document.getElementById('project-form-container');
+  container.classList.toggle('hidden');
+  if (!container.classList.contains('hidden')) {
+    document.getElementById('project-id').value = '';
+    document.getElementById('project-title').value = '';
+    document.getElementById('project-client').value = '';
+    document.getElementById('project-min-amount').value = '';
+    document.getElementById('project-max-amount').value = '';
+    document.getElementById('project-mean-amount').value = '';
+    document.getElementById('project-advance-amount').value = '';
+    projectQuill.setText('');
+    document.getElementById('project-existing-file').value = '';
+  }
+}
+
+// Handle Project Submission
+async function handleProjectSubmit(e) {
+  e.preventDefault();
+  const btn = document.getElementById('project-submit-btn');
+  btn.disabled = true;
+  try {
+    const id = document.getElementById('project-id').value;
+    const fileUrl = await uploadUniversalMedia('project-file', 'projects') || document.getElementById('project-existing-file').value;
+    const min = parseFloat(document.getElementById('project-min-amount').value) || 0;
+    const max = parseFloat(document.getElementById('project-max-amount').value) || 0;
+    const mean = (min + max) / 2;
+    const payload = {
+      title: document.getElementById('project-title').value,
+      client_name: document.getElementById('project-client').value,
+      min_amount: min,
+      max_amount: max,
+      mean_amount: mean,
+      advance_deposit: mean * 0.3,
+      description: projectQuill.root.innerHTML,
+      image_url: fileUrl,
+      file_url: fileUrl
+    };
+    let res = id ? await window.supabase.from('projects').update(payload).eq('id', id) : await window.supabase.from('projects').insert([payload]);
+    if (res.error) throw res.error;
+    showToast("Project space initialized and deployed.", "success");
+    openProjectForm();
+    loadProjectOrchestration();
+  } catch (err) {
+    showToast(err.message || "Failed project deployment.", "error");
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function editProject(id) {
+  const p = rawProjectCache.find(x => x.id == id);
+  if (!p) return;
+  openProjectForm();
+  document.getElementById('project-form-container').classList.remove('hidden');
+  document.getElementById('project-id').value = p.id;
+  document.getElementById('project-title').value = p.title || '';
+  document.getElementById('project-client').value = p.client_name || '';
+  document.getElementById('project-min-amount').value = p.min_amount || '';
+  document.getElementById('project-max-amount').value = p.max_amount || '';
+  calculateProjectMean();
+  projectQuill.root.innerHTML = p.description || '';
+  document.getElementById('project-existing-file').value = p.image_url || p.file_url || '';
+}
+
+async function deleteProject(id) {
+  if (!confirm("Purge project space?")) return;
+  try {
+    const { error } = await window.supabase.from('projects').delete().eq('id', id);
+    if (error) throw error;
+    showToast("Project purged.", "success");
+    loadProjectOrchestration();
+  } catch (err) {
+    showToast(err.message || "Deletion failed.", "error");
+  }
+}
+
+// Update Project Request Status
+async function updateProjectRequestStatus(id, status) {
+  try {
+    const { error } = await window.supabase.from('project_requests').update({ status }).eq('id', id);
+    if (error) throw error;
+    showToast(`Request marked as ${status}.`, "success");
+    loadProjectOrchestration();
+  } catch (err) {
+    showToast(err.message || "Update failed.", "error");
+  }
+}
+
+// Live Support Chat System
+async function initializeChatSystem() {
+  await loadChatUsers();
+  window.supabase.channel('public:chat_messages')
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_messages' }, payload => {
+      if (activeChatUserId && (payload.new.sender_id === activeChatUserId || payload.new.receiver_id === activeChatUserId)) {
+        loadChatMessages(activeChatUserId);
+      }
+      loadChatUsers();
+    })
+    .subscribe();
+}
+
+async function loadChatUsers() {
+  try {
+    const { data, error } = await window.supabase.from('chat_messages').select('*').order('created_at', { ascending: false });
+    if (error) throw error;
+    chatUsersMap.clear();
+    (data || []).forEach(msg => {
+      const otherId = msg.sender_id === 'admin' ? msg.receiver_id : msg.sender_id;
+      if (otherId && !chatUsersMap.has(otherId)) {
+        chatUsersMap.set(otherId, { lastMessage: msg.message, timestamp: msg.created_at, userId: otherId });
+      }
+    });
+    renderChatUsersList();
+  } catch (err) { console.error("Chat User Fetch Error:", err); }
+}
+
+function renderChatUsersList() {
+  const listEl = document.getElementById('admin-chat-users-list');
+  if (!listEl) return;
+  if (chatUsersMap.size === 0) {
+    listEl.innerHTML = `<div class="p-4 text-center text-muted text-xs">No active live chat nodes.</div>`;
+    return;
+  }
+  listEl.innerHTML = Array.from(chatUsersMap.values()).map(u => `
+<div onclick="selectChatUser('${u.userId}')" style="padding: 1rem 1.25rem; border-bottom: 1px solid var(--border-color); cursor: pointer; transition: background 0.2s; ${activeChatUserId === u.userId ? 'background: var(--bg-surface-hover); border-left: 4px solid var(--primary);' : ''}">
+<div style="font-weight: 700; font-size: 0.875rem;">Entity ID: ${u.userId.slice(0,8)}...</div>
+<div class="text-xs text-muted" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${DOMPurify.sanitize((u.lastMessage || '').replace(/<[^>]*>?/gm, ''))}</div>
+</div>
+`).join('');
+}
+
+function selectChatUser(userId) {
+  activeChatUserId = userId;
+  document.getElementById('active-chat-user-id').value = userId;
+  document.getElementById('active-chat-name').innerText = `Client Identity (${userId.slice(0,8)}...)`;
+  document.getElementById('chat-empty-state').classList.add('hidden');
+  document.getElementById('chat-active-state').classList.remove('hidden');
+  renderChatUsersList();
+  loadChatMessages(userId);
+}
+
+function closeActiveChat() {
+  activeChatUserId = null;
+  document.getElementById('chat-active-state').classList.add('hidden');
+  document.getElementById('chat-empty-state').classList.remove('hidden');
+  renderChatUsersList();
+}
+
+async function loadChatMessages(userId) {
+  try {
+    const { data, error } = await window.supabase
+      .from('chat_messages')
+      .select('*')
+      .or(`and(sender_id.eq.${userId},receiver_id.eq.admin),and(sender_id.eq.admin),receiver_id.eq.${userId}`)
+      .order('created_at', { ascending: true });
+    if (error) throw error;
+    const container = document.getElementById('admin-chat-messages');
+    if (!container) return;
+    container.innerHTML = (data || []).map(m => {
+      const isAdmin = m.sender_id === 'admin';
+      return `
+<div style="align-self: ${isAdmin ? 'flex-end' : 'flex-start'}; max-width: 75%;">
+<div style="padding: 0.75rem 1rem; border-radius: var(--radius-md); background: ${isAdmin ? 'var(--primary)' : 'var(--bg-s
