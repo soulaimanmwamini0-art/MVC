@@ -114,7 +114,7 @@ top: 0;
 z-index: 100;
 box-shadow: var(--shadow-sm);
 backdrop-filter: blur(10px);
-background-color: color-mix(in srgb, var(--bg-surface) 95%, transparent);
+background-color: rgba(var(--bg-surface), 0.95);
 }
 .brand-container {
 display: flex;
@@ -1279,470 +1279,663 @@ color: var(--text-muted);
 margin: 0;
 cursor: pointer;
 }
+</style>
+<style>
 
-/* ================================================================
-17. PROFESSIONAL VISUAL REFINEMENT, MEDIA & DENSE CARD GRID
-================================================================ */
+/* =====================================================================
+   19. PROFESSIONAL UI REFINEMENT — SAFE OVERRIDES
+   ---------------------------------------------------------------------
+   This block intentionally preserves the existing page structure,
+   headings, bold text, navigation, database names, and content.
+   It only improves presentation, media reliability, responsiveness,
+   accessibility, and interaction affordances.
+   ===================================================================== */
+
 :root {
---brand-green: #16a34a;
---brand-green-deep: #15803d;
---brand-blue: #2563eb;
---brand-blue-soft: #dbeafe;
---brand-pink: #ec4899;
---brand-pink-soft: #fce7f3;
---brand-yellow: #facc15;
---brand-yellow-soft: #fef9c3;
---media-placeholder: #e8eef5;
+  --brand-green: #16a34a;
+  --brand-green-deep: #15803d;
+  --brand-green-soft: #dcfce7;
+  --brand-blue: #2563eb;
+  --brand-blue-deep: #1d4ed8;
+  --brand-blue-soft: #dbeafe;
+  --brand-pink: #ec4899;
+  --brand-pink-soft: #fce7f3;
+  --brand-yellow: #facc15;
+  --brand-yellow-soft: #fef9c3;
+  --media-placeholder: #eef2f7;
+  --card-gap: 0.85rem;
 }
 
-html { scroll-behavior: smooth; }
-body { min-width: 320px; overflow-x: hidden; }
-img, video, audio, iframe { max-width: 100%; }
-img { display: block; }
+/* Keep the original page hierarchy intact while making the visual system
+   more balanced: green is the dominant brand colour, blue supports it,
+   while pink and yellow act as accents rather than flooding the page. */
+body {
+  background:
+    radial-gradient(circle at 5% 0%, rgba(22,163,74,.055), transparent 28rem),
+    radial-gradient(circle at 95% 10%, rgba(37,99,235,.045), transparent 30rem),
+    var(--bg-primary);
+}
+
+header {
+  border-bottom-color: rgba(22,163,74,.18);
+}
+
+.brand-title,
+h1.hero-title,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+.brand-title {
+  color: var(--brand-green-deep);
+}
 
 .btn-primary {
-background: linear-gradient(135deg, var(--brand-green-deep), var(--brand-green));
-border-color: var(--brand-green-deep);
+  background: linear-gradient(135deg, var(--brand-green-deep), var(--brand-green));
+  border-color: var(--brand-green-deep);
 }
+
 .btn-primary:hover:not(:disabled) {
-background: linear-gradient(135deg, #166534, #22c55e);
+  background: linear-gradient(135deg, #166534, #22c55e);
 }
-.btn-outline:hover:not(:disabled) { background: var(--brand-blue-soft); }
 
-/* Announcement: only text moves from start to end. */
+.btn-outline:hover:not(:disabled) {
+  background: var(--brand-blue-soft);
+  border-color: var(--brand-blue);
+  color: var(--brand-blue-deep);
+}
+
+.btn-danger-outline:hover:not(:disabled) {
+  background: var(--brand-pink-soft);
+}
+
+.hero-banner {
+  background:
+    radial-gradient(circle at 10% 20%, rgba(236,72,153,.22), transparent 24rem),
+    linear-gradient(135deg, var(--brand-green-deep), var(--brand-blue-deep));
+  border-bottom-color: var(--brand-yellow);
+}
+
+/* ---------------------------------------------------------------------
+   ANNOUNCEMENT BANNER
+   Only the text track moves. The banner itself never scrolls.
+   --------------------------------------------------------------------- */
 .announcement-banner {
-position: relative;
-width: 100%;
-min-height: 42px;
-padding: 0.55rem 0;
-overflow: hidden;
-background: linear-gradient(90deg, var(--brand-green-deep), var(--brand-green), var(--brand-blue));
-color: #fff;
-border-bottom: 2px solid var(--brand-yellow);
-text-align: left !important;
-display: none;
-}
-.announcement-banner.active {
-display: block;
-animation: none;
-}
-.announcement-marquee { width: 100%; overflow: hidden; white-space: nowrap; }
-.announcement-marquee-track {
-display: inline-flex;
-width: max-content;
-min-width: 100%;
-padding-left: 100%;
-will-change: transform;
-animation: announcementScroll 28s linear infinite;
-}
-.announcement-marquee-track:hover { animation-play-state: paused; }
-.announcement-marquee-item {
-display: inline-block;
-font-size: 0.9rem;
-font-weight: 700;
-padding-right: 5rem;
-}
-@keyframes announcementScroll {
-0% { transform: translateX(0); }
-100% { transform: translateX(-100%); }
-}
-@media (prefers-reduced-motion: reduce) {
-.announcement-marquee-track { animation: none; transform: none; padding-left: 1rem; }
+  position: relative;
+  width: 100%;
+  min-height: 42px;
+  padding: 0;
+  overflow: hidden;
+  background: linear-gradient(
+    90deg,
+    var(--brand-green-deep) 0%,
+    var(--brand-green) 55%,
+    var(--brand-blue) 100%
+  );
+  color: #fff;
+  border-bottom: 2px solid var(--brand-yellow);
+  text-align: left !important;
+  display: none;
 }
 
-/* 8 cards on very wide screens, 6 on desktop, responsive below. */
+.announcement-banner.active {
+  display: block;
+  animation: none !important;
+}
+
+.announcement-marquee {
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.announcement-marquee-track {
+  display: inline-flex;
+  width: max-content;
+  min-width: 100%;
+  padding-left: 100%;
+  will-change: transform;
+  animation: announcementScroll 38s linear infinite;
+}
+
+.announcement-marquee-track:hover {
+  animation-play-state: paused;
+}
+
+.announcement-marquee-item {
+  display: inline-block;
+  font-size: .9rem;
+  line-height: 42px;
+  font-weight: 700;
+  padding-right: 7rem;
+  letter-spacing: .01em;
+}
+
+@keyframes announcementScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .announcement-marquee-track {
+    animation: none;
+    transform: none;
+    padding-left: 1rem;
+  }
+}
+
+/* ---------------------------------------------------------------------
+   DENSE SQUARE CARD SYSTEM
+   8 columns on very wide screens, 6 on desktop, then graceful fallback.
+   --------------------------------------------------------------------- */
 .products-grid,
 .mechanization-grid,
 .farmer-help-grid,
 .order-project-grid {
-grid-template-columns: repeat(4, minmax(0, 1fr));
-gap: 1rem;
-max-width: 1800px;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: var(--card-gap);
+  max-width: 1800px;
+  padding-left: 3%;
+  padding-right: 3%;
 }
+
 .product-card,
 .mech-card,
 .farmer-help-card,
 .order-project-card {
-aspect-ratio: 1 / 1;
-min-width: 0;
-min-height: 0;
-border-radius: 14px;
-}
-.product-card .product-media-container,
-.mech-card .mech-media-container,
-.farmer-help-card .farmer-help-media-container,
-.order-project-card .order-project-media-container {
-height: 38%;
-min-height: 0;
-overflow: hidden;
-}
-.product-card .product-media-container img,
-.product-card .product-media-container video,
-.mech-card .mech-media-container img,
-.mech-card .mech-media-container video,
-.farmer-help-card .farmer-help-media-container img,
-.farmer-help-card .farmer-help-media-container video,
-.order-project-card .order-project-media-container img,
-.order-project-card .order-project-media-container video {
-width: 100%;
-height: 100%;
-object-fit: cover;
-object-position: center;
-}
-.product-card .product-content,
-.mech-card .mech-content,
-.farmer-help-card .farmer-help-content,
-.order-project-card .order-project-content {
-padding: 0.75rem;
-min-height: 0;
-overflow: hidden;
-}
-.product-card .product-title,
-.mech-card .mech-title,
-.farmer-help-card .farmer-help-title,
-.order-project-card .order-project-title {
-font-size: 0.9rem;
-line-height: 1.25;
-display: -webkit-box;
--webkit-box-orient: vertical;
--webkit-line-clamp: 2;
-overflow: hidden;
-}
-.product-card .product-footer,
-.mech-card .mech-footer,
-.farmer-help-card .farmer-help-footer,
-.order-project-card .order-project-footer {
-padding-top: 0.5rem;
-margin-top: 0.5rem;
-}
-.product-card .product-actions { margin-bottom: 0.35rem !important; }
-.product-card .btn,
-.mech-card .btn,
-.farmer-help-card .btn,
-.order-project-card .btn {
-font-size: 0.68rem !important;
-padding: 0.32rem 0.5rem !important;
-}
-.product-price { font-size: 0.95rem; }
-
-@media (min-width: 1400px) {
-.products-grid,
-.mechanization-grid,
-.farmer-help-grid,
-.order-project-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
-}
-@media (min-width: 1800px) {
-.products-grid,
-.mechanization-grid,
-.farmer-help-grid,
-.order-project-grid { grid-template-columns: repeat(8, minmax(0, 1fr)); }
-}
-@media (max-width: 1100px) {
-.products-grid,
-.mechanization-grid,
-.farmer-help-grid,
-.order-project-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-}
-@media (max-width: 760px) {
-.products-grid,
-.mechanization-grid,
-.farmer-help-grid,
-.order-project-grid {
-grid-template-columns: repeat(2, minmax(0, 1fr));
-gap: 0.75rem;
-padding-left: 3%;
-padding-right: 3%;
-}
-.product-card,
-.mech-card,
-.farmer-help-card,
-.order-project-card { aspect-ratio: 1 / 1.12; }
-}
-@media (max-width: 480px) {
-.products-grid,
-.mechanization-grid,
-.farmer-help-grid,
-.order-project-grid { grid-template-columns: 1fr; }
-.product-card,
-.mech-card,
-.farmer-help-card,
-.order-project-card { aspect-ratio: 1 / 0.92; }
+  aspect-ratio: 1 / 1;
+  min-width: 0;
+  min-height: 0;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(15,23,42,.07);
+  border-color: rgba(15,23,42,.10);
 }
 
-/* Shared media/document states. */
-.media-frame {
-position: relative;
-width: 100%;
-height: 100%;
-background: var(--bg-primary);
-overflow: hidden;
-display: flex;
-align-items: center;
-justify-content: center;
-}
-.media-frame img,
-.media-frame video,
-.media-frame iframe { width: 100%; height: 100%; border: 0; }
-.media-frame img,
-.media-frame video { object-fit: cover; }
-.media-error {
-width: 100%;
-height: 100%;
-display: flex;
-align-items: center;
-justify-content: center;
-flex-direction: column;
-gap: 0.4rem;
-background: var(--media-placeholder);
-color: var(--text-muted);
-text-align: center;
-padding: 1rem;
-}
-.media-document-link {
-display: inline-flex;
-align-items: center;
-justify-content: center;
-gap: 0.5rem;
-padding: 0.55rem 0.75rem;
-max-width: 92%;
-text-align: center;
-font-size: 0.75rem;
-font-weight: 800;
-color: var(--accent);
-background: var(--bg-surface);
-border: 1px solid var(--border-color);
-border-radius: 10px;
-box-shadow: var(--shadow-sm);
-}
-.pdf-reader-shell {
-width: 100%;
-height: 100%;
-min-height: 360px;
-display: flex;
-flex-direction: column;
-background: var(--bg-primary);
-}
-.pdf-reader-toolbar {
-display: flex;
-align-items: center;
-justify-content: space-between;
-gap: 0.5rem;
-padding: 0.45rem 0.65rem;
-background: var(--brand-blue);
-color: #fff;
-font-size: 0.72rem;
-font-weight: 700;
-}
-.pdf-reader-toolbar a { color: #fff; text-decoration: underline; }
-.pdf-reader-frame {
-flex: 1;
-width: 100%;
-min-height: 320px;
-border: 0;
-background: #fff;
-}
-.product-media-container,
-.mech-media-container,
-.farmer-help-media-container,
-.order-project-media-container,
-#details-media,
-#story-details-media { background: var(--media-placeholder); }
-
-/* Order history controls. */
-.order-operation-group {
-display: flex;
-flex-wrap: wrap;
-justify-content: flex-end;
-gap: 0.35rem;
-}
-.order-operation-group .btn { white-space: nowrap; }
-.dashboard-table td:last-child { min-width: 220px; }
-
-/* Balanced brand colours: green dominant, blue support, pink/yellow accents. */
-.hero-banner {
-background: linear-gradient(135deg, var(--brand-green-deep) 0%, var(--brand-green) 62%, var(--brand-blue) 100%);
-border-bottom-color: var(--brand-yellow);
-}
-.stock-badge.bg-success { background: var(--brand-green); }
-.stock-badge.bg-update { background: var(--brand-blue); }
-.badge-delivered { background: var(--brand-green); }
-.info-card:hover,
 .product-card:hover,
 .mech-card:hover,
 .farmer-help-card:hover,
 .order-project-card:hover {
-box-shadow: 0 10px 24px rgba(22, 163, 74, 0.12), var(--shadow-md);
+  transform: translateY(-3px);
+  box-shadow:
+    0 12px 28px rgba(15,23,42,.10),
+    0 0 0 1px rgba(22,163,74,.12);
 }
-.ql-editor img,
+
+/* Make the picture visually dominant even inside a small square card. */
+.product-media-container,
+.mech-media-container,
+.farmer-help-media-container,
+.order-project-media-container {
+  height: 53%;
+  min-height: 0;
+  flex: 0 0 53%;
+  background:
+    linear-gradient(135deg, rgba(22,163,74,.06), rgba(37,99,235,.06)),
+    var(--media-placeholder);
+}
+
+.product-media-container img,
+.mech-media-container img,
+.farmer-help-media-container img,
+.order-project-media-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  background: var(--media-placeholder);
+}
+
+.product-media-container video,
+.mech-media-container video,
+.farmer-help-media-container video,
+.order-project-media-container video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.product-content,
+.mech-content,
+.farmer-help-content,
+.order-project-content {
+  padding: .65rem .7rem .7rem;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.product-title,
+.mech-title,
+.farmer-help-title,
+.order-project-title {
+  font-size: .9rem;
+  line-height: 1.25;
+  margin-bottom: .3rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.product-content p,
+.mech-details,
+.farmer-help-description,
+.order-project-description {
+  font-size: .72rem;
+  line-height: 1.35;
+  margin-bottom: .35rem;
+}
+
+.product-actions,
+.mech-actions {
+  gap: .3rem;
+  margin-bottom: .35rem;
+}
+
+.product-footer,
+.mech-footer,
+.farmer-help-footer,
+.order-project-footer {
+  gap: .35rem;
+  padding-top: .45rem;
+  margin-top: .35rem;
+  flex-wrap: wrap;
+}
+
+.product-footer .btn,
+.mech-footer .btn,
+.farmer-help-footer .btn,
+.order-project-footer .btn,
+.product-actions .btn {
+  font-size: .68rem !important;
+  padding: .3rem .45rem !important;
+  min-height: 30px;
+  line-height: 1.15;
+}
+
+.product-price,
+.mech-price,
+.order-project-budget {
+  font-size: .78rem;
+}
+
+.stock-badge {
+  top: 7px;
+  left: 7px;
+  padding: 3px 7px;
+  font-size: .57rem;
+  max-width: calc(100% - 14px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Make card controls usable without destroying square geometry. */
+.product-card .interaction-bar,
+.farmer-help-card .interaction-bar {
+  gap: .55rem;
+  margin-top: .25rem;
+  padding-top: .3rem;
+}
+
+.product-card .interaction-btn,
+.farmer-help-card .interaction-btn {
+  font-size: .68rem;
+}
+
+.product-card .product-content > div,
+.mech-card .mech-content > div,
+.farmer-help-card .farmer-help-content > div,
+.order-project-card .order-project-content > div {
+  min-width: 0;
+}
+
+/* ---------------------------------------------------------------------
+   MEDIA / FILE SAFETY UI
+   --------------------------------------------------------------------- */
+.media-safe {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--media-placeholder);
+}
+
+.media-safe img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.media-safe--document,
+.media-safe--audio,
+.media-safe--fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: .65rem;
+  background:
+    linear-gradient(135deg, rgba(37,99,235,.08), rgba(22,163,74,.08)),
+    var(--media-placeholder);
+}
+
+.media-safe--document {
+  flex-direction: column;
+  gap: .35rem;
+}
+
+.media-safe--document .file-icon {
+  font-size: 1.8rem;
+  color: var(--brand-blue);
+}
+
+.media-safe--audio audio {
+  width: 95%;
+  max-width: 230px;
+}
+
+.media-error {
+  width: 100%;
+  height: 100%;
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: .25rem;
+  padding: .75rem;
+  text-align: center;
+  color: var(--text-muted);
+  background: var(--media-placeholder);
+}
+
+.media-error i {
+  font-size: 1.5rem;
+  color: var(--brand-pink);
+}
+
+.media-error strong,
+.media-error span {
+  max-width: 95%;
+  overflow-wrap: anywhere;
+}
+
+/* PDF reader: embedded reader + clear fallback/open controls. */
+.pdf-reader-shell {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  overflow: hidden;
+}
+
+.pdf-reader-frame {
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 0;
+  border: 0;
+  background: #fff;
+}
+
+.pdf-reader-toolbar {
+  flex: 0 0 auto;
+  min-height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .4rem;
+  padding: .25rem .4rem;
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border-color);
+  font-size: .68rem;
+}
+
+.pdf-reader-toolbar span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pdf-reader-toolbar a {
+  flex-shrink: 0;
+}
+
+/* ---------------------------------------------------------------------
+   DETAIL MODAL — lets the user see much more text and a larger image.
+   --------------------------------------------------------------------- */
+#details-modal .modal-content {
+  max-width: 920px;
+}
+
+#details-media {
+  min-height: 240px;
+  max-height: 62vh;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  background: var(--bg-primary);
+}
+
+#details-media img,
+#details-media video {
+  width: 100%;
+  max-height: 62vh;
+  object-fit: contain;
+  background: var(--bg-primary);
+}
+
+#details-desc {
+  max-height: 45vh;
+  overflow-y: auto;
+  text-align: left !important;
+  overflow-wrap: anywhere;
+}
+
 #details-desc img,
 #story-details-content img {
-max-width: 100%;
-height: auto;
-object-fit: contain;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
 }
-.modal-content,
-#details-desc,
-#story-details-content { overflow-wrap: anywhere; }
+
+/* ---------------------------------------------------------------------
+   ACCOUNT DASHBOARD
+   --------------------------------------------------------------------- */
+#user-dashboard-modal .modal-content {
+  max-width: 1120px;
+}
+
+#user-dashboard-modal .dashboard-table-container {
+  max-height: 48vh;
+  overflow: auto;
+}
+
+#user-dashboard-modal .dashboard-table td,
+#user-dashboard-modal .dashboard-table th {
+  white-space: nowrap;
+}
+
+.account-action-group {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: .35rem;
+}
+
+.account-action-group .btn {
+  font-size: .7rem;
+  padding: .35rem .55rem;
+}
+
+/* ---------------------------------------------------------------------
+   FORMS / BUTTON FEEDBACK
+   --------------------------------------------------------------------- */
+button,
+.btn,
+a.btn,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn {
+  transition:
+    transform .18s ease,
+    box-shadow .18s ease,
+    background-color .18s ease,
+    border-color .18s ease;
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(1px) scale(.99);
+}
+
 button:focus-visible,
 a:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
-outline: 3px solid rgba(236, 72, 153, 0.35);
-outline-offset: 2px;
+  outline: 3px solid rgba(236,72,153,.35);
+  outline-offset: 2px;
 }
-.products-grid > *,
-.mechanization-grid > *,
-.farmer-help-grid > *,
-.order-project-grid > * { min-width: 0; }
-.product-card .product-content > div,
-.mech-card .mech-content > div,
-.farmer-help-card .farmer-help-content > div,
-.order-project-card .order-project-content > div { min-width: 0; }
 
+.form-control,
+.search-input,
+.filter-select {
+  min-height: 42px;
+}
 
-/* ================================================================
-18. FINAL RESPONSIVE POLISH & MEDIA SAFETY RULES
-================================================================ */
-.media-error strong {
-max-width: 90%;
-overflow-wrap: anywhere;
+.modal-content {
+  overflow-wrap: anywhere;
 }
-.media-error span {
-max-width: 90%;
-}
-.pdf-reader-shell,
-.pdf-reader-frame {
-border-radius: 0;
-}
-.pdf-reader-toolbar span {
-overflow: hidden;
-text-overflow: ellipsis;
-white-space: nowrap;
-}
-.pdf-reader-toolbar a {
-flex-shrink: 0;
-}
-.product-card .product-media-container .pdf-reader-shell,
-.mech-card .mech-media-container .pdf-reader-shell,
-.farmer-help-card .farmer-help-media-container .pdf-reader-shell,
-.order-project-card .order-project-media-container .pdf-reader-shell {
-height: 100%;
-}
-.product-card .product-media-container .media-error,
-.mech-card .mech-media-container .media-error,
-.farmer-help-card .farmer-help-media-container .media-error,
-.order-project-card .order-project-media-container .media-error {
-height: 100%;
-}
-.product-card .product-media-container audio,
-.mech-card .mech-media-container audio,
-.farmer-help-card .farmer-help-media-container audio,
-.order-project-card .order-project-media-container audio {
-width: 90%;
-max-width: 220px;
-}
-.product-card .product-content p,
-.mech-card .mech-content p,
-.farmer-help-card .farmer-help-content p,
-.order-project-card .order-project-content p {
-font-size: 0.72rem;
-line-height: 1.35;
-}
-.product-card .product-footer,
-.mech-card .mech-footer,
-.farmer-help-card .farmer-help-footer,
-.order-project-card .order-project-footer {
-gap: 0.4rem;
-flex-wrap: wrap;
-}
-.product-card .product-footer > *,
-.mech-card .mech-footer > *,
-.farmer-help-card .farmer-help-footer > *,
-.order-project-card .order-project-footer > * {
-min-width: 0;
-}
-.product-card .product-price {
-white-space: nowrap;
-overflow: hidden;
-text-overflow: ellipsis;
-}
-.product-card .stock-badge,
-.mech-card .stock-badge {
-max-width: calc(100% - 24px);
-overflow: hidden;
-text-overflow: ellipsis;
-white-space: nowrap;
-}
+
+/* ---------------------------------------------------------------------
+   RESPONSIVE CARD BREAKPOINTS
+   --------------------------------------------------------------------- */
 @media (min-width: 1800px) {
-.products-grid,
-.mechanization-grid,
-.farmer-help-grid,
-.order-project-grid {
-padding-left: 2.5%;
-padding-right: 2.5%;
+  .products-grid,
+  .mechanization-grid,
+  .farmer-help-grid,
+  .order-project-grid {
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+  }
 }
+
+@media (min-width: 1400px) and (max-width: 1799px) {
+  .products-grid,
+  .mechanization-grid,
+  .farmer-help-grid,
+  .order-project-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
 }
-@media (max-width: 1399px) and (min-width: 1101px) {
-.products-grid,
-.mechanization-grid,
-.farmer-help-grid,
-.order-project-grid {
-grid-template-columns: repeat(4, minmax(0, 1fr));
+
+@media (min-width: 1000px) and (max-width: 1399px) {
+  .products-grid,
+  .mechanization-grid,
+  .farmer-help-grid,
+  .order-project-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }
+
+@media (min-width: 700px) and (max-width: 999px) {
+  .products-grid,
+  .mechanization-grid,
+  .farmer-help-grid,
+  .order-project-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
-@media (max-width: 900px) {
-.product-card .product-actions,
-.mech-card .mech-actions {
-gap: 0.3rem;
+
+@media (max-width: 699px) {
+  .products-grid,
+  .mechanization-grid,
+  .farmer-help-grid,
+  .order-project-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: .65rem;
+    padding-left: 2.5%;
+    padding-right: 2.5%;
+  }
+
+  .product-card,
+  .mech-card,
+  .farmer-help-card,
+  .order-project-card {
+    border-radius: 11px;
+  }
+
+  .product-content,
+  .mech-content,
+  .farmer-help-content,
+  .order-project-content {
+    padding: .5rem;
+  }
+
+  .product-title,
+  .mech-title,
+  .farmer-help-title,
+  .order-project-title {
+    font-size: .76rem;
+  }
+
+  .product-content p,
+  .mech-details,
+  .farmer-help-description,
+  .order-project-description {
+    font-size: .63rem;
+  }
+
+  .product-footer .btn,
+  .mech-footer .btn,
+  .farmer-help-footer .btn,
+  .order-project-footer .btn,
+  .product-actions .btn {
+    font-size: .6rem !important;
+    padding: .25rem .35rem !important;
+  }
+
+  #chat-widget {
+    width: calc(100vw - 24px);
+    right: 12px;
+    bottom: 75px;
+  }
+
+  #chat-toggle-btn {
+    right: 12px;
+    bottom: 12px;
+    padding: 11px 16px;
+  }
 }
-.product-card .interaction-bar {
-gap: 0.35rem;
-}
-}
-@media (max-width: 760px) {
-.announcement-marquee-item {
-font-size: 0.82rem;
-}
-.pdf-reader-shell {
-min-height: 300px;
-}
-.pdf-reader-frame {
-min-height: 260px;
-}
-}
-@media (max-width: 480px) {
-.product-card .product-title,
-.mech-card .mech-title,
-.farmer-help-card .farmer-help-title,
-.order-project-card .order-project-title {
-font-size: 0.88rem;
-}
-.product-card .product-content,
-.mech-card .mech-content,
-.farmer-help-card .farmer-help-content,
-.order-project-card .order-project-content {
-padding: 0.65rem;
-}
-}
-@media (prefers-contrast: more) {
-.product-card,
-.mech-card,
-.farmer-help-card,
-.order-project-card,
-.info-card {
-border-width: 2px;
-}
+
+@media (max-width: 420px) {
+  .products-grid,
+  .mechanization-grid,
+  .farmer-help-grid,
+  .order-project-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .product-media-container,
+  .mech-media-container,
+  .farmer-help-media-container,
+  .order-project-media-container {
+    height: 50%;
+    flex-basis: 50%;
+  }
 }
 
 </style>
 </head>
 <body>
-<div id="dynamic-announcement" class="announcement-banner" aria-live="polite" aria-label="New updates">
-<div class="announcement-marquee" role="region" aria-label="New updates">
-<div class="announcement-marquee-track" id="announcement-marquee-track"></div>
-</div>
-</div>
+<div id="dynamic-announcement" class="announcement-banner"></div>
 <div id="toast-container" class="toast-container"></div>
 <header>
 <div class="brand-container" onclick="navigate('home')">
@@ -2843,15 +3036,7 @@ ${escapeHTML(o.product_title)}<br>
 </td>
 <td><span style="font-weight: 800;">${o.quantity}</span> units</td>
 <td><span class="badge ${statusClass}">${o.status}</span></td>
-<td style="text-align:right;">
-<div class="order-operation-group">
-${cancelBtnHtml}
-<button class="btn btn-outline" style="font-size:0.7rem;padding:0.3rem 0.6rem;" onclick="reorderUserOrder('${String(o.product_id)}')" title="Add this item again">
-<i class="fa-solid fa-cart-plus"></i> Reorder
-</button>
-${['Cancelled','Delivered','Completed'].includes(o.status) ? `<button class="btn btn-danger-outline" style="font-size:0.7rem;padding:0.3rem 0.6rem;" onclick="deleteUserOrder('${String(o.id)}')" title="Remove this history item"><i class="fa-solid fa-trash"></i> Delete</button>` : ''}
-</div>
-</td>
+<td style="text-align:right;">${cancelBtnHtml}</td>
 </tr>
 `;
 });
@@ -2880,60 +3065,6 @@ console.error("Cancel Error:", e);
 showToast("Cancellation matrix failed.", "error");
 }
 };
-
-// ==========================================
-// USER ORDER HISTORY ACTIONS
-// ==========================================
-window.reorderUserOrder = function(productId) {
-if (!currentUser) {
-openAuthModal('login');
-return;
-}
-const product = localProductsCache.find(p => String(p.id) === String(productId));
-if (!product) {
-showToast('This product is no longer available in the current catalog.', 'warning');
-return;
-}
-if (Number(product.quantity || 0) <= 0) {
-showToast('This product is currently out of stock.', 'warning');
-return;
-}
-openOrderModal(String(product.id));
-showToast('Previous item restored to the order form.', 'success');
-};
-
-window.deleteUserOrder = async function(orderId) {
-if (!currentUser) return;
-if (!confirm('Remove this completed or cancelled order from your history?')) return;
-try {
-const { data: order, error: readError } = await window.supabase
-.from('orders')
-.select('id,status,user_id')
-.eq('id', orderId)
-.eq('user_id', currentUser.id)
-.single();
-if (readError) throw readError;
-if (!['Cancelled', 'Delivered', 'Completed'].includes(order.status)) {
-showToast('Active orders cannot be deleted. Cancel the order first.', 'warning');
-return;
-}
-const { error } = await window.supabase
-.from('orders')
-.delete()
-.eq('id', orderId)
-.eq('user_id', currentUser.id);
-if (error) throw error;
-showToast('Order history item removed successfully.', 'success');
-await loadUserOrders();
-} catch (error) {
-console.error('Delete order error:', error);
-showToast('Unable to remove this order history item.', 'error');
-}
-};
-// ==========================================
-// END USER ORDER HISTORY ACTIONS
-// ==========================================
-
 // ==========================================
 // SYSTEM UPDATES & ANNOUNCEMENTS
 // ==========================================
@@ -2951,11 +3082,18 @@ feedContainer.innerHTML = `<div style="grid-column: 1/-1; text-align:center; pad
 localAnnouncementsCache = []; return;
 }
 // Banner text
-updateAnnouncementMarquee(data);
+const textOnlyContent = DOMPurify.sanitize(data[0].content).replace(/<[^>]*>?/gm, '');
+banner.innerHTML = `<span><i class="fa-solid fa-triangle-exclamation"></i> ${textOnlyContent}</span>`;
+banner.classList.add('active');
 localAnnouncementsCache = data;
 if (feedContainer) feedContainer.innerHTML = '';
 data.forEach(a => {
-let mediaElement = buildMediaElement(a.image_url, a, { label: 'Announcement attachment' });
+let mediaElement = `<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:var(--accent); color:white; font-size:3rem;"><i class="fa-solid fa-bullhorn"></i></div>`;
+if (a.image_url) {
+let url = a.image_url.startsWith('http') ? a.image_url : window.supabase.storage.from('product-assets').getPublicUrl(a.image_url).data.publicUrl;
+if (url.match(/\.(jpeg|jpg|gif|png)$/i)) mediaElement = `<img src="${url}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='https://via.placeholder.com/400x200?text=Asset+Error'">`;
+else if (url.match(/\.(mp4|webm|ogg)$/i)) mediaElement = `<video src="${url}" controls style="width:100%; height:100%; object-fit:cover; background:#000;"></video>`;
+}
 const dateStr = new Date(a.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
 const cleanPreview = DOMPurify.sanitize(a.content).replace(/<[^>]*>?/gm, '').substring(0, 150) + '...';
 if (feedContainer) {
@@ -2989,7 +3127,17 @@ const ann = localAnnouncementsCache.find(a => String(a.id) === String(id));
 if(ann) {
 document.getElementById('details-title').innerHTML = "<i class='fa-solid fa-bullhorn'></i> System Update Vector";
 document.getElementById('details-desc').innerHTML = DOMPurify.sanitize(ann.content);
-setDetailsMedia(ann.image_url, ann, ann.title || 'Attached asset');
+const mediaContainer = document.getElementById('details-media');
+mediaContainer.innerHTML = "";
+if (ann.image_url) {
+let url = ann.image_url.startsWith('http') ? ann.image_url : window.supabase.storage.from('product-assets').getPublicUrl(ann.image_url).data.publicUrl;
+if (url.match(/\.(mp4|webm|ogg)$/i)) mediaContainer.innerHTML = `<video src="${url}" controls style="width:100%; height:100%; object-fit:cover;"></video>`;
+else if (url.match(/\.(pdf|doc|docx)$/i)) mediaContainer.innerHTML = `<div style="display:flex; height:100%; align-items:center; justify-content:center;"><a href="${url}" target="_blank" class="btn btn-primary"><i class="fa-solid fa-file-pdf"></i> View Attached Document</a></div>`;
+else mediaContainer.innerHTML = `<img src="${url}" style="width:100%; height:100%; object-fit:contain; background:var(--bg-primary);">`;
+mediaContainer.style.display = 'block';
+} else {
+mediaContainer.style.display = 'none';
+}
 document.getElementById('details-modal').classList.add('active');
 }
 };
@@ -3000,7 +3148,21 @@ window.viewDetails = (id) => {
 const item = localProductsCache.find(p => String(p.id) === String(id));
 if (!item) return;
 document.getElementById('details-title').innerHTML = escapeHTML(item.title) + ' <i class="fa-solid fa-circle-check text-success" title="Verified Asset" style="font-size:0.875rem;"></i>';
-setDetailsMedia(item.image_url, item, item.title || 'Attached asset');
+const mediaContainer = document.getElementById('details-media');
+mediaContainer.innerHTML = "";
+if (item.image_url) {
+let url = item.image_url.startsWith('http') ? item.image_url : window.supabase.storage.from('product-assets').getPublicUrl(item.image_url).data.publicUrl;
+if (url.match(/\.(mp4|webm|ogg)$/i)) {
+mediaContainer.innerHTML = `<video src="${url}" controls style="width:100%; height:100%; object-fit:contain; background:#000;"></video>`;
+} else if (url.match(/\.(pdf|doc|docx)$/i)) {
+mediaContainer.innerHTML = `<div style="display:flex; height:100%; align-items:center; justify-content:center;"><a href="${url}" target="_blank" class="btn btn-primary"><i class="fa-solid fa-file-pdf"></i> View Attached Document</a></div>`;
+} else {
+mediaContainer.innerHTML = `<img src="${url}" style="width:100%; height:100%; object-fit:contain; background:var(--bg-primary);">`;
+}
+mediaContainer.style.display = 'block';
+} else {
+mediaContainer.style.display = 'none';
+}
 // Description handling (remove the CURRENCY tag logic securely)
 let htmlDesc = item.description ? item.description.replace(/\[CURRENCY:\w+\]/g, "").trim() : "No further technical specifications available.";
 document.getElementById('details-desc').innerHTML = DOMPurify.sanitize(htmlDesc);
@@ -3027,7 +3189,11 @@ return;
 localStoriesCache.forEach(story => {
 const dateObj = new Date(story.updated_at);
 const formattedDate = `${dateObj.toLocaleDateString()} at ${dateObj.toLocaleTimeString()}`;
-let coverImage = buildMediaElement(story.image_url, story, { label: story.title || 'Platform story' });
+let coverImage = `<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:var(--bg-primary); color:var(--text-muted); font-size:3rem;"><i class="fa-solid fa-book-open"></i></div>`;
+if (story.image_url) {
+let url = story.image_url.startsWith('http') ? story.image_url : window.supabase.storage.from('product-assets').getPublicUrl(story.image_url).data.publicUrl;
+coverImage = `<img src="${url}" style="width:100%; height:100%; object-fit:cover;">`;
+}
 const cleanText = DOMPurify.sanitize(story.content || '').replace(/<[^>]*>?/gm, '');
 const previewText = cleanText.length > 150 ? cleanText.substring(0, 150) + '...' : cleanText;
 container.innerHTML += `
@@ -3059,7 +3225,15 @@ if(!story) return;
 document.getElementById('story-details-title').innerHTML = escapeHTML(story.title);
 const dateObj = new Date(story.updated_at);
 document.getElementById('story-details-meta').innerHTML = `<i class="fa-solid fa-clock"></i> Published: ${dateObj.toLocaleDateString()} at ${dateObj.toLocaleTimeString()}`;
-setStoryDetailsMedia(story.image_url, story, story.title || 'Platform story');
+const mediaContainer = document.getElementById('story-details-media');
+mediaContainer.innerHTML = "";
+if (story.image_url) {
+let url = story.image_url.startsWith('http') ? story.image_url : window.supabase.storage.from('product-assets').getPublicUrl(story.image_url).data.publicUrl;
+mediaContainer.innerHTML = `<img src="${url}" style="width:100%; height:100%; object-fit: cover;">`;
+mediaContainer.style.display = 'block';
+} else {
+mediaContainer.style.display = 'none';
+}
 document.getElementById('story-details-content').innerHTML = DOMPurify.sanitize(story.content);
 document.getElementById('story-details-modal').classList.add('active');
 };
@@ -3479,7 +3653,13 @@ let currencySymbol = "$";
 if(targetCurrency === "RWF") currencySymbol = "Fr "; else if(targetCurrency === "KES") currencySymbol = "KSh "; else if(targetCurrency === "UGX") currencySymbol = "USh "; else if(targetCurrency === "TZS") currencySymbol = "TSh "; else if(targetCurrency === "BIF") currencySymbol = "FBu "; else if(targetCurrency === "SSP") currencySymbol = "£ "; else if(targetCurrency === "CDF") currencySymbol = "FC "; else if(targetCurrency === "EUR") currencySymbol = "€ "; else if(targetCurrency === "GBP") currencySymbol = "£ "; else if(targetCurrency === "AED") currencySymbol = "إ.د "; else if(targetCurrency === "SAR") currencySymbol = "س.ر "; else if(targetCurrency === "CNY") currencySymbol = "¥ "; else if(targetCurrency === "INR") currencySymbol = "₹ "; else if(targetCurrency === "JPY") currencySymbol = "¥ "; else if(targetCurrency === "ZAR") currencySymbol = "R "; else if(targetCurrency === "CAD") currencySymbol = "$ ";
 const isOutOfStock = item.quantity <= 0;
 const isLowStock = item.quantity > 0 && item.quantity <= 3;
-let mediaElement = buildMediaElement(item.image_url, item, { label: item.title || 'Product asset' });
+let mediaElement = `<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:var(--bg-primary); color:var(--text-muted);"><i class="fa-solid fa-image" style="font-size:3rem;"></i></div>`;
+if (item.image_url) {
+let url = item.image_url.startsWith('http') ? item.image_url : window.supabase.storage.from('product-assets').getPublicUrl(item.image_url).data.publicUrl;
+if (url.match(/\.(jpeg|jpg|gif|png)$/i)) mediaElement = `<img src="${url}" style="width:100%; height:100%; object-fit:cover;">`;
+else if (url.match(/\.(mp4|webm|ogg)$/i)) mediaElement = `<video src="${url}" style="width:100%; height:100%; object-fit:cover; background:#000;" muted onmouseover="this.play()" onmouseout="this.pause()"></video>`;
+else mediaElement = `<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:#e2e8f0; text-align:center; padding:1rem;"><a href="${url}" target="_blank" style="text-decoration:none; color:var(--accent); font-weight:bold; font-size:14px;"><i class="fa-solid fa-file-pdf"></i> Asset Document</a></div>`;
+}
 let badgeHTML = '';
 if (isOutOfStock) badgeHTML = '<span class="stock-badge bg-danger"><i class="fa-solid fa-ban"></i> Depleted</span>';
 else if (isLowStock) badgeHTML = '<span class="stock-badge bg-warning"><i class="fa-solid fa-triangle-exclamation"></i> Low Stock</span>';
@@ -3701,7 +3881,13 @@ return;
 }
 const fragment = document.createDocumentFragment();
 mechanizationList.forEach(mech => {
-let mediaElement = buildMediaElement(mech.image_url, mech, { label: mech.title || mech.name || 'Agricultural machinery' });
+let mediaElement = `<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:var(--bg-primary); color:var(--text-muted);"><i class="fa-solid fa-image" style="font-size:3rem;"></i></div>`;
+if (mech.image_url) {
+let url = mech.image_url.startsWith('http') ? mech.image_url : window.supabase.storage.from('product-assets').getPublicUrl(mech.image_url).data.publicUrl;
+if (url.match(/\.(jpeg|jpg|gif|png)$/i)) mediaElement = `<img src="${url}" style="width:100%; height:100%; object-fit:cover;">`;
+else if (url.match(/\.(mp4|webm|ogg)$/i)) mediaElement = `<video src="${url}" style="width:100%; height:100%; object-fit:cover; background:#000;" muted onmouseover="this.play()" onmouseout="this.pause()"></video>`;
+else mediaElement = `<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:#e2e8f0; text-align:center; padding:1rem;"><a href="${url}" target="_blank" style="text-decoration:none; color:var(--accent); font-weight:bold; font-size:14px;"><i class="fa-solid fa-file-pdf"></i> Asset Document</a></div>`;
+}
 const isAvailable = mech.available;
 const availabilityBadge = `<span class="stock-badge ${isAvailable ? 'bg-success' : 'bg-danger'}"><i class="fa-solid ${isAvailable ? 'fa-check' : 'fa-ban'}"></i> ${isAvailable ? 'Available' : 'Maintenance'}</span>`;
 const cardNode = document.createElement("div");
@@ -3756,7 +3942,14 @@ return;
 }
 const fragment = document.createDocumentFragment();
 helpDocsList.forEach(doc => {
-let mediaElement = buildMediaElement(doc.media_url, doc, { label: doc.title || 'Farmer resource' });
+let mediaElement = `<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:var(--bg-primary); color:var(--text-muted);"><i class="fa-solid fa-file-alt" style="font-size:3rem;"></i></div>`;
+if (doc.media_url) {
+let url = doc.media_url.startsWith('http') ? doc.media_url : window.supabase.storage.from('product-assets').getPublicUrl(doc.media_url).data.publicUrl;
+if (url.match(/\.(jpeg|jpg|gif|png)$/i)) mediaElement = `<img src="${url}" style="width:100%; height:100%; object-fit:cover;">`;
+else if (url.match(/\.(mp4|webm|ogg)$/i)) mediaElement = `<video src="${url}" style="width:100%; height:100%; object-fit:cover; background:#000;" controls muted onmouseover="this.play()" onmouseout="this.pause()"></video>`;
+else if (url.match(/\.(mp3|wav|ogg)$/i)) mediaElement = `<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:#f0f0f0;"><audio controls src="${url}"></audio></div>`;
+else if (url.match(/\.(pdf|doc|docx|txt)$/i)) mediaElement = `<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:#e2e8f0; text-align:center; padding:1rem;"><a href="${url}" target="_blank" style="text-decoration:none; color:var(--accent); font-weight:bold; font-size:14px;"><i class="fa-solid fa-file-pdf"></i> View Document</a></div>`;
+}
 const cardNode = document.createElement("div");
 cardNode.className = `farmer-help-card`;
 cardNode.innerHTML = `
@@ -3783,7 +3976,23 @@ window.viewFarmerHelpDetails = (id) => {
 const doc = localFarmerHelpCache.find(d => String(d.id) === String(id));
 if(!doc) return;
 document.getElementById('details-title').innerHTML = `<i class="fa-solid fa-book-open-reader text-accent"></i> ${escapeHTML(doc.title)}`;
-setDetailsMedia(doc.media_url, doc, doc.title || 'Attached asset');
+const mediaContainer = document.getElementById('details-media');
+mediaContainer.innerHTML = "";
+if (doc.media_url) {
+let url = doc.media_url.startsWith('http') ? doc.media_url : window.supabase.storage.from('product-assets').getPublicUrl(doc.media_url).data.publicUrl;
+if (url.match(/\.(mp4|webm|ogg)$/i)) {
+mediaContainer.innerHTML = `<video src="${url}" controls style="width:100%; height:100%; object-fit:cover;"></video>`;
+} else if (url.match(/\.(mp3|wav|ogg)$/i)) {
+mediaContainer.innerHTML = `<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:#f0f0f0;"><audio controls src="${url}"></audio></div>`;
+} else if (url.match(/\.(pdf|doc|docx|txt)$/i)) {
+mediaContainer.innerHTML = `<div style="display:flex; height:100%; align-items:center; justify-content:center;"><a href="${url}" target="_blank" class="btn btn-primary"><i class="fa-solid fa-file-pdf"></i> View Document</a></div>`;
+} else {
+mediaContainer.innerHTML = `<img src="${url}" style="width:100%; height:100%; object-fit:contain; background:var(--bg-primary);">`;
+}
+mediaContainer.style.display = 'block';
+} else {
+mediaContainer.style.display = 'none';
+}
 document.getElementById('details-desc').innerHTML = DOMPurify.sanitize(doc.content);
 document.getElementById('details-modal').classList.add('active');
 };
@@ -3810,7 +4019,13 @@ return;
 }
 const fragment = document.createDocumentFragment();
 projectList.forEach(project => {
-let mediaElement = buildMediaElement(project.image_url, project, { label: project.title || 'Project asset' });
+let mediaElement = `<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:var(--bg-primary); color:var(--text-muted);"><i class="fa-solid fa-folder-open" style="font-size:3rem;"></i></div>`;
+if (project.image_url) {
+let url = project.image_url.startsWith('http') ? project.image_url : window.supabase.storage.from('product-assets').getPublicUrl(project.image_url).data.publicUrl;
+if (url.match(/\.(jpeg|jpg|gif|png)$/i)) mediaElement = `<img src="${url}" style="width:100%; height:100%; object-fit:cover;">`;
+else if (url.match(/\.(mp4|webm|ogg)$/i)) mediaElement = `<video src="${url}" style="width:100%; height:100%; object-fit:cover; background:#000;" controls muted onmouseover="this.play()" onmouseout="this.pause()"></video>`;
+else mediaElement = `<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:#e2e8f0; text-align:center; padding:1rem;"><a href="${url}" target="_blank" style="text-decoration:none; color:var(--accent); font-weight:bold; font-size:14px;"><i class="fa-solid fa-file-pdf"></i> Asset Document</a></div>`;
+}
 const cardNode = document.createElement("div");
 cardNode.className = `order-project-card`;
 cardNode.innerHTML = `
@@ -3836,7 +4051,21 @@ window.viewProjectDetails = (id) => {
 const project = localProjectsCache.find(p => String(p.id) === String(id));
 if(!project) return;
 document.getElementById('details-title').innerHTML = `<i class="fa-solid fa-rocket text-accent"></i> ${escapeHTML(project.title)}`;
-setDetailsMedia(project.image_url, project, project.title || 'Attached asset');
+const mediaContainer = document.getElementById('details-media');
+mediaContainer.innerHTML = "";
+if (project.image_url) {
+let url = project.image_url.startsWith('http') ? project.image_url : window.supabase.storage.from('product-assets').getPublicUrl(project.image_url).data.publicUrl;
+if (url.match(/\.(mp4|webm|ogg)$/i)) {
+mediaContainer.innerHTML = `<video src="${url}" controls style="width:100%; height:100%; object-fit:cover;"></video>`;
+} else if (url.match(/\.(pdf|doc|docx)$/i)) {
+mediaContainer.innerHTML = `<div style="display:flex; height:100%; align-items:center; justify-content:center;"><a href="${url}" target="_blank" class="btn btn-primary"><i class="fa-solid fa-file-pdf"></i> View Blueprint Document</a></div>`;
+} else {
+mediaContainer.innerHTML = `<img src="${url}" style="width:100%; height:100%; object-fit:contain; background:var(--bg-primary);">`;
+}
+mediaContainer.style.display = 'block';
+} else {
+mediaContainer.style.display = 'none';
+}
 // Description handling
 let htmlDesc = project.description || "No detailed blueprint available.";
 document.getElementById('details-desc').innerHTML = DOMPurify.sanitize(htmlDesc);
@@ -3858,150 +4087,6 @@ showToast("Project quote request initiated. Please check your dashboard or conta
 // This would typically involve loading language JSON files and dynamically updating text content.
 // For now, the content remains primarily in English as per the existing structure.
 // The presence of language options in the admin panel suggests a future frontend implementation.
-
-// ==========================================
-// PROFESSIONAL MEDIA & FILE HANDLING HELPERS
-// ==========================================
-function normalizeAssetValue(value) {
-if (value === null || value === undefined) return '';
-return String(value).trim();
-}
-function getStorageAssetUrl(value) {
-const raw = normalizeAssetValue(value);
-if (!raw) return '';
-if (/^(https?:|data:|blob:|file:)/i.test(raw)) return raw;
-try {
-const result = window.supabase.storage.from('product-assets').getPublicUrl(raw);
-return result?.data?.publicUrl || raw;
-} catch (error) {
-console.warn('Asset URL resolution failed:', error);
-return raw;
-}
-}
-function getAssetExtension(value) {
-const raw = normalizeAssetValue(value);
-if (!raw) return '';
-try {
-const clean = decodeURIComponent(raw).split('#')[0].split('?')[0];
-const match = clean.match(/\.([a-z0-9]{1,8})$/i);
-return match ? match[1].toLowerCase() : '';
-} catch (error) {
-const match = raw.match(/\.([a-z0-9]{1,8})(?:[?#].*)?$/i);
-return match ? match[1].toLowerCase() : '';
-}
-}
-function detectAssetKind(value, record = {}) {
-const ext = getAssetExtension(value);
-const declared = String(record.mime_type || record.file_type || record.media_type || record.content_type || '').toLowerCase();
-const source = `${ext} ${declared}`;
-if (/pdf|application\/pdf/.test(source)) return 'pdf';
-if (/docx?|word|xlsx?|spreadsheet|excel|pptx?|presentation|powerpoint/.test(source)) return 'document';
-if (/txt|text\/plain/.test(source)) return 'text';
-if (/jpe?g|png|gif|webp|avif|svg|bmp|image\//.test(source)) return 'image';
-if (/mp4|webm|ogg|mov|m4v|video\//.test(source)) return 'video';
-if (/mp3|wav|m4a|aac|audio\//.test(source)) return 'audio';
-return 'document';
-}
-function escapeAttribute(value) { return escapeHTML(normalizeAssetValue(value)); }
-function mediaErrorLabel(kind = 'asset') {
-return ({
-image: 'Image could not be displayed',
-video: 'Video could not be displayed',
-audio: 'Audio could not be loaded',
-pdf: 'PDF could not be opened',
-document: 'Document is available to open',
-text: 'Text file is available to open',
-asset: 'File could not be displayed'
-})[kind] || 'File could not be displayed';
-}
-window.handleMediaError = function(element, kind = 'asset') {
-if (!element || !element.parentElement) return;
-element.parentElement.innerHTML = `
-<div class="media-error" role="status">
-<i class="fa-solid fa-file-circle-exclamation" style="font-size:2rem;"></i>
-<strong>${escapeHTML(mediaErrorLabel(kind))}</strong>
-<span style="font-size:0.72rem;">Please open the asset from its details view.</span>
-</div>`;
-};
-function buildPdfReader(url, label = 'PDF document') {
-const safeUrl = escapeAttribute(url);
-const safeLabel = escapeHTML(label);
-return `
-<div class="pdf-reader-shell">
-<div class="pdf-reader-toolbar">
-<span><i class="fa-solid fa-file-pdf"></i> ${safeLabel}</span>
-<a href="${safeUrl}" target="_blank" rel="noopener noreferrer">Open full PDF</a>
-</div>
-<iframe class="pdf-reader-frame" src="${safeUrl}#toolbar=1&navpanes=0&scrollbar=1" title="${safeLabel}" loading="lazy"></iframe>
-</div>`;
-}
-function buildMediaElement(value, record = {}, options = {}) {
-const raw = normalizeAssetValue(value);
-if (!raw) {
-return `<div class="media-error"><i class="fa-solid fa-image" style="font-size:2rem;"></i><span>No media attached</span></div>`;
-}
-const url = getStorageAssetUrl(raw);
-const kind = detectAssetKind(raw, record);
-const label = options.label || record.title || 'Attached asset';
-const safeUrl = escapeAttribute(url);
-if (kind === 'image') {
-return `<img src="${safeUrl}" alt="${escapeAttribute(label)}" loading="lazy" decoding="async" onerror="handleMediaError(this, 'image')">`;
-}
-if (kind === 'video') {
-return `<video src="${safeUrl}" controls playsinline preload="metadata" onerror="handleMediaError(this, 'video')"></video>`;
-}
-if (kind === 'audio') {
-return `<div class="media-error" style="background:var(--bg-surface);"><i class="fa-solid fa-file-audio" style="font-size:2rem;color:var(--brand-blue);"></i><audio controls preload="metadata" src="${safeUrl}" onerror="handleMediaError(this, 'audio')"></audio></div>`;
-}
-if (kind === 'pdf') return buildPdfReader(url, label);
-return `
-<div class="media-error">
-<i class="fa-solid fa-file-lines" style="font-size:2.4rem;color:var(--brand-blue);"></i>
-<strong>${escapeHTML(label)}</strong>
-<a class="media-document-link" href="${safeUrl}" target="_blank" rel="noopener noreferrer">
-<i class="fa-solid fa-arrow-up-right-from-square"></i> Open document
-</a>
-</div>`;
-}
-function setDetailsMedia(value, record = {}, label = 'Attached asset') {
-const mediaContainer = document.getElementById('details-media');
-if (!mediaContainer) return;
-mediaContainer.innerHTML = buildMediaElement(value, record, { label });
-mediaContainer.style.display = 'block';
-}
-function setStoryDetailsMedia(value, record = {}, label = 'Attached asset') {
-const mediaContainer = document.getElementById('story-details-media');
-if (!mediaContainer) return;
-mediaContainer.innerHTML = buildMediaElement(value, record, { label });
-mediaContainer.style.display = 'block';
-}
-function extractAnnouncementText(html) {
-const sanitized = DOMPurify.sanitize(html || '', { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
-return sanitized.replace(/\s+/g, ' ').trim();
-}
-function updateAnnouncementMarquee(announcements) {
-const banner = document.getElementById('dynamic-announcement');
-const track = document.getElementById('announcement-marquee-track');
-if (!banner || !track) return;
-const entries = (announcements || []).map(a => extractAnnouncementText(a.content)).filter(Boolean);
-if (!entries.length) {
-banner.classList.remove('active');
-track.textContent = '';
-return;
-}
-const combined = `New updates — ${entries.join('  •  ')}`;
-track.innerHTML = '';
-const item = document.createElement('span');
-item.className = 'announcement-marquee-item';
-item.textContent = combined;
-track.appendChild(item);
-track.appendChild(item.cloneNode(true));
-banner.classList.add('active');
-}
-// ==========================================
-// END PROFESSIONAL MEDIA & FILE HANDLING HELPERS
-// ==========================================
-
 // ==========================================
 // UTILITIES & HELPERS
 // ==========================================
@@ -4019,6 +4104,1553 @@ showToast(`Language set to ${e.target.selectedOptions[0].text}. Reload required 
 }
 // Call this function after user session check or on DOMContentLoaded
 // initializeLangSelector();
+
+/* =====================================================================
+   20. PROFESSIONAL MEDIA + ACCOUNT RELIABILITY PATCH
+   ===================================================================== */
+
+(function installProfessionalMwaminiPatch() {
+  "use strict";
+
+  /*
+   * Resolve Supabase storage paths consistently.
+   * The original code assumes every stored asset contains a normal file
+   * extension. That is not guaranteed, and query strings can also make
+   * extension matching fail. This helper centralises URL resolution.
+   */
+  function resolveAssetUrl(rawValue) {
+    if (!rawValue) return "";
+    const raw = String(rawValue).trim();
+    if (!raw) return "";
+
+    if (/^(https?:|blob:|data:)/i.test(raw)) {
+      return raw;
+    }
+
+    try {
+      const result = window.supabase
+        .storage
+        .from("product-assets")
+        .getPublicUrl(raw);
+
+      if (result && result.data && result.data.publicUrl) {
+        return result.data.publicUrl;
+      }
+    } catch (error) {
+      console.warn("Asset URL resolution failed:", error);
+    }
+
+    return raw;
+  }
+
+  function assetPathWithoutQuery(url) {
+    return String(url || "").split("#")[0].split("?")[0].toLowerCase();
+  }
+
+  function assetExtension(url) {
+    const clean = assetPathWithoutQuery(url);
+    const match = clean.match(/\.([a-z0-9]{1,8})$/i);
+    return match ? match[1].toLowerCase() : "";
+  }
+
+  function detectAssetType(url, fallbackType) {
+    const ext = assetExtension(url);
+
+    if (["jpg","jpeg","png","gif","webp","avif","bmp","svg"].includes(ext)) {
+      return "image";
+    }
+
+    if (["mp4","webm","ogg","mov","m4v"].includes(ext)) {
+      return "video";
+    }
+
+    if (["mp3","wav","m4a","aac","flac","oga"].includes(ext)) {
+      return "audio";
+    }
+
+    if (ext === "pdf") {
+      return "pdf";
+    }
+
+    if (["doc","docx","xls","xlsx","ppt","pptx","txt","csv","rtf","odt","ods","odp"].includes(ext)) {
+      return "document";
+    }
+
+    /*
+     * Product.image_url is historically used for images. If the database
+     * stores a Supabase object path without an extension, preserve that
+     * contract instead of incorrectly showing a document icon.
+     */
+    if (fallbackType) {
+      return fallbackType;
+    }
+
+    return "unknown";
+  }
+
+  function safeHref(url) {
+    try {
+      const parsed = new URL(url, window.location.href);
+      if (["http:", "https:", "blob:", "data:"].includes(parsed.protocol)) {
+        return parsed.href;
+      }
+    } catch (error) {
+      console.warn("Unsafe asset URL:", error);
+    }
+    return "#";
+  }
+
+  function mediaErrorMarkup(url, label) {
+    const safe = safeHref(url);
+    const displayName = escapeHTML(
+      label || "This file could not be previewed."
+    );
+
+    return `
+      <div class="media-error">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <strong>Media preview unavailable</strong>
+        <span>${displayName}</span>
+        <a
+          class="btn btn-outline"
+          href="${safe}"
+          target="_blank"
+          rel="noopener noreferrer"
+          style="font-size:.68rem;padding:.3rem .45rem;"
+        >
+          <i class="fa-solid fa-arrow-up-right-from-square"></i>
+          Open File
+        </a>
+      </div>
+    `;
+  }
+
+  function buildPdfReader(url, label) {
+    const safe = safeHref(url);
+    const title = escapeHTML(label || "PDF document");
+
+    return `
+      <div class="pdf-reader-shell">
+        <iframe
+          class="pdf-reader-frame"
+          src="${safe}#toolbar=1&navpanes=0&scrollbar=1&view=FitH"
+          title="${title}"
+          loading="lazy"
+          referrerpolicy="no-referrer"
+        ></iframe>
+        <div class="pdf-reader-toolbar">
+          <span><i class="fa-solid fa-file-pdf"></i> ${title}</span>
+          <span style="display:flex;gap:.25rem;">
+            <a
+              class="btn btn-outline"
+              href="${safe}"
+              target="_blank"
+              rel="noopener noreferrer"
+              style="font-size:.65rem;padding:.25rem .4rem;"
+            >Read</a>
+            <a
+              class="btn btn-primary"
+              href="${safe}"
+              download
+              style="font-size:.65rem;padding:.25rem .4rem;"
+            >Download</a>
+          </span>
+        </div>
+      </div>
+    `;
+  }
+
+  function buildMediaMarkup(rawValue, options = {}) {
+    const url = resolveAssetUrl(rawValue);
+    const label = options.label || "Attached asset";
+    const fallbackType = options.fallbackType || "";
+    const type = detectAssetType(url, fallbackType);
+
+    if (!url) {
+      return `
+        <div class="media-safe media-safe--fallback">
+          <i class="fa-solid fa-image" style="font-size:1.8rem;color:var(--text-muted);"></i>
+        </div>
+      `;
+    }
+
+    const safe = safeHref(url);
+    const escapedLabel = escapeHTML(label);
+
+    if (type === "image") {
+      return `
+        <div class="media-safe">
+          <img
+            src="${safe}"
+            alt="${escapedLabel}"
+            loading="lazy"
+            decoding="async"
+            onerror="this.closest('.media-safe').innerHTML=${JSON.stringify(mediaErrorMarkup(url, label))}"
+          >
+        </div>
+      `;
+    }
+
+    if (type === "video") {
+      return `
+        <div class="media-safe">
+          <video
+            src="${safe}"
+            controls
+            preload="metadata"
+            playsinline
+            onerror="this.closest('.media-safe').innerHTML=${JSON.stringify(mediaErrorMarkup(url, label))}"
+          ></video>
+        </div>
+      `;
+    }
+
+    if (type === "audio") {
+      return `
+        <div class="media-safe media-safe--audio">
+          <i class="fa-solid fa-volume-high" style="font-size:1.8rem;color:var(--brand-blue);margin-bottom:.4rem;"></i>
+          <audio src="${safe}" controls preload="metadata"></audio>
+        </div>
+      `;
+    }
+
+    if (type === "pdf") {
+      return buildPdfReader(url, label);
+    }
+
+    if (type === "document") {
+      return `
+        <div class="media-safe media-safe--document">
+          <i class="fa-solid fa-file-lines file-icon"></i>
+          <strong style="font-size:.72rem;">${escapedLabel}</strong>
+          <span style="font-size:.62rem;color:var(--text-muted);">Document file</span>
+          <a
+            class="btn btn-primary"
+            href="${safe}"
+            target="_blank"
+            rel="noopener noreferrer"
+            style="font-size:.65rem;padding:.3rem .45rem;"
+          >
+            <i class="fa-solid fa-eye"></i>
+            View File
+          </a>
+          <a
+            class="btn btn-outline"
+            href="${safe}"
+            download
+            style="font-size:.65rem;padding:.3rem .45rem;"
+          >
+            <i class="fa-solid fa-download"></i>
+            Download
+          </a>
+        </div>
+      `;
+    }
+
+    return `
+      <div class="media-safe media-safe--fallback">
+        <i class="fa-solid fa-file file-icon" style="font-size:1.8rem;color:var(--brand-blue);"></i>
+        <strong style="font-size:.7rem;">${escapedLabel}</strong>
+        <a
+          class="btn btn-primary"
+          href="${safe}"
+          target="_blank"
+          rel="noopener noreferrer"
+          style="font-size:.65rem;padding:.3rem .45rem;"
+        >
+          <i class="fa-solid fa-eye"></i>
+          Open File
+        </a>
+      </div>
+    `;
+  }
+
+  /*
+   * Use a safe, central media renderer for all public catalog cards.
+   * Product image_url remains an image-first field for extensionless
+   * Supabase object paths.
+   */
+  window.mwaminiBuildMedia = buildMediaMarkup;
+  window.mwaminiResolveAssetUrl = resolveAssetUrl;
+
+  /*
+   * Product grid: preserve existing data and buttons while giving users
+   * larger pictures, shorter previews, and dedicated View Details / Order
+   * controls.
+   */
+  window.renderCatalogGrid = function(productsList) {
+    const container = document.getElementById("products-container");
+    if (!container) return;
+
+    const currencyElement = document.getElementById("currency-select");
+    const targetCurrency = currencyElement ? currencyElement.value : "RWF";
+
+    container.innerHTML = "";
+
+    if (!productsList || productsList.length === 0) {
+      container.innerHTML = `
+        <div style="grid-column:1/-1;text-align:center;padding:4rem;color:var(--text-muted);">
+          <i class="fa-solid fa-box-open" style="font-size:3rem;margin-bottom:1rem;opacity:.5;"></i>
+          <p>No inventory matches current search vectors.</p>
+        </div>
+      `;
+      return;
+    }
+
+    const fragment = document.createDocumentFragment();
+
+    productsList.forEach(item => {
+      const sourceCurrencyMatch =
+        item.description?.match(/\[CURRENCY:([A-Z]{3})\]/);
+
+      const sourceCurrency =
+        sourceCurrencyMatch ? sourceCurrencyMatch[1] : "USD";
+
+      const baseValUSD =
+        Number(item.price || 0) / (exchangeRates[sourceCurrency] || 1);
+
+      const priceVal =
+        baseValUSD * (exchangeRates[targetCurrency] || 1);
+
+      const currencySymbols = {
+        RWF: "Fr ",
+        KES: "KSh ",
+        UGX: "USh ",
+        TZS: "TSh ",
+        BIF: "FBu ",
+        SSP: "£ ",
+        CDF: "FC ",
+        USD: "$ ",
+        EUR: "€ ",
+        GBP: "£ ",
+        AED: "إ.د ",
+        SAR: "س.ر ",
+        CNY: "¥ ",
+        INR: "₹ ",
+        JPY: "¥ ",
+        ZAR: "R ",
+        CAD: "$ "
+      };
+
+      const currencySymbol =
+        currencySymbols[targetCurrency] || "$ ";
+
+      const quantity = Number(item.quantity || 0);
+      const isOutOfStock = quantity <= 0;
+      const isLowStock = quantity > 0 && quantity <= 3;
+
+      let badgeHTML = "";
+
+      if (isOutOfStock) {
+        badgeHTML =
+          '<span class="stock-badge bg-danger"><i class="fa-solid fa-ban"></i> Depleted</span>';
+      } else if (isLowStock) {
+        badgeHTML =
+          '<span class="stock-badge bg-warning"><i class="fa-solid fa-triangle-exclamation"></i> Low Stock</span>';
+      } else {
+        badgeHTML =
+          '<span class="stock-badge bg-success"><i class="fa-solid fa-check"></i> Available</span>';
+      }
+
+      const cardNode = document.createElement("div");
+      cardNode.className = "product-card";
+
+      cardNode.innerHTML = `
+        ${badgeHTML}
+
+        <div class="product-media-container">
+          ${buildMediaMarkup(item.image_url, {
+            label: item.title || "Product image",
+            fallbackType: "image"
+          })}
+        </div>
+
+        <div class="product-content">
+          <div>
+            <h3 class="product-title">
+              <span>${escapeHTML(item.title || "Untitled Product")}</span>
+              <i
+                class="fa-solid fa-circle-check"
+                style="font-size:.68rem;color:var(--brand-green);"
+                title="Verified Asset"
+              ></i>
+            </h3>
+
+            <p
+              style="
+                color:var(--text-muted);
+                margin:0 0 .35rem;
+                display:-webkit-box;
+                -webkit-line-clamp:2;
+                -webkit-box-orient:vertical;
+                overflow:hidden;
+              "
+            >
+              ${escapeHTML(
+                String(item.description || "")
+                  .replace(/\[CURRENCY:[A-Z]{3}\]/g, "")
+                  .replace(/<[^>]*>/g, "")
+                  .trim()
+              )}
+            </p>
+
+            <div class="product-actions">
+              <button
+                class="btn btn-outline"
+                style="flex:1;"
+                onclick="viewDetails('${String(item.id)}')"
+              >
+                <i class="fa-solid fa-eye"></i> View Details
+              </button>
+
+              <button
+                class="btn btn-outline"
+                style="padding:.3rem .45rem !important;color:var(--brand-pink);"
+                onclick="likeProduct('${String(item.id)}')"
+                title="Like product"
+              >
+                <i class="fa-regular fa-heart"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="product-footer">
+            <div class="product-price">
+              ${currencySymbol}${new Intl.NumberFormat("en-US").format(
+                Math.round(priceVal)
+              )}
+            </div>
+
+            <button
+              class="btn btn-primary"
+              ${isOutOfStock ? "disabled" : ""}
+              onclick="openOrderModal('${String(item.id)}')"
+            >
+              <i class="fa-solid fa-cart-plus"></i>
+              ${isOutOfStock ? "Unavailable" : "Order Now"}
+            </button>
+          </div>
+        </div>
+      `;
+
+      fragment.appendChild(cardNode);
+    });
+
+    container.appendChild(fragment);
+  };
+
+  /*
+   * Product details: always provide a large media area and preserve rich
+   * text/HTML formatting, including headings and bold text.
+   */
+  window.viewDetails = function(id) {
+    const item = localProductsCache.find(
+      p => String(p.id) === String(id)
+    );
+
+    if (!item) {
+      showToast("Product details are not available.", "warning");
+      return;
+    }
+
+    document.getElementById("details-title").innerHTML =
+      escapeHTML(item.title || "Product Details") +
+      ' <i class="fa-solid fa-circle-check text-success" title="Verified Asset" style="font-size:.875rem;"></i>';
+
+    const mediaContainer = document.getElementById("details-media");
+
+    if (item.image_url) {
+      mediaContainer.innerHTML = buildMediaMarkup(item.image_url, {
+        label: item.title || "Product asset",
+        fallbackType: "image"
+      });
+      mediaContainer.style.display = "block";
+    } else {
+      mediaContainer.innerHTML = "";
+      mediaContainer.style.display = "none";
+    }
+
+    const htmlDesc = item.description
+      ? String(item.description)
+          .replace(/\[CURRENCY:\w+\]/g, "")
+          .trim()
+      : "No further technical specifications available.";
+
+    document.getElementById("details-desc").innerHTML =
+      DOMPurify.sanitize(htmlDesc);
+
+    document.getElementById("details-modal").classList.add("active");
+  };
+
+  /*
+   * Mechanization: same structure, but media handling now works for
+   * extensionless storage objects and PDF documents.
+   */
+  window.renderMechanizationGrid = function(mechanizationList) {
+    const container = document.getElementById("mechanization-container");
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    if (!mechanizationList || mechanizationList.length === 0) {
+      container.innerHTML = `
+        <div style="grid-column:1/-1;text-align:center;color:var(--text-muted);padding:4rem;">
+          <i class="fa-solid fa-tractor" style="font-size:3rem;margin-bottom:1rem;opacity:.5;"></i>
+          <p>No machinery available for dispatch.</p>
+        </div>
+      `;
+      return;
+    }
+
+    const fragment = document.createDocumentFragment();
+
+    mechanizationList.forEach(mech => {
+      const isAvailable =
+        mech.available === true ||
+        String(mech.available).toLowerCase() === "true";
+
+      const availabilityBadge = `
+        <span class="stock-badge ${isAvailable ? "bg-success" : "bg-danger"}">
+          <i class="fa-solid ${isAvailable ? "fa-check" : "fa-ban"}"></i>
+          ${isAvailable ? "Available" : "Maintenance"}
+        </span>
+      `;
+
+      const cardNode = document.createElement("div");
+      cardNode.className = "mech-card";
+
+      cardNode.innerHTML = `
+        ${availabilityBadge}
+
+        <div class="mech-media-container">
+          ${buildMediaMarkup(mech.image_url, {
+            label: mech.title || "Agricultural machinery",
+            fallbackType: "image"
+          })}
+        </div>
+
+        <div class="mech-content">
+          <div>
+            <h3 class="mech-title">${escapeHTML(mech.title || "Machinery")}</h3>
+
+            <div class="mech-details">
+              ${escapeHTML(
+                String(mech.description || "")
+                  .replace(/<[^>]*>/g, "")
+                  .trim()
+                  .substring(0, 140)
+              )}
+            </div>
+
+            <div style="font-size:.7rem;color:var(--text-muted);">
+              <i class="fa-solid fa-layer-group"></i>
+              ${escapeHTML(mech.category || "Agricultural Machinery")}
+            </div>
+          </div>
+
+          <div class="mech-footer">
+            <div class="mech-price">
+              ${escapeHTML(
+                String(mech.rental_price || 0)
+              )}/hr Rent
+            </div>
+
+            <div class="mech-actions">
+              <button
+                class="btn btn-outline"
+                onclick="viewMechanizationDetails('${String(mech.id)}')"
+              >
+                <i class="fa-solid fa-eye"></i> Details
+              </button>
+
+              <button
+                class="btn btn-primary"
+                ${!isAvailable ? "disabled" : ""}
+                onclick="bookMechanization('${String(mech.id)}')"
+              >
+                <i class="fa-solid fa-calendar-check"></i> Book Now
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+
+      fragment.appendChild(cardNode);
+    });
+
+    container.appendChild(fragment);
+  };
+
+  /*
+   * A dedicated details alias avoids accidentally opening a product
+   * when the machinery card is clicked.
+   */
+  window.viewMechanizationDetails = function(id) {
+    const mech = localMechanizationCache.find(
+      m => String(m.id) === String(id)
+    );
+
+    if (!mech) return;
+
+    document.getElementById("details-title").innerHTML =
+      `<i class="fa-solid fa-tractor text-success"></i> ${escapeHTML(mech.title || "Machinery Details")}`;
+
+    const mediaContainer = document.getElementById("details-media");
+
+    if (mech.image_url) {
+      mediaContainer.innerHTML = buildMediaMarkup(mech.image_url, {
+        label: mech.title || "Machinery asset",
+        fallbackType: "image"
+      });
+      mediaContainer.style.display = "block";
+    } else {
+      mediaContainer.innerHTML = "";
+      mediaContainer.style.display = "none";
+    }
+
+    document.getElementById("details-desc").innerHTML =
+      DOMPurify.sanitize(mech.description || "No detailed machinery information available.");
+
+    document.getElementById("details-modal").classList.add("active");
+  };
+
+  /*
+   * Farmer Help: PDFs are readable directly in the card instead of being
+   * represented only as a dead-looking link.
+   */
+  window.renderFarmerHelpGrid = function(helpDocsList) {
+    const container = document.getElementById("farmer-help-container");
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    if (!helpDocsList || helpDocsList.length === 0) {
+      container.innerHTML = `
+        <div style="grid-column:1/-1;text-align:center;color:var(--text-muted);padding:4rem;">
+          <i class="fa-solid fa-book-open" style="font-size:3rem;margin-bottom:1rem;opacity:.5;"></i>
+          <p>No educational resources available.</p>
+        </div>
+      `;
+      return;
+    }
+
+    const fragment = document.createDocumentFragment();
+
+    helpDocsList.forEach(doc => {
+      const cardNode = document.createElement("div");
+      cardNode.className = "farmer-help-card";
+
+      cardNode.innerHTML = `
+        <div class="farmer-help-media-container">
+          ${buildMediaMarkup(doc.media_url, {
+            label: doc.title || "Farmer resource"
+          })}
+        </div>
+
+        <div class="farmer-help-content">
+          <div>
+            <h3 class="farmer-help-title">
+              ${escapeHTML(doc.title || "Farmer Resource")}
+            </h3>
+
+            <div class="farmer-help-description">
+              ${escapeHTML(
+                String(doc.content || "")
+                  .replace(/<[^>]*>/g, "")
+                  .trim()
+                  .substring(0, 170)
+              )}${String(doc.content || "").length > 170 ? "..." : ""}
+            </div>
+          </div>
+
+          <div class="farmer-help-footer">
+            <div class="interaction-bar">
+              <button
+                class="interaction-btn"
+                onclick="toggleLike('${String(doc.id)}', 'farmer_help')"
+              >
+                <i class="fa-regular fa-heart"></i>
+                <span id="likes-count-${doc.id}">${doc.likes_count || 0}</span>
+              </button>
+
+              <button
+                class="interaction-btn"
+                onclick="openCommentsModal('${String(doc.id)}', 'farmer_help')"
+              >
+                <i class="fa-solid fa-comment"></i>
+                <span id="comments-count-${doc.id}">${doc.comments_count || 0}</span>
+              </button>
+            </div>
+
+            <button
+              class="btn btn-primary"
+              onclick="viewFarmerHelpDetails('${String(doc.id)}')"
+            >
+              <i class="fa-solid fa-book-open"></i> Read
+            </button>
+          </div>
+        </div>
+      `;
+
+      fragment.appendChild(cardNode);
+    });
+
+    container.appendChild(fragment);
+  };
+
+  window.viewFarmerHelpDetails = function(id) {
+    const doc = localFarmerHelpCache.find(
+      d => String(d.id) === String(id)
+    );
+
+    if (!doc) return;
+
+    document.getElementById("details-title").innerHTML =
+      `<i class="fa-solid fa-book-open-reader text-accent"></i> ${escapeHTML(doc.title || "Farmer Resource")}`;
+
+    const mediaContainer = document.getElementById("details-media");
+
+    if (doc.media_url) {
+      mediaContainer.innerHTML = buildMediaMarkup(doc.media_url, {
+        label: doc.title || "Farmer resource"
+      });
+      mediaContainer.style.display = "block";
+    } else {
+      mediaContainer.innerHTML = "";
+      mediaContainer.style.display = "none";
+    }
+
+    document.getElementById("details-desc").innerHTML =
+      DOMPurify.sanitize(doc.content || "No content is available.");
+
+    document.getElementById("details-modal").classList.add("active");
+  };
+
+  /*
+   * Projects: image/document/video assets are all handled through the
+   * same safe media layer.
+   */
+  window.renderProjectGrid = function(projectList) {
+    const container = document.getElementById("order-project-container");
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    if (!projectList || projectList.length === 0) {
+      container.innerHTML = `
+        <div style="grid-column:1/-1;text-align:center;color:var(--text-muted);padding:4rem;">
+          <i class="fa-solid fa-rocket" style="font-size:3rem;margin-bottom:1rem;opacity:.5;"></i>
+          <p>No active project blueprints published.</p>
+        </div>
+      `;
+      return;
+    }
+
+    const fragment = document.createDocumentFragment();
+
+    projectList.forEach(project => {
+      const advance =
+        Number(project.advance_deposit || project.mean_amount * .30 || 0);
+
+      const cardNode = document.createElement("div");
+      cardNode.className = "order-project-card";
+
+      cardNode.innerHTML = `
+        <div class="order-project-media-container">
+          ${buildMediaMarkup(project.image_url, {
+            label: project.title || "Project asset"
+          })}
+        </div>
+
+        <div class="order-project-content">
+          <div>
+            <h3 class="order-project-title">
+              ${escapeHTML(project.title || "Project")}
+            </h3>
+
+            <div class="order-project-client">
+              <i class="fa-solid fa-user-tag"></i>
+              ${escapeHTML(project.client_name || "Open Tender")}
+            </div>
+
+            <div class="order-project-budget">
+              <i class="fa-solid fa-money-bill-wave"></i>
+              <strong>Required Advance:</strong>
+              $${advance.toFixed(2)}
+            </div>
+
+            <div class="order-project-description">
+              ${escapeHTML(
+                String(project.description || "")
+                  .replace(/<[^>]*>/g, "")
+                  .trim()
+                  .substring(0, 150)
+              )}${String(project.description || "").length > 150 ? "..." : ""}
+            </div>
+          </div>
+
+          <div class="order-project-footer">
+            <button
+              class="btn btn-primary"
+              onclick="viewProjectDetails('${String(project.id)}')"
+            >
+              <i class="fa-solid fa-eye"></i> View Details
+            </button>
+
+            <button
+              class="btn btn-outline"
+              onclick="requestProjectQuote('${String(project.id)}')"
+            >
+              <i class="fa-solid fa-hand-holding-usd"></i> Request Quote
+            </button>
+          </div>
+        </div>
+      `;
+
+      fragment.appendChild(cardNode);
+    });
+
+    container.appendChild(fragment);
+  };
+
+  window.viewProjectDetails = function(id) {
+    const project = localProjectsCache.find(
+      p => String(p.id) === String(id)
+    );
+
+    if (!project) return;
+
+    document.getElementById("details-title").innerHTML =
+      `<i class="fa-solid fa-rocket text-accent"></i> ${escapeHTML(project.title || "Project Details")}`;
+
+    const mediaContainer = document.getElementById("details-media");
+
+    if (project.image_url) {
+      mediaContainer.innerHTML = buildMediaMarkup(project.image_url, {
+        label: project.title || "Project asset"
+      });
+      mediaContainer.style.display = "block";
+    } else {
+      mediaContainer.innerHTML = "";
+      mediaContainer.style.display = "none";
+    }
+
+    document.getElementById("details-desc").innerHTML =
+      DOMPurify.sanitize(project.description || "No detailed blueprint available.");
+
+    document.getElementById("details-modal").classList.add("active");
+  };
+
+  /*
+   * Announcement banner:
+   * - only text scrolls
+   * - starts with "New updates"
+   * - ends with "End of new updates"
+   * - slow enough to read
+   * - no image/video/card animation in the banner
+   */
+  window.fetchAnnouncements = async function() {
+    try {
+      const { data, error } =
+        await window.supabase
+          .from("announcements")
+          .select("*")
+          .eq("active", true)
+          .order("created_at", { ascending: false });
+
+      if (error) throw error;
+
+      const banner = document.getElementById("dynamic-announcement");
+      const feedContainer =
+        document.getElementById("public-announcements-container");
+
+      if (!data || data.length === 0) {
+        banner.classList.remove("active");
+
+        if (feedContainer) {
+          feedContainer.innerHTML = `
+            <div style="grid-column:1/-1;text-align:center;padding:4rem;color:var(--text-muted);">
+              <i class="fa-solid fa-folder-open" style="font-size:3rem;margin-bottom:1rem;opacity:.5;"></i>
+              <p>No active broadcasts currently.</p>
+            </div>
+          `;
+        }
+
+        localAnnouncementsCache = [];
+        return;
+      }
+
+      localAnnouncementsCache = data;
+
+      const plainText = String(data[0].content || "")
+        .replace(/<style[\s\S]*?<\/style>/gi, " ")
+        .replace(/<script[\s\S]*?<\/script>/gi, " ")
+        .replace(/<[^>]+>/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+
+      const trackText =
+        `New updates: ${plainText || "New platform information is available."} — End of new updates`;
+
+      /*
+       * The banner receives a text-only child. No rich HTML from the
+       * announcement is injected into the scrolling track.
+       */
+      banner.innerHTML = `
+        <div class="announcement-marquee" aria-label="New updates">
+          <div class="announcement-marquee-track">
+            <span class="announcement-marquee-item">
+              ${escapeHTML(trackText)}
+            </span>
+          </div>
+        </div>
+      `;
+
+      banner.classList.add("active");
+
+      if (feedContainer) {
+        feedContainer.innerHTML = "";
+
+        data.forEach(a => {
+          const dateStr = new Date(a.created_at).toLocaleDateString(
+            [],
+            { year:"numeric", month:"short", day:"numeric" }
+          );
+
+          const cleanPreview = String(a.content || "")
+            .replace(/<style[\s\S]*?<\/style>/gi, " ")
+            .replace(/<script[\s\S]*?<\/script>/gi, " ")
+            .replace(/<[^>]+>/g, " ")
+            .replace(/\s+/g, " ")
+            .trim()
+            .substring(0, 180);
+
+          const card = document.createElement("div");
+          card.className = "product-card";
+
+          card.innerHTML = `
+            <span class="stock-badge bg-update">
+              <i class="fa-solid fa-bullhorn"></i> Update
+            </span>
+
+            <div class="product-media-container">
+              ${buildMediaMarkup(a.image_url, {
+                label: "Announcement attachment"
+              })}
+            </div>
+
+            <div class="product-content">
+              <div>
+                <h4
+                  style="
+                    font-size:.7rem;
+                    margin:0 0 .35rem;
+                    color:var(--text-muted);
+                    font-weight:700;
+                    text-transform:uppercase;
+                  "
+                >
+                  ${escapeHTML(dateStr)}
+                </h4>
+
+                <div
+                  style="
+                    font-size:.72rem;
+                    color:var(--text-main);
+                    line-height:1.35;
+                    display:-webkit-box;
+                    -webkit-line-clamp:4;
+                    -webkit-box-orient:vertical;
+                    overflow:hidden;
+                  "
+                >
+                  ${escapeHTML(cleanPreview)}
+                </div>
+              </div>
+
+              <div style="margin-top:.4rem;">
+                <button
+                  class="btn btn-outline"
+                  style="width:100%;"
+                  onclick="viewAnnouncementDetails('${String(a.id)}')"
+                >
+                  <i class="fa-solid fa-eye"></i> View Payload
+                </button>
+              </div>
+
+              <div class="interaction-bar">
+                <button
+                  class="interaction-btn"
+                  onclick="toggleLike('${String(a.id)}', 'announcement')"
+                >
+                  <i class="fa-regular fa-heart"></i>
+                  <span id="likes-count-${a.id}">
+                    ${a.likes_count || 0}
+                  </span>
+                </button>
+
+                <button
+                  class="interaction-btn"
+                  onclick="openCommentsModal('${String(a.id)}', 'announcement')"
+                >
+                  <i class="fa-solid fa-comment"></i>
+                  <span id="comments-count-${a.id}">
+                    ${a.comments_count || 0}
+                  </span>
+                </button>
+              </div>
+            </div>
+          `;
+
+          feedContainer.appendChild(card);
+        });
+      }
+    } catch (error) {
+      console.error("Professional announcement sync error:", error);
+      showToast("Announcements could not be synchronized.", "warning");
+    }
+  };
+
+  window.viewAnnouncementDetails = function(id) {
+    const ann = localAnnouncementsCache.find(
+      a => String(a.id) === String(id)
+    );
+
+    if (!ann) return;
+
+    document.getElementById("details-title").innerHTML =
+      `<i class="fa-solid fa-bullhorn"></i> ${escapeHTML(
+        ann.title || "System Update"
+      )}`;
+
+    const mediaContainer = document.getElementById("details-media");
+
+    if (ann.image_url) {
+      mediaContainer.innerHTML = buildMediaMarkup(ann.image_url, {
+        label: "Announcement attachment"
+      });
+      mediaContainer.style.display = "block";
+    } else {
+      mediaContainer.innerHTML = "";
+      mediaContainer.style.display = "none";
+    }
+
+    document.getElementById("details-desc").innerHTML =
+      DOMPurify.sanitize(ann.content || "No announcement content available.");
+
+    document.getElementById("details-modal").classList.add("active");
+  };
+
+  /*
+   * User Account:
+   * - keeps existing order records
+   * - allows cancellation where the original status permits it
+   * - allows deletion of already-cancelled records from the user's view
+   * - allows Reorder when the referenced product still exists and has stock
+   */
+  window.loadUserOrders = async function() {
+    const tbody = document.getElementById("user-orders-body");
+    if (!tbody || !currentUser) return;
+
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="5" style="text-align:center;">
+          <i class="fa-solid fa-spinner fa-spin"></i>
+          Synchronizing logs...
+        </td>
+      </tr>
+    `;
+
+    try {
+      const { data, error } =
+        await window.supabase
+          .from("orders")
+          .select("*")
+          .eq("user_id", currentUser.id)
+          .order("created_at", { ascending:false });
+
+      if (error) throw error;
+
+      tbody.innerHTML = "";
+
+      if (!data || data.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" style="text-align:center;color:var(--text-muted);">
+              No transaction history found.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      data.forEach(o => {
+        let statusClass = "badge-pending";
+
+        switch (o.status) {
+          case "Pending":
+            statusClass = "badge-pending";
+            break;
+          case "Processing":
+          case "Waiting":
+          case "Under Review":
+            statusClass = "badge-processing";
+            break;
+          case "Shipped":
+            statusClass = "badge-shipped";
+            break;
+          case "Delivered":
+          case "Completed":
+            statusClass = "badge-delivered";
+            break;
+          case "Cancelled":
+            statusClass = "badge-cancelled";
+            break;
+        }
+
+        const canCancel = [
+          "Pending",
+          "Processing",
+          "Waiting",
+          "Under Review"
+        ].includes(o.status);
+
+        const actionButtons = [];
+
+        if (canCancel) {
+          actionButtons.push(`
+            <button
+              class="btn btn-danger-outline"
+              onclick="cancelUserOrder(
+                '${String(o.id)}',
+                '${String(o.product_id || "")}',
+                ${Number(o.quantity || 0)}
+              )"
+            >
+              <i class="fa-solid fa-xmark"></i> Cancel
+            </button>
+          `);
+        }
+
+        if (o.status === "Cancelled") {
+          actionButtons.push(`
+            <button
+              class="btn btn-outline"
+              onclick="deleteCancelledOrder('${String(o.id)}')"
+            >
+              <i class="fa-solid fa-trash-can"></i> Delete
+            </button>
+          `);
+        }
+
+        if (o.product_id && o.status !== "Cancelled") {
+          actionButtons.push(`
+            <button
+              class="btn btn-primary"
+              onclick="reorderUserItem('${String(o.id)}')"
+            >
+              <i class="fa-solid fa-rotate-right"></i> Reorder
+            </button>
+          `);
+        }
+
+        const dateStr = new Date(o.created_at).toLocaleDateString(
+          [],
+          { year:"numeric", month:"short", day:"numeric" }
+        );
+
+        tbody.innerHTML += `
+          <tr>
+            <td class="font-mono text-muted">
+              ${escapeHTML(String(o.id).substring(0,8).toUpperCase())}
+            </td>
+
+            <td style="font-weight:600;">
+              ${escapeHTML(o.product_title || "Requested Item")}
+              <br>
+              <span
+                style="
+                  font-size:.7rem;
+                  color:var(--text-muted);
+                  font-weight:normal;
+                "
+              >
+                ${escapeHTML(dateStr)}
+              </span>
+            </td>
+
+            <td>
+              <span style="font-weight:800;">
+                ${Number(o.quantity || 0)}
+              </span>
+              units
+            </td>
+
+            <td>
+              <span class="badge ${statusClass}">
+                ${escapeHTML(o.status || "Pending")}
+              </span>
+            </td>
+
+            <td style="text-align:right;">
+              <div class="account-action-group">
+                ${actionButtons.join("")}
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+    } catch (error) {
+      console.error("Professional order load error:", error);
+
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="5" style="text-align:center;color:var(--danger);">
+            Failed to retrieve transaction history.
+          </td>
+        </tr>
+      `;
+    }
+  };
+
+  window.deleteCancelledOrder = async function(orderId) {
+    if (!currentUser) {
+      openAuthModal("login");
+      return;
+    }
+
+    const confirmed = confirm(
+      "Delete this cancelled order from your account history?"
+    );
+
+    if (!confirmed) return;
+
+    try {
+      const { error } =
+        await window.supabase
+          .from("orders")
+          .delete()
+          .eq("id", orderId)
+          .eq("user_id", currentUser.id)
+          .eq("status", "Cancelled");
+
+      if (error) throw error;
+
+      showToast(
+        "Cancelled order removed from your account.",
+        "success"
+      );
+
+      await loadUserOrders();
+    } catch (error) {
+      console.error("Delete cancelled order error:", error);
+
+      showToast(
+        "The cancelled order could not be deleted. Check Supabase RLS policies.",
+        "error"
+      );
+    }
+  };
+
+  window.reorderUserItem = async function(orderId) {
+    if (!currentUser) {
+      openAuthModal("login");
+      return;
+    }
+
+    try {
+      const { data: oldOrder, error: oldOrderError } =
+        await window.supabase
+          .from("orders")
+          .select("*")
+          .eq("id", orderId)
+          .eq("user_id", currentUser.id)
+          .single();
+
+      if (oldOrderError) throw oldOrderError;
+
+      if (!oldOrder?.product_id) {
+        showToast(
+          "This order does not contain a reusable product reference.",
+          "warning"
+        );
+        return;
+      }
+
+      const { data: product, error: productError } =
+        await window.supabase
+          .from("products")
+          .select("*")
+          .eq("id", oldOrder.product_id)
+          .single();
+
+      if (productError) throw productError;
+
+      if (Number(product.quantity || 0) <= 0) {
+        showToast(
+          "This product is currently out of stock.",
+          "warning"
+        );
+        return;
+      }
+
+      openOrderModal(product.id);
+
+      const qtyInput = document.getElementById("cust-qty");
+
+      if (qtyInput) {
+        const desired =
+          Math.max(1, Number(oldOrder.quantity || 1));
+
+        qtyInput.value = Math.min(
+          desired,
+          Number(product.quantity)
+        );
+
+        if (typeof calculateOrderTotal === "function") {
+          calculateOrderTotal();
+        }
+      }
+
+      showToast(
+        "Previous order loaded. Review the details and submit again.",
+        "info"
+      );
+    } catch (error) {
+      console.error("Reorder error:", error);
+
+      showToast(
+        "Unable to prepare this item for another order.",
+        "error"
+      );
+    }
+  };
+
+  /*
+   * Make cancellation safer than the original version by ensuring the
+   * operation belongs to the authenticated user.
+   */
+  window.cancelUserOrder = async function(orderId, productId, qty) {
+    if (!currentUser) {
+      openAuthModal("login");
+      return;
+    }
+
+    if (!confirm("Confirm cancellation of this order?")) {
+      return;
+    }
+
+    try {
+      const { data: order, error: fetchError } =
+        await window.supabase
+          .from("orders")
+          .select("*")
+          .eq("id", orderId)
+          .eq("user_id", currentUser.id)
+          .single();
+
+      if (fetchError) throw fetchError;
+
+      const cancellableStatuses = [
+        "Pending",
+        "Processing",
+        "Waiting",
+        "Under Review"
+      ];
+
+      if (!cancellableStatuses.includes(order.status)) {
+        showToast(
+          "This order can no longer be cancelled.",
+          "warning"
+        );
+        return;
+      }
+
+      const { error: updateError } =
+        await window.supabase
+          .from("orders")
+          .update({ status:"Cancelled" })
+          .eq("id", orderId)
+          .eq("user_id", currentUser.id);
+
+      if (updateError) throw updateError;
+
+      /*
+       * Restore stock only when the original product still exists.
+       * If the product was deleted, the order is still safely cancelled.
+       */
+      if (productId && Number(qty) > 0) {
+        const { data: product } =
+          await window.supabase
+            .from("products")
+            .select("quantity")
+            .eq("id", productId)
+            .maybeSingle();
+
+        if (product) {
+          await window.supabase
+            .from("products")
+            .update({
+              quantity: Number(product.quantity || 0) + Number(qty)
+            })
+            .eq("id", productId);
+        }
+      }
+
+      showToast(
+        "Order cancelled successfully.",
+        "success"
+      );
+
+      await loadUserOrders();
+      await initializePublicCatalog();
+    } catch (error) {
+      console.error("Professional cancellation error:", error);
+
+      showToast(
+        "Cancellation could not be completed.",
+        "error"
+      );
+    }
+  };
+
+  /*
+   * Improve all image-like elements generated by old code that still
+   * exists elsewhere in the page. This does not rewrite headings,
+   * bold text, or rich content.
+   */
+  document.addEventListener("error", function(event) {
+    const target = event.target;
+
+    if (!(target instanceof HTMLImageElement)) {
+      return;
+    }
+
+    if (target.dataset.mediaFallbackApplied === "true") {
+      return;
+    }
+
+    target.dataset.mediaFallbackApplied = "true";
+
+    const wrapper =
+      target.closest(
+        ".product-media-container, .mech-media-container, .farmer-help-media-container, .order-project-media-container, #details-media"
+      );
+
+    if (!wrapper) return;
+
+    const src = target.currentSrc || target.src || "";
+
+    wrapper.innerHTML =
+      mediaErrorMarkup(src, target.alt || "Image asset");
+  }, true);
+
+  /*
+   * Ensure dynamically injected buttons never submit unrelated forms
+   * accidentally. Existing explicit form-submit buttons remain untouched.
+   */
+  document.addEventListener("click", function(event) {
+    const button = event.target.closest("button");
+
+    if (!button) return;
+
+    if (
+      button.type !== "submit" &&
+      button.type !== "button"
+    ) {
+      button.type = "button";
+    }
+  }, true);
+
+  /*
+   * Keep the page responsive when long file names, URLs, or rich text
+   * arrive from Supabase.
+   */
+  const styleGuard = document.createElement("style");
+  styleGuard.textContent = `
+    .ql-editor,
+    .modal-content,
+    .product-card,
+    .mech-card,
+    .farmer-help-card,
+    .order-project-card,
+    .dashboard-table td,
+    .dashboard-table th {
+      overflow-wrap: anywhere;
+    }
+
+    .ql-editor iframe,
+    .ql-editor video,
+    .ql-editor img {
+      max-width: 100%;
+    }
+
+    .ql-editor img {
+      height: auto;
+      object-fit: contain;
+    }
+
+    .modal-content a {
+      overflow-wrap: anywhere;
+    }
+  `;
+  document.head.appendChild(styleGuard);
+
+  /*
+   * Re-render the public catalog after the DOM is fully ready.
+   * This is deliberately deferred so all original variables and
+   * Supabase initialisation remain available.
+   */
+  const refreshVisualLayer = () => {
+    try {
+      if (Array.isArray(localProductsCache)) {
+        renderCatalogGrid(localProductsCache);
+      }
+    } catch (error) {
+      console.warn("Visual catalog refresh skipped:", error);
+    }
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", refreshVisualLayer, {
+      once:true
+    });
+  } else {
+    refreshVisualLayer();
+  }
+
+  /*
+   * Expose a small diagnostic helper. It is useful during deployment:
+   * run window.mwaminiCheckMedia("path-or-url") in the browser console.
+   */
+  window.mwaminiCheckMedia = function(rawValue) {
+    const url = resolveAssetUrl(rawValue);
+    const type = detectAssetType(url, "");
+    return {
+      source: rawValue || "",
+      resolvedUrl: url,
+      detectedType: type,
+      extension: assetExtension(url)
+    };
+  };
+})();
+
 </script>
 </body>
+
+<!-- =====================================================================
+     MWAMINI PROFESSIONAL FIXED BUILD
+     Version: 2026.07.29
+     Preserves original content/structure and adds:
+       - robust Supabase media URL handling
+       - image/video/audio/document/PDF preview support
+       - slow text-only announcement marquee
+       - green/blue dominant visual system with pink/yellow accents
+       - square dense cards (8/6/4/3/2 responsive columns)
+       - larger media area inside compact cards
+       - View Details / View Payload / Book Now / Reorder / Delete controls
+       - safer My Account order management
+       - responsive and accessibility polish
+     ===================================================================== -->
+
 </html>
