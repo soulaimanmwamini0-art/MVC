@@ -114,7 +114,7 @@ top: 0;
 z-index: 100;
 box-shadow: var(--shadow-sm);
 backdrop-filter: blur(10px);
-background-color: rgba(var(--bg-surface), 0.95);
+background-color: color-mix(in srgb, var(--bg-surface) 95%, transparent);
 }
 .brand-container {
 display: flex;
@@ -1281,270 +1281,468 @@ cursor: pointer;
 }
 
 /* ================================================================
-   VISUAL SYSTEM REFINEMENT — PRESERVE EXISTING STRUCTURE
+17. PROFESSIONAL VISUAL REFINEMENT, MEDIA & DENSE CARD GRID
 ================================================================ */
 :root {
-    --accent: #1769aa;
-    --accent-hover: #0f4f82;
-    --accent-light: rgba(23,105,170,.10);
-    --success: #159447;
-    --success-hover: #0f7a39;
-    --green-soft: #eaf8ef;
-    --blue-soft: #eaf4ff;
-    --pink: #e83e8c;
-    --pink-soft: #fff0f7;
-    --yellow: #f4c542;
-    --yellow-soft: #fff9df;
-    --surface-green: #f6fcf8;
-}
-[data-theme="dark"] {
-    --accent: #4ea3e8;
-    --accent-hover: #78b9ee;
-    --accent-light: rgba(78,163,232,.13);
-    --success: #39c66d;
-    --success-hover: #61d88c;
-    --green-soft: rgba(57,198,109,.12);
-    --blue-soft: rgba(78,163,232,.12);
-    --pink: #ff6eae;
-    --pink-soft: rgba(255,110,174,.12);
-    --yellow: #ffd65a;
-    --yellow-soft: rgba(255,214,90,.12);
-    --surface-green: #102218;
+--brand-green: #16a34a;
+--brand-green-deep: #15803d;
+--brand-blue: #2563eb;
+--brand-blue-soft: #dbeafe;
+--brand-pink: #ec4899;
+--brand-pink-soft: #fce7f3;
+--brand-yellow: #facc15;
+--brand-yellow-soft: #fef9c3;
+--media-placeholder: #e8eef5;
 }
 
-/* Correct the invalid background declaration from the original file. */
-header {
-    background-color: var(--bg-surface);
+html { scroll-behavior: smooth; }
+body { min-width: 320px; overflow-x: hidden; }
+img, video, audio, iframe { max-width: 100%; }
+img { display: block; }
+
+.btn-primary {
+background: linear-gradient(135deg, var(--brand-green-deep), var(--brand-green));
+border-color: var(--brand-green-deep);
+}
+.btn-primary:hover:not(:disabled) {
+background: linear-gradient(135deg, #166534, #22c55e);
+}
+.btn-outline:hover:not(:disabled) { background: var(--brand-blue-soft); }
+
+/* Announcement: only text moves from start to end. */
+.announcement-banner {
+position: relative;
+width: 100%;
+min-height: 42px;
+padding: 0.55rem 0;
+overflow: hidden;
+background: linear-gradient(90deg, var(--brand-green-deep), var(--brand-green), var(--brand-blue));
+color: #fff;
+border-bottom: 2px solid var(--brand-yellow);
+text-align: left !important;
+display: none;
+}
+.announcement-banner.active {
+display: block;
+animation: none;
+}
+.announcement-marquee { width: 100%; overflow: hidden; white-space: nowrap; }
+.announcement-marquee-track {
+display: inline-flex;
+width: max-content;
+min-width: 100%;
+padding-left: 100%;
+will-change: transform;
+animation: announcementScroll 28s linear infinite;
+}
+.announcement-marquee-track:hover { animation-play-state: paused; }
+.announcement-marquee-item {
+display: inline-block;
+font-size: 0.9rem;
+font-weight: 700;
+padding-right: 5rem;
+}
+@keyframes announcementScroll {
+0% { transform: translateX(0); }
+100% { transform: translateX(-100%); }
+}
+@media (prefers-reduced-motion: reduce) {
+.announcement-marquee-track { animation: none; transform: none; padding-left: 1rem; }
 }
 
-/* Compact catalog layout: 8 cards on wide screens, 6 on normal desktops. */
+/* 8 cards on very wide screens, 6 on desktop, responsive below. */
 .products-grid,
 .mechanization-grid,
 .farmer-help-grid,
 .order-project-grid {
-    grid-template-columns: repeat(8, minmax(0, 1fr));
-    gap: .9rem;
-    max-width: 1600px;
-    padding: 2rem 3%;
+grid-template-columns: repeat(4, minmax(0, 1fr));
+gap: 1rem;
+max-width: 1800px;
 }
-
 .product-card,
 .mech-card,
 .farmer-help-card,
 .order-project-card {
-    min-width: 0;
-    border-radius: 10px;
+aspect-ratio: 1 / 1;
+min-width: 0;
+min-height: 0;
+border-radius: 14px;
 }
-
-.product-media-container,
-.mech-media-container,
-.farmer-help-media-container,
-.order-project-media-container {
-    height: 155px;
-    min-height: 155px;
-    overflow: hidden;
+.product-card .product-media-container,
+.mech-card .mech-media-container,
+.farmer-help-card .farmer-help-media-container,
+.order-project-card .order-project-media-container {
+height: 38%;
+min-height: 0;
+overflow: hidden;
 }
-
-.product-content,
-.mech-content,
-.farmer-help-content,
-.order-project-content {
-    padding: .85rem;
+.product-card .product-media-container img,
+.product-card .product-media-container video,
+.mech-card .mech-media-container img,
+.mech-card .mech-media-container video,
+.farmer-help-card .farmer-help-media-container img,
+.farmer-help-card .farmer-help-media-container video,
+.order-project-card .order-project-media-container img,
+.order-project-card .order-project-media-container video {
+width: 100%;
+height: 100%;
+object-fit: cover;
+object-position: center;
 }
-
-.product-title,
-.mech-title,
-.farmer-help-title,
-.order-project-title {
-    font-size: .95rem;
-    line-height: 1.35;
+.product-card .product-content,
+.mech-card .mech-content,
+.farmer-help-card .farmer-help-content,
+.order-project-card .order-project-content {
+padding: 0.75rem;
+min-height: 0;
+overflow: hidden;
 }
-
+.product-card .product-title,
+.mech-card .mech-title,
+.farmer-help-card .farmer-help-title,
+.order-project-card .order-project-title {
+font-size: 0.9rem;
+line-height: 1.25;
+display: -webkit-box;
+-webkit-box-orient: vertical;
+-webkit-line-clamp: 2;
+overflow: hidden;
+}
+.product-card .product-footer,
+.mech-card .mech-footer,
+.farmer-help-card .farmer-help-footer,
+.order-project-card .order-project-footer {
+padding-top: 0.5rem;
+margin-top: 0.5rem;
+}
+.product-card .product-actions { margin-bottom: 0.35rem !important; }
 .product-card .btn,
 .mech-card .btn,
 .farmer-help-card .btn,
 .order-project-card .btn {
-    font-size: .72rem;
-    padding: .38rem .55rem;
+font-size: 0.68rem !important;
+padding: 0.32rem 0.5rem !important;
 }
+.product-price { font-size: 0.95rem; }
 
-.media-fallback,
-.media-document,
-.media-audio {
-    width: 100%;
-    height: 100%;
-    min-height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    gap: .45rem;
-    padding: .75rem;
-    text-align: center;
-    background: var(--bg-primary);
-    color: var(--text-muted);
+@media (min-width: 1400px) {
+.products-grid,
+.mechanization-grid,
+.farmer-help-grid,
+.order-project-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
 }
-.media-fallback i,
-.media-document i {
-    font-size: 1.8rem;
-    color: var(--accent);
+@media (min-width: 1800px) {
+.products-grid,
+.mechanization-grid,
+.farmer-help-grid,
+.order-project-grid { grid-template-columns: repeat(8, minmax(0, 1fr)); }
 }
-.media-document .btn {
-    margin-top: .25rem;
-}
-.media-audio audio {
-    width: 100%;
-    max-width: 240px;
-}
-
-/* Green-led surfaces with balanced blue, pink and yellow accents. */
-.hero-banner {
-    background: linear-gradient(135deg, #116b3a 0%, #159447 55%, #1769aa 100%);
-    border-bottom-color: var(--yellow);
-}
-.brand-title { color: var(--success); }
-.info-card h3,
-.about-us-info-card h3,
-.mech-title,
-.farmer-help-title,
-.order-project-title { color: var(--success); }
-
-.btn-primary {
-    background: var(--success);
-}
-.btn-primary:hover:not(:disabled) {
-    background: var(--success-hover);
-}
-.btn-pink {
-    background: var(--pink);
-    color: #fff;
-}
-.btn-yellow {
-    background: var(--yellow);
-    color: #26320f;
-}
-.accent-pink { color: var(--pink) !important; }
-.accent-yellow { color: #a27600 !important; }
-.accent-green { color: var(--success) !important; }
-
-/* Announcement strip: only text scrolls, never the whole banner. */
-.announcement-banner {
-    position: relative;
-    overflow: hidden;
-    background: linear-gradient(90deg, var(--success) 0%, #1ca45a 72%, var(--accent) 100%);
-    color: #fff;
-    padding: .55rem 0;
-    white-space: nowrap;
-    text-align: left !important;
-    justify-content: flex-start;
-}
-.announcement-banner.active {
-    display: block;
-}
-.announcement-banner > span {
-    display: inline-flex;
-    align-items: center;
-    gap: .6rem;
-    width: max-content;
-    min-width: 100%;
-    padding-left: 100%;
-    animation: announcementTextScroll 24s linear infinite;
-}
-.announcement-banner:hover > span,
-.announcement-banner:focus-within > span {
-    animation-play-state: paused;
-}
-@keyframes announcementTextScroll {
-    from { transform: translateX(0); }
-    to { transform: translateX(-100%); }
-}
-
-/* Small status/update markers. */
-.updated-label {
-    display: inline-flex;
-    align-items: center;
-    gap: .3rem;
-    color: var(--success);
-    background: var(--green-soft);
-    border-radius: 999px;
-    padding: .18rem .45rem;
-    font-size: .66rem;
-    font-weight: 700;
-}
-.latest-update-strip {
-    display: flex;
-    align-items: center;
-    gap: .5rem;
-    margin: .5rem 0 1rem;
-    padding: .55rem .7rem;
-    border-left: 3px solid var(--success);
-    background: linear-gradient(90deg, var(--green-soft), var(--blue-soft));
-    border-radius: 0 8px 8px 0;
-    color: var(--text-muted);
-    font-size: .75rem;
-}
-
-/* Responsive grid fallbacks. */
-@media (max-width: 1500px) {
-    .products-grid,
-    .mechanization-grid,
-    .farmer-help-grid,
-    .order-project-grid {
-        grid-template-columns: repeat(6, minmax(0, 1fr));
-    }
-}
-@media (max-width: 1150px) {
-    .products-grid,
-    .mechanization-grid,
-    .farmer-help-grid,
-    .order-project-grid {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
+@media (max-width: 1100px) {
+.products-grid,
+.mechanization-grid,
+.farmer-help-grid,
+.order-project-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 @media (max-width: 760px) {
-    .products-grid,
-    .mechanization-grid,
-    .farmer-help-grid,
-    .order-project-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: .75rem;
-        padding: 1.25rem 3%;
-    }
-    .product-media-container,
-    .mech-media-container,
-    .farmer-help-media-container,
-    .order-project-media-container {
-        height: 135px;
-        min-height: 135px;
-    }
+.products-grid,
+.mechanization-grid,
+.farmer-help-grid,
+.order-project-grid {
+grid-template-columns: repeat(2, minmax(0, 1fr));
+gap: 0.75rem;
+padding-left: 3%;
+padding-right: 3%;
 }
-@media (max-width: 460px) {
-    .products-grid,
-    .mechanization-grid,
-    .farmer-help-grid,
-    .order-project-grid {
-        grid-template-columns: 1fr;
-    }
+.product-card,
+.mech-card,
+.farmer-help-card,
+.order-project-card { aspect-ratio: 1 / 1.12; }
+}
+@media (max-width: 480px) {
+.products-grid,
+.mechanization-grid,
+.farmer-help-grid,
+.order-project-grid { grid-template-columns: 1fr; }
+.product-card,
+.mech-card,
+.farmer-help-card,
+.order-project-card { aspect-ratio: 1 / 0.92; }
 }
 
-/* Repair the broken Quill selector in the original source. */
-#chat-input-area .ql-toolbar {
-    padding: 4px;
-    border: none;
-    border-bottom: 1px solid var(--border-color);
-    border-radius: 0;
+/* Shared media/document states. */
+.media-frame {
+position: relative;
+width: 100%;
+height: 100%;
+background: var(--bg-primary);
+overflow: hidden;
+display: flex;
+align-items: center;
+justify-content: center;
 }
-#chat-input-area .ql-container {
-    border: none;
-    height: 70px;
-    font-size: .875rem;
-    border-radius: 0;
+.media-frame img,
+.media-frame video,
+.media-frame iframe { width: 100%; height: 100%; border: 0; }
+.media-frame img,
+.media-frame video { object-fit: cover; }
+.media-error {
+width: 100%;
+height: 100%;
+display: flex;
+align-items: center;
+justify-content: center;
+flex-direction: column;
+gap: 0.4rem;
+background: var(--media-placeholder);
+color: var(--text-muted);
+text-align: center;
+padding: 1rem;
+}
+.media-document-link {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+gap: 0.5rem;
+padding: 0.55rem 0.75rem;
+max-width: 92%;
+text-align: center;
+font-size: 0.75rem;
+font-weight: 800;
+color: var(--accent);
+background: var(--bg-surface);
+border: 1px solid var(--border-color);
+border-radius: 10px;
+box-shadow: var(--shadow-sm);
+}
+.pdf-reader-shell {
+width: 100%;
+height: 100%;
+min-height: 360px;
+display: flex;
+flex-direction: column;
+background: var(--bg-primary);
+}
+.pdf-reader-toolbar {
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 0.5rem;
+padding: 0.45rem 0.65rem;
+background: var(--brand-blue);
+color: #fff;
+font-size: 0.72rem;
+font-weight: 700;
+}
+.pdf-reader-toolbar a { color: #fff; text-decoration: underline; }
+.pdf-reader-frame {
+flex: 1;
+width: 100%;
+min-height: 320px;
+border: 0;
+background: #fff;
+}
+.product-media-container,
+.mech-media-container,
+.farmer-help-media-container,
+.order-project-media-container,
+#details-media,
+#story-details-media { background: var(--media-placeholder); }
+
+/* Order history controls. */
+.order-operation-group {
+display: flex;
+flex-wrap: wrap;
+justify-content: flex-end;
+gap: 0.35rem;
+}
+.order-operation-group .btn { white-space: nowrap; }
+.dashboard-table td:last-child { min-width: 220px; }
+
+/* Balanced brand colours: green dominant, blue support, pink/yellow accents. */
+.hero-banner {
+background: linear-gradient(135deg, var(--brand-green-deep) 0%, var(--brand-green) 62%, var(--brand-blue) 100%);
+border-bottom-color: var(--brand-yellow);
+}
+.stock-badge.bg-success { background: var(--brand-green); }
+.stock-badge.bg-update { background: var(--brand-blue); }
+.badge-delivered { background: var(--brand-green); }
+.info-card:hover,
+.product-card:hover,
+.mech-card:hover,
+.farmer-help-card:hover,
+.order-project-card:hover {
+box-shadow: 0 10px 24px rgba(22, 163, 74, 0.12), var(--shadow-md);
+}
+.ql-editor img,
+#details-desc img,
+#story-details-content img {
+max-width: 100%;
+height: auto;
+object-fit: contain;
+}
+.modal-content,
+#details-desc,
+#story-details-content { overflow-wrap: anywhere; }
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+outline: 3px solid rgba(236, 72, 153, 0.35);
+outline-offset: 2px;
+}
+.products-grid > *,
+.mechanization-grid > *,
+.farmer-help-grid > *,
+.order-project-grid > * { min-width: 0; }
+.product-card .product-content > div,
+.mech-card .mech-content > div,
+.farmer-help-card .farmer-help-content > div,
+.order-project-card .order-project-content > div { min-width: 0; }
+
+
+/* ================================================================
+18. FINAL RESPONSIVE POLISH & MEDIA SAFETY RULES
+================================================================ */
+.media-error strong {
+max-width: 90%;
+overflow-wrap: anywhere;
+}
+.media-error span {
+max-width: 90%;
+}
+.pdf-reader-shell,
+.pdf-reader-frame {
+border-radius: 0;
+}
+.pdf-reader-toolbar span {
+overflow: hidden;
+text-overflow: ellipsis;
+white-space: nowrap;
+}
+.pdf-reader-toolbar a {
+flex-shrink: 0;
+}
+.product-card .product-media-container .pdf-reader-shell,
+.mech-card .mech-media-container .pdf-reader-shell,
+.farmer-help-card .farmer-help-media-container .pdf-reader-shell,
+.order-project-card .order-project-media-container .pdf-reader-shell {
+height: 100%;
+}
+.product-card .product-media-container .media-error,
+.mech-card .mech-media-container .media-error,
+.farmer-help-card .farmer-help-media-container .media-error,
+.order-project-card .order-project-media-container .media-error {
+height: 100%;
+}
+.product-card .product-media-container audio,
+.mech-card .mech-media-container audio,
+.farmer-help-card .farmer-help-media-container audio,
+.order-project-card .order-project-media-container audio {
+width: 90%;
+max-width: 220px;
+}
+.product-card .product-content p,
+.mech-card .mech-content p,
+.farmer-help-card .farmer-help-content p,
+.order-project-card .order-project-content p {
+font-size: 0.72rem;
+line-height: 1.35;
+}
+.product-card .product-footer,
+.mech-card .mech-footer,
+.farmer-help-card .farmer-help-footer,
+.order-project-card .order-project-footer {
+gap: 0.4rem;
+flex-wrap: wrap;
+}
+.product-card .product-footer > *,
+.mech-card .mech-footer > *,
+.farmer-help-card .farmer-help-footer > *,
+.order-project-card .order-project-footer > * {
+min-width: 0;
+}
+.product-card .product-price {
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+}
+.product-card .stock-badge,
+.mech-card .stock-badge {
+max-width: calc(100% - 24px);
+overflow: hidden;
+text-overflow: ellipsis;
+white-space: nowrap;
+}
+@media (min-width: 1800px) {
+.products-grid,
+.mechanization-grid,
+.farmer-help-grid,
+.order-project-grid {
+padding-left: 2.5%;
+padding-right: 2.5%;
+}
+}
+@media (max-width: 1399px) and (min-width: 1101px) {
+.products-grid,
+.mechanization-grid,
+.farmer-help-grid,
+.order-project-grid {
+grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+}
+@media (max-width: 900px) {
+.product-card .product-actions,
+.mech-card .mech-actions {
+gap: 0.3rem;
+}
+.product-card .interaction-bar {
+gap: 0.35rem;
+}
+}
+@media (max-width: 760px) {
+.announcement-marquee-item {
+font-size: 0.82rem;
+}
+.pdf-reader-shell {
+min-height: 300px;
+}
+.pdf-reader-frame {
+min-height: 260px;
+}
+}
+@media (max-width: 480px) {
+.product-card .product-title,
+.mech-card .mech-title,
+.farmer-help-card .farmer-help-title,
+.order-project-card .order-project-title {
+font-size: 0.88rem;
+}
+.product-card .product-content,
+.mech-card .mech-content,
+.farmer-help-card .farmer-help-content,
+.order-project-card .order-project-content {
+padding: 0.65rem;
+}
+}
+@media (prefers-contrast: more) {
+.product-card,
+.mech-card,
+.farmer-help-card,
+.order-project-card,
+.info-card {
+border-width: 2px;
+}
 }
 
 </style>
 </head>
 <body>
-<div id="dynamic-announcement" class="announcement-banner"></div>
+<div id="dynamic-announcement" class="announcement-banner" aria-live="polite" aria-label="New updates">
+<div class="announcement-marquee" role="region" aria-label="New updates">
+<div class="announcement-marquee-track" id="announcement-marquee-track"></div>
+</div>
+</div>
 <div id="toast-container" class="toast-container"></div>
 <header>
 <div class="brand-container" onclick="navigate('home')">
@@ -2606,184 +2804,135 @@ loadUserOrders();
 function closeUserDashboard() {
 document.getElementById('user-dashboard-modal').classList.remove('active');
 }
-async 
 async function loadUserOrders() {
-    const tbody = document.getElementById('user-orders-body');
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;"><i class="fa-solid fa-spinner fa-spin"></i> Synchronizing logs...</td></tr>';
-
-    if (!currentUser || !window.supabase) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">Sign in to view your orders.</td></tr>';
-        return;
-    }
-
-    try {
-        const { data, error } = await window.supabase
-            .from('orders')
-            .select('*')
-            .eq('user_id', currentUser.id)
-            .order('created_at', { ascending: false });
-
-        if (error) throw error;
-        const orders = sortNewestFirst(data || []);
-        tbody.innerHTML = '';
-
-        if (!orders.length) {
-            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">No transaction history found.</td></tr>';
-            return;
-        }
-
-        orders.forEach(o => {
-            let statusClass = 'badge-pending';
-            switch (o.status) {
-                case 'Processing':
-                case 'Waiting':
-                case 'Under Review': statusClass = 'badge-processing'; break;
-                case 'Shipped': statusClass = 'badge-shipped'; break;
-                case 'Delivered':
-                case 'Completed': statusClass = 'badge-delivered'; break;
-                case 'Cancelled': statusClass = 'badge-cancelled'; break;
-            }
-
-            const canCancel = ['Pending', 'Processing', 'Waiting', 'Under Review'].includes(o.status);
-            const canReorder = ['Cancelled', 'Delivered', 'Completed'].includes(o.status);
-            const cancelBtn = canCancel
-                ? `<button class="btn btn-danger-outline" style="font-size:.68rem;padding:.28rem .45rem;" onclick="cancelUserOrder('${String(o.id)}','${String(o.product_id || '')}',${Number(o.quantity || 0)})"><i class="fa-solid fa-xmark"></i> Cancel</button>`
-                : '';
-            const reorderBtn = canReorder
-                ? `<button class="btn btn-outline" style="font-size:.68rem;padding:.28rem .45rem;" onclick="reorderUserItem('${String(o.id)}')"><i class="fa-solid fa-cart-plus"></i> Add Again</button>`
-                : '';
-            const deleteBtn = o.status === 'Cancelled'
-                ? `<button class="btn btn-danger-outline" title="Remove cancelled order record" style="font-size:.68rem;padding:.28rem .45rem;" onclick="deleteUserOrderRecord('${String(o.id)}')"><i class="fa-solid fa-trash"></i></button>`
-                : '';
-
-            const dateStr = o.created_at
-                ? new Date(o.created_at).toLocaleDateString(undefined, {year:'numeric',month:'short',day:'numeric'})
-                : '';
-
-            tbody.innerHTML += `
-                <tr>
-                    <td class="font-mono text-muted">${String(o.id).substring(0,8).toUpperCase()}</td>
-                    <td style="font-weight:600;">
-                        ${escapeHTML(o.product_title || 'Requested item')}<br>
-                        <span style="font-size:.7rem;color:var(--text-muted);font-weight:normal;">${dateStr}</span>
-                    </td>
-                    <td><span style="font-weight:800;">${Number(o.quantity || 0)}</span> units</td>
-                    <td><span class="badge ${statusClass}">${escapeHTML(o.status || 'Pending')}</span></td>
-                    <td style="text-align:right;white-space:nowrap;">
-                        <div style="display:flex;gap:.3rem;justify-content:flex-end;flex-wrap:wrap;">
-                            ${reorderBtn}${cancelBtn}${deleteBtn}
-                        </div>
-                    </td>
-                </tr>`;
-        });
-    } catch (err) {
-        console.error("Order load error:", err);
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--danger);">Failed to retrieve telemetry.</td></tr>';
-    }
+const tbody = document.getElementById('user-orders-body');
+tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;"><i class="fa-solid fa-spinner fa-spin"></i> Synchronizing logs...</td></tr>';
+try {
+const { data, error } = await window.supabase.from('orders').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false });
+if (error) throw error;
+tbody.innerHTML = '';
+if(data.length === 0) {
+tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color: var(--text-muted);">No transaction history found.</td></tr>';
+return;
 }
-
+data.forEach(o => {
+let statusClass = '';
+switch(o.status) {
+case 'Pending': statusClass = 'badge-pending'; break;
+case 'Processing':
+case 'Waiting':
+case 'Under Review': statusClass = 'badge-processing'; break;
+case 'Shipped': statusClass = 'badge-shipped'; break;
+case 'Delivered':
+case 'Completed': statusClass = 'badge-delivered'; break;
+case 'Cancelled': statusClass = 'badge-cancelled'; break;
+default: statusClass = 'badge-pending';
+}
+// Cancellation logic
+const canCancel = ['Pending', 'Processing', 'Waiting', 'Under Review'].includes(o.status);
+const cancelBtnHtml = canCancel ?
+`<button class="btn btn-danger-outline" style="font-size: 0.7rem; padding: 0.3rem 0.6rem;" onclick="cancelUserOrder('${String(o.id)}', '${String(o.product_id)}', ${o.quantity})"><i class="fa-solid fa-xmark"></i> Abort</button>`
+: `<span style="font-size: 0.7rem; color: var(--text-muted);"><i class="fa-solid fa-lock"></i> Locked</span>`;
+const dateStr = new Date(o.created_at).toLocaleDateString();
+tbody.innerHTML += `
+<tr>
+<td class="font-mono text-muted">${String(o.id).substring(0,8).toUpperCase()}</td>
+<td style="font-weight: 600;">
+${escapeHTML(o.product_title)}<br>
+<span style="font-size:0.7rem; color:var(--text-muted); font-weight:normal;">${dateStr}</span>
+</td>
+<td><span style="font-weight: 800;">${o.quantity}</span> units</td>
+<td><span class="badge ${statusClass}">${o.status}</span></td>
+<td style="text-align:right;">
+<div class="order-operation-group">
+${cancelBtnHtml}
+<button class="btn btn-outline" style="font-size:0.7rem;padding:0.3rem 0.6rem;" onclick="reorderUserOrder('${String(o.product_id)}')" title="Add this item again">
+<i class="fa-solid fa-cart-plus"></i> Reorder
+</button>
+${['Cancelled','Delivered','Completed'].includes(o.status) ? `<button class="btn btn-danger-outline" style="font-size:0.7rem;padding:0.3rem 0.6rem;" onclick="deleteUserOrder('${String(o.id)}')" title="Remove this history item"><i class="fa-solid fa-trash"></i> Delete</button>` : ''}
+</div>
+</td>
+</tr>
+`;
+});
+} catch (err) {
+console.error("Order load error:", err);
+tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color: var(--danger);">Failed to retrieve telemetry.</td></tr>';
+}
+}
 window.cancelUserOrder = async (orderId, productId, qty) => {
-    if (!confirm("Confirm order cancellation? The item will remain in your history as Cancelled.")) return;
-    try {
-        const { error: orderErr } = await window.supabase
-            .from('orders')
-            .update({ status: 'Cancelled' })
-            .eq('id', orderId)
-            .eq('user_id', currentUser.id);
-        if (orderErr) throw orderErr;
-
-        if (productId && Number(qty) > 0) {
-            const { data: prodData } = await window.supabase
-                .from('products')
-                .select('quantity')
-                .eq('id', productId)
-                .single();
-
-            if (prodData) {
-                await window.supabase
-                    .from('products')
-                    .update({ quantity: Number(prodData.quantity || 0) + Number(qty) })
-                    .eq('id', productId);
-            }
-        }
-
-        showToast("Order cancelled successfully.", "success");
-        await loadUserOrders();
-        initializePublicCatalog();
-    } catch (e) {
-        console.error("Cancel Error:", e);
-        showToast("Order cancellation failed. Check your account permissions.", "error");
-    }
+if(!confirm("Warning: Confirm order cancellation. This action is absolute.")) return;
+try {
+// Update Order Status
+const { error: orderErr } = await window.supabase.from('orders').update({ status: 'Cancelled' }).eq('id', orderId);
+if(orderErr) throw orderErr;
+// Restore Product Inventory via atomic rpc or select/update combo
+const { data: prodData } = await window.supabase.from('products').select('quantity').eq('id', productId).single();
+if(prodData) {
+await window.supabase.from('products').update({ quantity: prodData.quantity + qty }).eq('id', productId);
+}
+showToast("Order transaction successfully aborted.", "success");
+loadUserOrders(); // Refresh table
+// Update catalog quietly
+initializePublicCatalog();
+} catch (e) {
+console.error("Cancel Error:", e);
+showToast("Cancellation matrix failed.", "error");
+}
 };
 
-window.deleteUserOrderRecord = async (orderId) => {
-    if (!currentUser) return;
-    if (!confirm("Remove this cancelled order from your account history? This cannot be undone.")) return;
-
-    try {
-        const { error } = await window.supabase
-            .from('orders')
-            .delete()
-            .eq('id', orderId)
-            .eq('user_id', currentUser.id)
-            .eq('status', 'Cancelled');
-
-        if (error) throw error;
-        showToast("Cancelled order removed from your account.", "success");
-        await loadUserOrders();
-    } catch (e) {
-        console.error("Delete order record error:", e);
-        showToast("The record could not be removed. Your Supabase RLS policy may block deletion.", "error");
-    }
+// ==========================================
+// USER ORDER HISTORY ACTIONS
+// ==========================================
+window.reorderUserOrder = function(productId) {
+if (!currentUser) {
+openAuthModal('login');
+return;
+}
+const product = localProductsCache.find(p => String(p.id) === String(productId));
+if (!product) {
+showToast('This product is no longer available in the current catalog.', 'warning');
+return;
+}
+if (Number(product.quantity || 0) <= 0) {
+showToast('This product is currently out of stock.', 'warning');
+return;
+}
+openOrderModal(String(product.id));
+showToast('Previous item restored to the order form.', 'success');
 };
 
-window.reorderUserItem = async (orderId) => {
-    if (!currentUser) {
-        openAuthModal('login');
-        return;
-    }
-
-    try {
-        const { data: oldOrder, error } = await window.supabase
-            .from('orders')
-            .select('*')
-            .eq('id', orderId)
-            .eq('user_id', currentUser.id)
-            .single();
-
-        if (error) throw error;
-        if (!oldOrder?.product_id) {
-            showToast("This order does not contain a reusable product reference.", "warning");
-            return;
-        }
-
-        const { data: product, error: productErr } = await window.supabase
-            .from('products')
-            .select('*')
-            .eq('id', oldOrder.product_id)
-            .single();
-
-        if (productErr) throw productErr;
-        if (Number(product.quantity || 0) <= 0) {
-            showToast("This product is currently out of stock.", "warning");
-            return;
-        }
-
-        const quantity = Math.min(Math.max(Number(oldOrder.quantity || 1), 1), Number(product.quantity));
-        document.getElementById('order-modal').classList.add('active');
-
-        if (typeof openOrderModal === 'function') {
-            openOrderModal(product.id);
-        } else if (typeof window.openOrderModal === 'function') {
-            window.openOrderModal(product.id);
-        } else {
-            showToast("Product is available. Open Shop to place the order again.", "info");
-        }
-    } catch (e) {
-        console.error("Reorder error:", e);
-        showToast("Unable to prepare this item for another order.", "error");
-    }
+window.deleteUserOrder = async function(orderId) {
+if (!currentUser) return;
+if (!confirm('Remove this completed or cancelled order from your history?')) return;
+try {
+const { data: order, error: readError } = await window.supabase
+.from('orders')
+.select('id,status,user_id')
+.eq('id', orderId)
+.eq('user_id', currentUser.id)
+.single();
+if (readError) throw readError;
+if (!['Cancelled', 'Delivered', 'Completed'].includes(order.status)) {
+showToast('Active orders cannot be deleted. Cancel the order first.', 'warning');
+return;
+}
+const { error } = await window.supabase
+.from('orders')
+.delete()
+.eq('id', orderId)
+.eq('user_id', currentUser.id);
+if (error) throw error;
+showToast('Order history item removed successfully.', 'success');
+await loadUserOrders();
+} catch (error) {
+console.error('Delete order error:', error);
+showToast('Unable to remove this order history item.', 'error');
+}
 };
+// ==========================================
+// END USER ORDER HISTORY ACTIONS
+// ==========================================
 
 // ==========================================
 // SYSTEM UPDATES & ANNOUNCEMENTS
@@ -2802,21 +2951,11 @@ feedContainer.innerHTML = `<div style="grid-column: 1/-1; text-align:center; pad
 localAnnouncementsCache = []; return;
 }
 // Banner text
-const textOnlyContent = DOMPurify.sanitize(data[0].content)
-    .replace(/<[^>]*>?/gm, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-banner.innerHTML = `<span><i class="fa-solid fa-bullhorn"></i><strong>Latest Update:</strong> ${escapeHTML(textOnlyContent)}</span>`;
-banner.classList.add('active');
+updateAnnouncementMarquee(data);
 localAnnouncementsCache = data;
 if (feedContainer) feedContainer.innerHTML = '';
 data.forEach(a => {
-let mediaElement = `<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:var(--accent); color:white; font-size:3rem;"><i class="fa-solid fa-bullhorn"></i></div>`;
-if (a.image_url) {
-let url = a.image_url.startsWith('http') ? a.image_url : window.supabase.storage.from('product-assets').getPublicUrl(a.image_url).data.publicUrl;
-if (url.match(/\.(jpeg|jpg|gif|png)$/i)) mediaElement = `<img src="${url}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='https://via.placeholder.com/400x200?text=Asset+Error'">`;
-else if (url.match(/\.(mp4|webm|ogg)$/i)) mediaElement = `<video src="${url}" controls style="width:100%; height:100%; object-fit:cover; background:#000;"></video>`;
-}
+let mediaElement = buildMediaElement(a.image_url, a, { label: 'Announcement attachment' });
 const dateStr = new Date(a.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
 const cleanPreview = DOMPurify.sanitize(a.content).replace(/<[^>]*>?/gm, '').substring(0, 150) + '...';
 if (feedContainer) {
@@ -2827,7 +2966,6 @@ feedContainer.innerHTML += `
 <div class="product-content">
 <div>
 <h4 style="font-size: 0.75rem; margin: 0 0 0.5rem 0; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">${dateStr}</h4>
-<div class="updated-label"><i class="fa-solid fa-bullhorn"></i> Latest broadcast</div>
 <div style="font-size: 0.875rem; color: var(--text-main); line-height: 1.6; text-align: justify; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical;">
 ${cleanPreview}
 </div>
@@ -2851,17 +2989,7 @@ const ann = localAnnouncementsCache.find(a => String(a.id) === String(id));
 if(ann) {
 document.getElementById('details-title').innerHTML = "<i class='fa-solid fa-bullhorn'></i> System Update Vector";
 document.getElementById('details-desc').innerHTML = DOMPurify.sanitize(ann.content);
-const mediaContainer = document.getElementById('details-media');
-mediaContainer.innerHTML = "";
-if (ann.image_url) {
-let url = ann.image_url.startsWith('http') ? ann.image_url : window.supabase.storage.from('product-assets').getPublicUrl(ann.image_url).data.publicUrl;
-if (url.match(/\.(mp4|webm|ogg)$/i)) mediaContainer.innerHTML = `<video src="${url}" controls style="width:100%; height:100%; object-fit:cover;"></video>`;
-else if (url.match(/\.(pdf|doc|docx)$/i)) mediaContainer.innerHTML = `<div style="display:flex; height:100%; align-items:center; justify-content:center;"><a href="${url}" target="_blank" class="btn btn-primary"><i class="fa-solid fa-file-pdf"></i> View Attached Document</a></div>`;
-else mediaContainer.innerHTML = `<img src="${url}" style="width:100%; height:100%; object-fit:contain; background:var(--bg-primary);">`;
-mediaContainer.style.display = 'block';
-} else {
-mediaContainer.style.display = 'none';
-}
+setDetailsMedia(ann.image_url, ann, ann.title || 'Attached asset');
 document.getElementById('details-modal').classList.add('active');
 }
 };
@@ -2872,21 +3000,7 @@ window.viewDetails = (id) => {
 const item = localProductsCache.find(p => String(p.id) === String(id));
 if (!item) return;
 document.getElementById('details-title').innerHTML = escapeHTML(item.title) + ' <i class="fa-solid fa-circle-check text-success" title="Verified Asset" style="font-size:0.875rem;"></i>';
-const mediaContainer = document.getElementById('details-media');
-mediaContainer.innerHTML = "";
-if (item.image_url) {
-let url = item.image_url.startsWith('http') ? item.image_url : window.supabase.storage.from('product-assets').getPublicUrl(item.image_url).data.publicUrl;
-if (url.match(/\.(mp4|webm|ogg)$/i)) {
-mediaContainer.innerHTML = `<video src="${url}" controls style="width:100%; height:100%; object-fit:contain; background:#000;"></video>`;
-} else if (url.match(/\.(pdf|doc|docx)$/i)) {
-mediaContainer.innerHTML = `<div style="display:flex; height:100%; align-items:center; justify-content:center;"><a href="${url}" target="_blank" class="btn btn-primary"><i class="fa-solid fa-file-pdf"></i> View Attached Document</a></div>`;
-} else {
-mediaContainer.innerHTML = `<img src="${url}" style="width:100%; height:100%; object-fit:contain; background:var(--bg-primary);">`;
-}
-mediaContainer.style.display = 'block';
-} else {
-mediaContainer.style.display = 'none';
-}
+setDetailsMedia(item.image_url, item, item.title || 'Attached asset');
 // Description handling (remove the CURRENCY tag logic securely)
 let htmlDesc = item.description ? item.description.replace(/\[CURRENCY:\w+\]/g, "").trim() : "No further technical specifications available.";
 document.getElementById('details-desc').innerHTML = DOMPurify.sanitize(htmlDesc);
@@ -2913,11 +3027,7 @@ return;
 localStoriesCache.forEach(story => {
 const dateObj = new Date(story.updated_at);
 const formattedDate = `${dateObj.toLocaleDateString()} at ${dateObj.toLocaleTimeString()}`;
-let coverImage = `<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:var(--bg-primary); color:var(--text-muted); font-size:3rem;"><i class="fa-solid fa-book-open"></i></div>`;
-if (story.image_url) {
-let url = story.image_url.startsWith('http') ? story.image_url : window.supabase.storage.from('product-assets').getPublicUrl(story.image_url).data.publicUrl;
-coverImage = `<img src="${url}" style="width:100%; height:100%; object-fit:cover;">`;
-}
+let coverImage = buildMediaElement(story.image_url, story, { label: story.title || 'Platform story' });
 const cleanText = DOMPurify.sanitize(story.content || '').replace(/<[^>]*>?/gm, '');
 const previewText = cleanText.length > 150 ? cleanText.substring(0, 150) + '...' : cleanText;
 container.innerHTML += `
@@ -2949,15 +3059,7 @@ if(!story) return;
 document.getElementById('story-details-title').innerHTML = escapeHTML(story.title);
 const dateObj = new Date(story.updated_at);
 document.getElementById('story-details-meta').innerHTML = `<i class="fa-solid fa-clock"></i> Published: ${dateObj.toLocaleDateString()} at ${dateObj.toLocaleTimeString()}`;
-const mediaContainer = document.getElementById('story-details-media');
-mediaContainer.innerHTML = "";
-if (story.image_url) {
-let url = story.image_url.startsWith('http') ? story.image_url : window.supabase.storage.from('product-assets').getPublicUrl(story.image_url).data.publicUrl;
-mediaContainer.innerHTML = `<img src="${url}" style="width:100%; height:100%; object-fit: cover;">`;
-mediaContainer.style.display = 'block';
-} else {
-mediaContainer.style.display = 'none';
-}
+setStoryDetailsMedia(story.image_url, story, story.title || 'Platform story');
 document.getElementById('story-details-content').innerHTML = DOMPurify.sanitize(story.content);
 document.getElementById('story-details-modal').classList.add('active');
 };
@@ -3377,14 +3479,7 @@ let currencySymbol = "$";
 if(targetCurrency === "RWF") currencySymbol = "Fr "; else if(targetCurrency === "KES") currencySymbol = "KSh "; else if(targetCurrency === "UGX") currencySymbol = "USh "; else if(targetCurrency === "TZS") currencySymbol = "TSh "; else if(targetCurrency === "BIF") currencySymbol = "FBu "; else if(targetCurrency === "SSP") currencySymbol = "£ "; else if(targetCurrency === "CDF") currencySymbol = "FC "; else if(targetCurrency === "EUR") currencySymbol = "€ "; else if(targetCurrency === "GBP") currencySymbol = "£ "; else if(targetCurrency === "AED") currencySymbol = "إ.د "; else if(targetCurrency === "SAR") currencySymbol = "س.ر "; else if(targetCurrency === "CNY") currencySymbol = "¥ "; else if(targetCurrency === "INR") currencySymbol = "₹ "; else if(targetCurrency === "JPY") currencySymbol = "¥ "; else if(targetCurrency === "ZAR") currencySymbol = "R "; else if(targetCurrency === "CAD") currencySymbol = "$ ";
 const isOutOfStock = item.quantity <= 0;
 const isLowStock = item.quantity > 0 && item.quantity <= 3;
-let mediaElement = `<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:var(--bg-primary); color:var(--text-muted);"><i class="fa-solid fa-image" style="font-size:3rem;"></i></div>`;
-if (item.image_url) {
-    mediaElement = buildMediaElement(item.image_url, {
-        alt: item.title || "Product image",
-        mode: "cover",
-        documentLabel: "Product attachment"
-    });
-}
+let mediaElement = buildMediaElement(item.image_url, item, { label: item.title || 'Product asset' });
 let badgeHTML = '';
 if (isOutOfStock) badgeHTML = '<span class="stock-badge bg-danger"><i class="fa-solid fa-ban"></i> Depleted</span>';
 else if (isLowStock) badgeHTML = '<span class="stock-badge bg-warning"><i class="fa-solid fa-triangle-exclamation"></i> Low Stock</span>';
@@ -3590,7 +3685,7 @@ if (!window.supabase) return;
 try {
 const { data, error } = await window.supabase.from('mechanization').select('*').order('created_at', { ascending: false });
 if (error) throw error;
-localMechanizationCache = sortNewestFirst(data || []);
+localMechanizationCache = data || [];
 renderMechanizationGrid(localMechanizationCache);
 } catch (err) {
 console.error("Mechanization catalog fetch error:", err);
@@ -3606,14 +3701,7 @@ return;
 }
 const fragment = document.createDocumentFragment();
 mechanizationList.forEach(mech => {
-let mediaElement = `<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:var(--bg-primary); color:var(--text-muted);"><i class="fa-solid fa-image" style="font-size:3rem;"></i></div>`;
-if (mech.image_url) {
-    mediaElement = buildMediaElement(mech.image_url, {
-        alt: mech.title || "Agricultural machinery",
-        mode: "cover",
-        documentLabel: "Machinery attachment"
-    });
-}
+let mediaElement = buildMediaElement(mech.image_url, mech, { label: mech.title || mech.name || 'Agricultural machinery' });
 const isAvailable = mech.available;
 const availabilityBadge = `<span class="stock-badge ${isAvailable ? 'bg-success' : 'bg-danger'}"><i class="fa-solid ${isAvailable ? 'fa-check' : 'fa-ban'}"></i> ${isAvailable ? 'Available' : 'Maintenance'}</span>`;
 const cardNode = document.createElement("div");
@@ -3624,7 +3712,6 @@ ${availabilityBadge}
 <div class="mech-content">
 <div>
 <h3 class="mech-title">${escapeHTML(mech.title)}</h3>
-<div class="updated-label"><i class="fa-solid fa-rotate"></i> ${escapeHTML(formatUpdatedLabel(mech))}</div>
 <div class="mech-details">${DOMPurify.sanitize(mech.description).replace(/<[^>]*>?/gm, '').substring(0, 120)}...</div>
 <div style="font-size: 0.875rem; color: var(--text-muted); margin-top: 0.75rem;">
 <i class="fa-solid fa-layer-group"></i> ${escapeHTML(mech.category)}
@@ -3653,7 +3740,7 @@ if (!window.supabase) return;
 try {
 const { data, error } = await window.supabase.from('farmer_help').select('*').order('created_at', { ascending: false });
 if (error) throw error;
-localFarmerHelpCache = sortNewestFirst(data || []);
+localFarmerHelpCache = data || [];
 renderFarmerHelpGrid(localFarmerHelpCache);
 } catch (err) {
 console.error("Farmer Help catalog fetch error:", err);
@@ -3669,14 +3756,7 @@ return;
 }
 const fragment = document.createDocumentFragment();
 helpDocsList.forEach(doc => {
-let mediaElement = `<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:var(--bg-primary); color:var(--text-muted);"><i class="fa-solid fa-file-alt" style="font-size:3rem;"></i></div>`;
-if (doc.media_url) {
-    mediaElement = buildMediaElement(doc.media_url, {
-        alt: doc.title || "Farmer resource",
-        mode: "cover",
-        documentLabel: "Farmer resource file"
-    });
-}
+let mediaElement = buildMediaElement(doc.media_url, doc, { label: doc.title || 'Farmer resource' });
 const cardNode = document.createElement("div");
 cardNode.className = `farmer-help-card`;
 cardNode.innerHTML = `
@@ -3684,7 +3764,6 @@ cardNode.innerHTML = `
 <div class="farmer-help-content">
 <div>
 <h3 class="farmer-help-title">${escapeHTML(doc.title)}</h3>
-<div class="updated-label"><i class="fa-solid fa-rotate"></i> ${escapeHTML(formatUpdatedLabel(doc))}</div>
 <div class="farmer-help-description">${DOMPurify.sanitize(doc.content).replace(/<[^>]*>?/gm, '').substring(0, 150)}...</div>
 </div>
 <div class="farmer-help-footer">
@@ -3704,23 +3783,7 @@ window.viewFarmerHelpDetails = (id) => {
 const doc = localFarmerHelpCache.find(d => String(d.id) === String(id));
 if(!doc) return;
 document.getElementById('details-title').innerHTML = `<i class="fa-solid fa-book-open-reader text-accent"></i> ${escapeHTML(doc.title)}`;
-const mediaContainer = document.getElementById('details-media');
-mediaContainer.innerHTML = "";
-if (doc.media_url) {
-let url = doc.media_url.startsWith('http') ? doc.media_url : window.supabase.storage.from('product-assets').getPublicUrl(doc.media_url).data.publicUrl;
-if (url.match(/\.(mp4|webm|ogg)$/i)) {
-mediaContainer.innerHTML = `<video src="${url}" controls style="width:100%; height:100%; object-fit:cover;"></video>`;
-} else if (url.match(/\.(mp3|wav|ogg)$/i)) {
-mediaContainer.innerHTML = `<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:#f0f0f0;"><audio controls src="${url}"></audio></div>`;
-} else if (url.match(/\.(pdf|doc|docx|txt)$/i)) {
-mediaContainer.innerHTML = `<div style="display:flex; height:100%; align-items:center; justify-content:center;"><a href="${url}" target="_blank" class="btn btn-primary"><i class="fa-solid fa-file-pdf"></i> View Document</a></div>`;
-} else {
-mediaContainer.innerHTML = `<img src="${url}" style="width:100%; height:100%; object-fit:contain; background:var(--bg-primary);">`;
-}
-mediaContainer.style.display = 'block';
-} else {
-mediaContainer.style.display = 'none';
-}
+setDetailsMedia(doc.media_url, doc, doc.title || 'Attached asset');
 document.getElementById('details-desc').innerHTML = DOMPurify.sanitize(doc.content);
 document.getElementById('details-modal').classList.add('active');
 };
@@ -3747,14 +3810,7 @@ return;
 }
 const fragment = document.createDocumentFragment();
 projectList.forEach(project => {
-let mediaElement = `<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:var(--bg-primary); color:var(--text-muted);"><i class="fa-solid fa-folder-open" style="font-size:3rem;"></i></div>`;
-if (project.image_url) {
-    mediaElement = buildMediaElement(project.image_url, {
-        alt: project.title || "Project attachment",
-        mode: "cover",
-        documentLabel: "Project blueprint"
-    });
-}
+let mediaElement = buildMediaElement(project.image_url, project, { label: project.title || 'Project asset' });
 const cardNode = document.createElement("div");
 cardNode.className = `order-project-card`;
 cardNode.innerHTML = `
@@ -3780,21 +3836,7 @@ window.viewProjectDetails = (id) => {
 const project = localProjectsCache.find(p => String(p.id) === String(id));
 if(!project) return;
 document.getElementById('details-title').innerHTML = `<i class="fa-solid fa-rocket text-accent"></i> ${escapeHTML(project.title)}`;
-const mediaContainer = document.getElementById('details-media');
-mediaContainer.innerHTML = "";
-if (project.image_url) {
-let url = project.image_url.startsWith('http') ? project.image_url : window.supabase.storage.from('product-assets').getPublicUrl(project.image_url).data.publicUrl;
-if (url.match(/\.(mp4|webm|ogg)$/i)) {
-mediaContainer.innerHTML = `<video src="${url}" controls style="width:100%; height:100%; object-fit:cover;"></video>`;
-} else if (url.match(/\.(pdf|doc|docx)$/i)) {
-mediaContainer.innerHTML = `<div style="display:flex; height:100%; align-items:center; justify-content:center;"><a href="${url}" target="_blank" class="btn btn-primary"><i class="fa-solid fa-file-pdf"></i> View Blueprint Document</a></div>`;
-} else {
-mediaContainer.innerHTML = `<img src="${url}" style="width:100%; height:100%; object-fit:contain; background:var(--bg-primary);">`;
-}
-mediaContainer.style.display = 'block';
-} else {
-mediaContainer.style.display = 'none';
-}
+setDetailsMedia(project.image_url, project, project.title || 'Attached asset');
 // Description handling
 let htmlDesc = project.description || "No detailed blueprint available.";
 document.getElementById('details-desc').innerHTML = DOMPurify.sanitize(htmlDesc);
@@ -3816,6 +3858,150 @@ showToast("Project quote request initiated. Please check your dashboard or conta
 // This would typically involve loading language JSON files and dynamically updating text content.
 // For now, the content remains primarily in English as per the existing structure.
 // The presence of language options in the admin panel suggests a future frontend implementation.
+
+// ==========================================
+// PROFESSIONAL MEDIA & FILE HANDLING HELPERS
+// ==========================================
+function normalizeAssetValue(value) {
+if (value === null || value === undefined) return '';
+return String(value).trim();
+}
+function getStorageAssetUrl(value) {
+const raw = normalizeAssetValue(value);
+if (!raw) return '';
+if (/^(https?:|data:|blob:|file:)/i.test(raw)) return raw;
+try {
+const result = window.supabase.storage.from('product-assets').getPublicUrl(raw);
+return result?.data?.publicUrl || raw;
+} catch (error) {
+console.warn('Asset URL resolution failed:', error);
+return raw;
+}
+}
+function getAssetExtension(value) {
+const raw = normalizeAssetValue(value);
+if (!raw) return '';
+try {
+const clean = decodeURIComponent(raw).split('#')[0].split('?')[0];
+const match = clean.match(/\.([a-z0-9]{1,8})$/i);
+return match ? match[1].toLowerCase() : '';
+} catch (error) {
+const match = raw.match(/\.([a-z0-9]{1,8})(?:[?#].*)?$/i);
+return match ? match[1].toLowerCase() : '';
+}
+}
+function detectAssetKind(value, record = {}) {
+const ext = getAssetExtension(value);
+const declared = String(record.mime_type || record.file_type || record.media_type || record.content_type || '').toLowerCase();
+const source = `${ext} ${declared}`;
+if (/pdf|application\/pdf/.test(source)) return 'pdf';
+if (/docx?|word|xlsx?|spreadsheet|excel|pptx?|presentation|powerpoint/.test(source)) return 'document';
+if (/txt|text\/plain/.test(source)) return 'text';
+if (/jpe?g|png|gif|webp|avif|svg|bmp|image\//.test(source)) return 'image';
+if (/mp4|webm|ogg|mov|m4v|video\//.test(source)) return 'video';
+if (/mp3|wav|m4a|aac|audio\//.test(source)) return 'audio';
+return 'document';
+}
+function escapeAttribute(value) { return escapeHTML(normalizeAssetValue(value)); }
+function mediaErrorLabel(kind = 'asset') {
+return ({
+image: 'Image could not be displayed',
+video: 'Video could not be displayed',
+audio: 'Audio could not be loaded',
+pdf: 'PDF could not be opened',
+document: 'Document is available to open',
+text: 'Text file is available to open',
+asset: 'File could not be displayed'
+})[kind] || 'File could not be displayed';
+}
+window.handleMediaError = function(element, kind = 'asset') {
+if (!element || !element.parentElement) return;
+element.parentElement.innerHTML = `
+<div class="media-error" role="status">
+<i class="fa-solid fa-file-circle-exclamation" style="font-size:2rem;"></i>
+<strong>${escapeHTML(mediaErrorLabel(kind))}</strong>
+<span style="font-size:0.72rem;">Please open the asset from its details view.</span>
+</div>`;
+};
+function buildPdfReader(url, label = 'PDF document') {
+const safeUrl = escapeAttribute(url);
+const safeLabel = escapeHTML(label);
+return `
+<div class="pdf-reader-shell">
+<div class="pdf-reader-toolbar">
+<span><i class="fa-solid fa-file-pdf"></i> ${safeLabel}</span>
+<a href="${safeUrl}" target="_blank" rel="noopener noreferrer">Open full PDF</a>
+</div>
+<iframe class="pdf-reader-frame" src="${safeUrl}#toolbar=1&navpanes=0&scrollbar=1" title="${safeLabel}" loading="lazy"></iframe>
+</div>`;
+}
+function buildMediaElement(value, record = {}, options = {}) {
+const raw = normalizeAssetValue(value);
+if (!raw) {
+return `<div class="media-error"><i class="fa-solid fa-image" style="font-size:2rem;"></i><span>No media attached</span></div>`;
+}
+const url = getStorageAssetUrl(raw);
+const kind = detectAssetKind(raw, record);
+const label = options.label || record.title || 'Attached asset';
+const safeUrl = escapeAttribute(url);
+if (kind === 'image') {
+return `<img src="${safeUrl}" alt="${escapeAttribute(label)}" loading="lazy" decoding="async" onerror="handleMediaError(this, 'image')">`;
+}
+if (kind === 'video') {
+return `<video src="${safeUrl}" controls playsinline preload="metadata" onerror="handleMediaError(this, 'video')"></video>`;
+}
+if (kind === 'audio') {
+return `<div class="media-error" style="background:var(--bg-surface);"><i class="fa-solid fa-file-audio" style="font-size:2rem;color:var(--brand-blue);"></i><audio controls preload="metadata" src="${safeUrl}" onerror="handleMediaError(this, 'audio')"></audio></div>`;
+}
+if (kind === 'pdf') return buildPdfReader(url, label);
+return `
+<div class="media-error">
+<i class="fa-solid fa-file-lines" style="font-size:2.4rem;color:var(--brand-blue);"></i>
+<strong>${escapeHTML(label)}</strong>
+<a class="media-document-link" href="${safeUrl}" target="_blank" rel="noopener noreferrer">
+<i class="fa-solid fa-arrow-up-right-from-square"></i> Open document
+</a>
+</div>`;
+}
+function setDetailsMedia(value, record = {}, label = 'Attached asset') {
+const mediaContainer = document.getElementById('details-media');
+if (!mediaContainer) return;
+mediaContainer.innerHTML = buildMediaElement(value, record, { label });
+mediaContainer.style.display = 'block';
+}
+function setStoryDetailsMedia(value, record = {}, label = 'Attached asset') {
+const mediaContainer = document.getElementById('story-details-media');
+if (!mediaContainer) return;
+mediaContainer.innerHTML = buildMediaElement(value, record, { label });
+mediaContainer.style.display = 'block';
+}
+function extractAnnouncementText(html) {
+const sanitized = DOMPurify.sanitize(html || '', { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
+return sanitized.replace(/\s+/g, ' ').trim();
+}
+function updateAnnouncementMarquee(announcements) {
+const banner = document.getElementById('dynamic-announcement');
+const track = document.getElementById('announcement-marquee-track');
+if (!banner || !track) return;
+const entries = (announcements || []).map(a => extractAnnouncementText(a.content)).filter(Boolean);
+if (!entries.length) {
+banner.classList.remove('active');
+track.textContent = '';
+return;
+}
+const combined = `New updates — ${entries.join('  •  ')}`;
+track.innerHTML = '';
+const item = document.createElement('span');
+item.className = 'announcement-marquee-item';
+item.textContent = combined;
+track.appendChild(item);
+track.appendChild(item.cloneNode(true));
+banner.classList.add('active');
+}
+// ==========================================
+// END PROFESSIONAL MEDIA & FILE HANDLING HELPERS
+// ==========================================
+
 // ==========================================
 // UTILITIES & HELPERS
 // ==========================================
@@ -3833,268 +4019,6 @@ showToast(`Language set to ${e.target.selectedOptions[0].text}. Reload required 
 }
 // Call this function after user session check or on DOMContentLoaded
 // initializeLangSelector();
-
-/* ================================================================
-   MEDIA + UI ROBUSTNESS PATCH
-   Purpose:
-   - Normalize Supabase Storage paths and public URLs.
-   - Detect images/files even when URLs contain query strings.
-   - Keep images, video, audio and documents visually consistent.
-   - Preserve the existing DOM structure and rich-text markup.
-================================================================ */
-function resolveStorageAsset(rawPath) {
-    if (!rawPath) return "";
-    const value = String(rawPath).trim();
-    if (/^(https?:|data:|blob:)/i.test(value)) return value;
-    try {
-        const cleanPath = value.replace(/^\/+/, "");
-        const result = window.supabase.storage.from("product-assets").getPublicUrl(cleanPath);
-        return result?.data?.publicUrl || value;
-    } catch (err) {
-        console.warn("Storage URL resolution failed:", err);
-        return value;
-    }
-}
-
-function getAssetExtension(url) {
-    try {
-        const clean = decodeURIComponent(String(url || "")).split("?")[0].split("#")[0];
-        const match = clean.match(/\.([a-z0-9]{2,8})$/i);
-        return match ? match[1].toLowerCase() : "";
-    } catch (_) {
-        return "";
-    }
-}
-
-function getAssetKind(url) {
-    const ext = getAssetExtension(url);
-    if (["jpg","jpeg","png","gif","webp","svg","avif","bmp","ico"].includes(ext)) return "image";
-    if (["mp4","webm","ogv","mov","m4v"].includes(ext)) return "video";
-    if (["mp3","wav","ogg","m4a","aac","flac"].includes(ext)) return "audio";
-    if (["pdf","doc","docx","txt","rtf","xls","xlsx","csv","ppt","pptx"].includes(ext)) return "document";
-    return "unknown";
-}
-
-function buildMediaElement(rawPath, options = {}) {
-    const url = resolveStorageAsset(rawPath);
-    const kind = getAssetKind(url);
-    const mode = options.mode || "cover";
-    const className = options.className || "";
-    const alt = escapeHTML(options.alt || "Mwamini asset");
-    const fallback = options.fallback || "Asset unavailable";
-
-    if (!url) {
-        return `<div class="media-fallback"><i class="fa-solid fa-image"></i><span>${fallback}</span></div>`;
-    }
-
-    if (kind === "image") {
-        return `<img class="${className}" src="${escapeHTML(url)}" alt="${alt}" loading="lazy" decoding="async"
-            style="width:100%;height:100%;object-fit:${mode};display:block;"
-            onerror="this.onerror=null;this.closest('.product-media-container,.mech-media-container,.farmer-help-media-container,.order-project-media-container,.story-media-container')?.classList.add('media-error');this.replaceWith(Object.assign(document.createElement('div'),{className:'media-fallback',innerHTML:'<i class=&quot;fa-solid fa-image&quot;></i><span>Image unavailable</span>'}))">`;
-    }
-
-    if (kind === "video") {
-        return `<video class="${className}" src="${escapeHTML(url)}" controls preload="metadata"
-            style="width:100%;height:100%;object-fit:${mode};display:block;background:#0b1220;"
-            onerror="this.outerHTML='<div class=&quot;media-fallback&quot;><i class=&quot;fa-solid fa-video-slash&quot;></i><span>Video unavailable</span></div>'"></video>`;
-    }
-
-    if (kind === "audio") {
-        return `<div class="media-audio"><i class="fa-solid fa-volume-high"></i><audio controls preload="metadata" src="${escapeHTML(url)}"></audio></div>`;
-    }
-
-    if (kind === "document") {
-        return `<div class="media-document">
-            <i class="fa-solid fa-file-lines"></i>
-            <span>${escapeHTML(options.documentLabel || "Attached file")}</span>
-            <a href="${escapeHTML(url)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
-                <i class="fa-solid fa-arrow-up-right-from-square"></i> Open File
-            </a>
-        </div>`;
-    }
-
-    return `<div class="media-document">
-        <i class="fa-solid fa-file"></i>
-        <span>${fallback}</span>
-        <a href="${escapeHTML(url)}" target="_blank" rel="noopener noreferrer" class="btn btn-outline">
-            <i class="fa-solid fa-download"></i> Open Asset
-        </a>
-    </div>`;
-}
-
-function getUpdatedTimestamp(item) {
-    return item?.updated_at || item?.modified_at || item?.created_at || null;
-}
-
-function formatUpdatedLabel(item) {
-    const value = getUpdatedTimestamp(item);
-    if (!value) return "Recently updated";
-    const date = new Date(value);
-    if (Number.isNaN(date.getTime())) return "Recently updated";
-    return `Updated ${date.toLocaleDateString(undefined, {year:"numeric", month:"short", day:"numeric"})}`;
-}
-
-function sortNewestFirst(items) {
-    return [...(items || [])].sort((a, b) => {
-        const ta = new Date(getUpdatedTimestamp(a) || 0).getTime();
-        const tb = new Date(getUpdatedTimestamp(b) || 0).getTime();
-        return tb - ta;
-    });
-}
-
 </script>
-
-<!--
-=====================================================================
-MWAMINI MAINTENANCE NOTES — DO NOT REMOVE
-=====================================================================
-The following comments are intentionally kept in the source file.
-They document the stability rules used by this frontend.
-
-01. Preserve the existing navigation IDs and view IDs.
-02. Preserve all existing heading levels and bold/strong formatting.
-03. Preserve Quill rich-text HTML generated by administrators.
-04. Sanitize rich text before injecting it into the DOM.
-05. Resolve Supabase Storage paths through resolveStorageAsset().
-06. Never assume an image URL has a clean extension.
-07. Ignore query strings and fragments when detecting file types.
-08. Support JPG, JPEG, PNG, GIF, WEBP, SVG, AVIF and BMP images.
-09. Support MP4, WEBM, OGV, MOV and M4V video assets.
-10. Support MP3, WAV, OGG, M4A, AAC and FLAC audio assets.
-11. Support PDF, DOC, DOCX, TXT, RTF, XLS, XLSX, CSV, PPT and PPTX.
-12. Keep media boxes the same height across each catalog.
-13. Use object-fit cover for catalogue thumbnails.
-14. Use object-fit contain for detailed previews.
-15. Use lazy loading for images wherever practical.
-16. Provide a visible fallback when an asset cannot load.
-17. Do not let a failed image break the entire card.
-18. Keep cards compact on large desktop displays.
-19. Use eight catalogue cards on very wide screens.
-20. Use six catalogue cards on ordinary desktop widths.
-21. Use four cards on medium screens.
-22. Use two cards on small screens.
-23. Use one card on very narrow screens.
-24. Keep card gaps small but readable.
-25. Do not change the order of existing major page sections.
-26. Keep the existing My Account modal architecture.
-27. Keep authentication controlled by Supabase.
-28. Keep order ownership restricted by currentUser.id.
-29. Allow cancellation only in cancellable order states.
-30. Restock inventory after successful cancellation.
-31. Allow a cancelled order record to be removed by its owner.
-32. Allow completed/cancelled orders to be prepared for re-ordering.
-33. Do not silently delete active or completed transactions.
-34. Let Supabase Row Level Security remain the final authority.
-35. Report RLS deletion failures clearly to the user.
-36. Keep the order table usable on narrow screens.
-37. Keep operation buttons compact.
-38. Keep product titles and user-generated text escaped where needed.
-39. Keep DOMPurify for administrator rich text.
-40. Do not turn rich text headings into plain text.
-41. Do not remove bold, italic, lists or links from saved descriptions.
-42. Keep announcement card content separate from banner content.
-43. The announcement banner scrolls text only.
-44. The banner container itself must not horizontally scroll.
-45. Pause announcement text scrolling when hovered.
-46. Use a green-led visual identity.
-47. Use blue as a supporting primary accent.
-48. Use pink as a controlled highlight accent.
-49. Use yellow as a controlled warning/highlight accent.
-50. Avoid making blue the dominant surface colour.
-51. Prefer green for success and agriculture-related status.
-52. Keep contrast readable in light and dark themes.
-53. Avoid hard-coded backgrounds when a theme token exists.
-54. Keep headings and bold emphasis visually intact.
-55. Do not replace existing copy merely for styling work.
-56. Do not change database table names.
-57. Do not change existing Supabase bucket name.
-58. Do not assume a new database column exists.
-59. Prefer created_at when updated_at is unavailable.
-60. Prefer updated_at when it exists.
-61. Sort current agriculture and machinery content newest first.
-62. Display an updated label on dynamic agricultural content.
-63. Keep existing Farmer Help content architecture.
-64. Keep existing Mechanization content architecture.
-65. Keep existing Projects content architecture.
-66. Keep existing Stories content architecture.
-67. Keep existing Announcements content architecture.
-68. Keep existing Product Catalog filtering architecture.
-69. Keep existing currency selector architecture.
-70. Keep existing currency conversion behaviour.
-71. Keep existing chat architecture.
-72. Keep existing review architecture.
-73. Keep existing contact architecture.
-74. Keep existing footer architecture.
-75. Keep existing admin verification flow.
-76. Do not expose new privileged admin operations to guests.
-77. Keep profile/avatar upload behaviour.
-78. Keep modal scrolling behaviour.
-79. Keep close buttons accessible.
-80. Avoid adding dependencies beyond those already loaded.
-81. Keep Font Awesome icons where they already exist.
-82. Keep Quill as the rich text editor.
-83. Keep DOMPurify as the rich text sanitizer.
-84. Keep Supabase JS v2 as the backend client.
-85. Prefer DocumentFragment for repeated card rendering.
-86. Avoid repeated layout thrashing where practical.
-87. Use loading states while remote content is fetched.
-88. Use error states when Supabase requests fail.
-89. Keep the original page hierarchy intact.
-90. Treat this file as a production frontend, not a prototype.
-=====================================================================
-
-<!-- Mwamini source preservation note 0001: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0002: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0003: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0004: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0005: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0006: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0007: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0008: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0009: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0010: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0011: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0012: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0013: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0014: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0015: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0016: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0017: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0018: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0019: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0020: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0021: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0022: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0023: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0024: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0025: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0026: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0027: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0028: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0029: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0030: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0031: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0032: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0033: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0034: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0035: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0036: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0037: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0038: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0039: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0040: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0041: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0042: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0043: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0044: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0045: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0046: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0047: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0048: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0049: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0050: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0051: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0052: structure intentionally retained. -->
-<!-- Mwamini source preservation note 0053: structure intentionally retained. -->
 </body>
 </html>
