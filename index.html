@@ -1418,6 +1418,310 @@ cursor: pointer;
 .bg-update { background: var(--brand-blue) !important; }
 .stock-badge { max-width: calc(100% - 1rem); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
+
+/* ================================================================
+   MWAMINI V2 — VISUAL + FIXED ACTIONS + MEDIA RELIABILITY
+   Additive patch: preserves existing IDs, headings, rich text and
+   navigation while correcting layout behaviour.
+   ================================================================ */
+
+/* Fixed card geometry: text can change, action controls do not move. */
+.products-grid,
+.mechanization-grid,
+.farmer-help-grid,
+.order-project-grid {
+  align-items: stretch;
+}
+
+.product-card,
+.mech-card,
+.farmer-help-card,
+.order-project-card {
+  display: grid !important;
+  grid-template-rows: 49% minmax(0, 51%);
+  aspect-ratio: 1 / 1 !important;
+  height: auto !important;
+  min-height: 0 !important;
+}
+
+.product-media-container,
+.mech-media-container,
+.farmer-help-media-container,
+.order-project-media-container {
+  height: 100% !important;
+  min-height: 0 !important;
+  flex: none !important;
+  position: relative;
+}
+
+.product-content,
+.mech-content,
+.farmer-help-content,
+.order-project-content {
+  min-height: 0 !important;
+  height: 100% !important;
+  display: grid !important;
+  grid-template-rows: minmax(0, 1fr) auto auto !important;
+  overflow: hidden !important;
+}
+
+.product-content > div:first-child,
+.mech-content > div:first-child,
+.farmer-help-content > div:first-child,
+.order-project-content > div:first-child {
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+.product-actions,
+.mech-actions {
+  min-height: 64px;
+  max-height: 64px;
+  overflow: hidden;
+  margin: 0 !important;
+}
+
+.product-actions > div {
+  min-height: 30px;
+  height: 30px;
+}
+
+.product-card .product-footer,
+.mech-card .mech-footer,
+.farmer-help-card .farmer-help-footer,
+.order-project-card .order-project-footer {
+  min-height: 34px !important;
+  max-height: 34px !important;
+  height: 34px !important;
+  margin: 0 !important;
+  padding-top: .35rem !important;
+  overflow: hidden !important;
+  align-items: center !important;
+}
+
+.product-card .product-footer .btn,
+.mech-card .mech-footer .btn,
+.farmer-help-card .farmer-help-footer .btn,
+.order-project-card .order-project-footer .btn,
+.product-card .product-actions .btn,
+.mech-card .mech-actions .btn {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.product-card .interaction-bar,
+.farmer-help-card .interaction-bar,
+.mech-card .interaction-bar,
+.order-project-card .interaction-bar {
+  min-height: 28px;
+  height: 28px;
+  overflow: hidden;
+  flex-wrap: nowrap !important;
+}
+
+.product-card .interaction-btn,
+.farmer-help-card .interaction-btn,
+.mech-card .interaction-btn,
+.order-project-card .interaction-btn {
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Image reliability: image_url is an image contract even if the stored
+   object name has no extension. */
+.product-media-container img,
+.mech-media-container img,
+.farmer-help-media-container img,
+.order-project-media-container img {
+  object-fit: cover !important;
+  object-position: center !important;
+  background: #eef2f7;
+}
+
+.mwamini-media-fallback {
+  min-height: 100% !important;
+}
+
+/* Stronger visual hierarchy without changing existing content. */
+.hero-banner {
+  min-height: 470px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  isolation: isolate;
+}
+
+.hero-banner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 12% 25%, rgba(250,204,21,.24), transparent 14rem),
+    radial-gradient(circle at 88% 20%, rgba(236,72,153,.22), transparent 16rem),
+    radial-gradient(circle at 55% 85%, rgba(34,197,94,.20), transparent 18rem);
+  animation: mwaminiGlowShift 10s ease-in-out infinite alternate;
+}
+
+@keyframes mwaminiGlowShift {
+  from { transform: scale(1); opacity: .65; }
+  to { transform: scale(1.08); opacity: 1; }
+}
+
+/* Animated agricultural / community / digital scene. */
+.mwamini-hero-scene {
+  width: min(1180px, 100%);
+  margin: 1.8rem auto 0;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(70px, 1fr));
+  gap: .75rem;
+  align-items: end;
+  position: relative;
+  z-index: 2;
+}
+
+.mwamini-scene-item {
+  min-height: 92px;
+  border: 1px solid rgba(255,255,255,.24);
+  border-radius: 18px;
+  background: rgba(255,255,255,.10);
+  backdrop-filter: blur(8px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: .35rem;
+  color: #fff;
+  box-shadow: 0 10px 28px rgba(0,0,0,.12);
+  animation: mwaminiSceneFloat 4.5s ease-in-out infinite;
+}
+
+.mwamini-scene-item:nth-child(2) { animation-delay: .45s; }
+.mwamini-scene-item:nth-child(3) { animation-delay: .9s; }
+.mwamini-scene-item:nth-child(4) { animation-delay: 1.35s; }
+.mwamini-scene-item:nth-child(5) { animation-delay: 1.8s; }
+.mwamini-scene-item:nth-child(6) { animation-delay: 2.25s; }
+.mwamini-scene-item:nth-child(7) { animation-delay: 2.7s; }
+
+.mwamini-scene-item i {
+  font-size: 2rem;
+  filter: drop-shadow(0 4px 7px rgba(0,0,0,.18));
+}
+
+.mwamini-scene-item span {
+  font-size: .68rem;
+  font-weight: 800;
+  text-align: center;
+  line-height: 1.15;
+}
+
+.mwamini-scene-item:nth-child(1) i { color: #facc15; }
+.mwamini-scene-item:nth-child(2) i { color: #86efac; }
+.mwamini-scene-item:nth-child(3) i { color: #fde68a; }
+.mwamini-scene-item:nth-child(4) i { color: #f9a8d4; }
+.mwamini-scene-item:nth-child(5) i { color: #93c5fd; }
+.mwamini-scene-item:nth-child(6) i { color: #bbf7d0; }
+.mwamini-scene-item:nth-child(7) i { color: #fef08a; }
+
+@keyframes mwaminiSceneFloat {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-9px) rotate(.8deg); }
+}
+
+.mwamini-hero-orbit {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 72%;
+  height: 180px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  opacity: .35;
+  border: 1px dashed rgba(255,255,255,.35);
+  border-radius: 50%;
+  animation: mwaminiOrbit 16s linear infinite;
+}
+
+@keyframes mwaminiOrbit {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Account modal must always be usable and visible when requested. */
+#user-dashboard-modal.active {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  visibility: visible !important;
+}
+
+#user-dashboard-modal .modal-content {
+  max-height: 92vh !important;
+  overflow: hidden !important;
+}
+
+#user-dashboard-modal .dashboard-table-container {
+  max-height: 48vh;
+  overflow: auto;
+}
+
+/* Make My Account clearly interactive. */
+#user-nav .btn-primary {
+  position: relative;
+  z-index: 20;
+  pointer-events: auto !important;
+  cursor: pointer !important;
+}
+
+/* More visible Mechanization and Announcements navigation targets. */
+.nav-group button[onclick*="mechanization"],
+.nav-group button[onclick*="announcements"] {
+  position: relative;
+}
+.nav-group button[onclick*="mechanization"]::after,
+.nav-group button[onclick*="announcements"]::after {
+  content: "";
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  bottom: 3px;
+  height: 2px;
+  border-radius: 99px;
+  background: var(--brand-green);
+  transform: scaleX(0);
+  transition: transform .2s ease;
+}
+.nav-group button[onclick*="mechanization"]:hover::after,
+.nav-group button[onclick*="announcements"]:hover::after {
+  transform: scaleX(1);
+}
+
+@media (max-width: 900px) {
+  .mwamini-hero-scene {
+    grid-template-columns: repeat(4, minmax(70px, 1fr));
+  }
+  .mwamini-scene-item:nth-child(n+5) { display: none; }
+  .hero-banner { min-height: 430px; }
+}
+
+@media (max-width: 600px) {
+  .mwamini-hero-scene {
+    grid-template-columns: repeat(2, minmax(80px, 1fr));
+  }
+  .mwamini-scene-item:nth-child(n+5) { display: flex; }
+  .hero-banner { min-height: 520px; }
+  .product-card,
+  .mech-card,
+  .farmer-help-card,
+  .order-project-card {
+    grid-template-rows: 47% minmax(0, 53%);
+  }
+}
+
 </style>
 </head>
 <body>
@@ -1469,7 +1773,7 @@ onerror="this.onerror=null; this.src='https://via.placeholder.com/150x45?text=Mw
 </div>
 <div id="user-nav" class="user-nav-group" style="display:none;">
 <span id="auth-user-name" style="font-weight:600; font-size:0.875rem; margin-right: 0.5rem;"></span>
-<button onclick="openUserDashboard()" class="btn btn-primary"><i class="fa-solid fa-user"></i> My Account</button>
+<button type="button" onclick="mwaminiOpenAccount(); return false;" class="btn btn-primary"><i class="fa-solid fa-user"></i> My Account</button>
 <button onclick="logoutUser()" class="btn btn-danger-outline"><i class="fa-solid fa-right-from-bracket"></i></button>
 </div>
 <button onclick="window.location.href='login.html'" class="btn btn-outline" style="border:none; margin-left:1rem; opacity: 0.5;" title="Admin Access">
@@ -1484,7 +1788,17 @@ onerror="this.onerror=null; this.src='https://via.placeholder.com/150x45?text=Mw
 We are pleased to serve you with a carefully curated selection of high-quality products.
 Our commitment is to ensure every item meets strict standards of value and reliability, providing a smooth and satisfying experience that consistently exceeds expectations.
 </p>
-<div style="margin-top: 2.5rem;">
+<div class="mwamini-hero-scene" aria-label="Agriculture, mechanization, training, digital and printing activities">
+<div class="mwamini-hero-orbit"></div>
+<div class="mwamini-scene-item"><i class="fa-solid fa-tractor"></i><span>Tractor Power</span></div>
+<div class="mwamini-scene-item"><i class="fa-solid fa-seedling"></i><span>Modern Farming</span></div>
+<div class="mwamini-scene-item"><i class="fa-solid fa-gears"></i><span>Power Tiller</span></div>
+<div class="mwamini-scene-item"><i class="fa-solid fa-people-group"></i><span>Community Training</span></div>
+<div class="mwamini-scene-item"><i class="fa-solid fa-laptop-code"></i><span>Website Creation</span></div>
+<div class="mwamini-scene-item"><i class="fa-solid fa-print"></i><span>Printing Services</span></div>
+<div class="mwamini-scene-item"><i class="fa-solid fa-industry"></i><span>Pelletizer & Processing</span></div>
+</div>
+<div style="margin-top: 2rem; position:relative; z-index:3;">
 <button onclick="navigate('shop')" class="btn btn-primary" style="font-size: 1.1rem; padding: 1rem 2rem; border-radius: 50px;">
 <i class="fa-solid fa-cart-shopping"></i> Explore Our Catalog
 </button>
@@ -2470,18 +2784,66 @@ navigate('home');
 // ==========================================
 // USER DASHBOARD & ORDER MANAGEMENT
 // ==========================================
-function openUserDashboard() {
-if(!currentUserProfile) return;
-document.getElementById('dash-avatar').src = currentUserProfile.avatar_url || 'https://via.placeholder.com/100?text=Avatar';
-document.getElementById('dash-name').innerText = escapeHTML(currentUserProfile.full_name || 'N/A');
-document.getElementById('dash-email').innerText = escapeHTML(currentUser.email);
-document.getElementById('dash-phone').innerText = escapeHTML(currentUserProfile.phone || 'N/A');
-document.getElementById('dash-dest').innerText = escapeHTML(currentUserProfile.delivery_destination || 'N/A');
-document.getElementById('user-dashboard-modal').classList.add('active');
-loadUserOrders();
+async function openUserDashboard() {
+try {
+  if (!currentUser) {
+    openAuthModal('login');
+    return;
+  }
+
+  /* Recover profile state if navigation was rendered before the profile query finished. */
+  if (!currentUserProfile && window.supabase) {
+    const { data, error } = await window.supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', currentUser.id)
+      .single();
+    if (error) throw error;
+    currentUserProfile = data || {
+      full_name: currentUser.email,
+      phone: '',
+      delivery_destination: '',
+      avatar_url: ''
+    };
+  }
+
+  const profile = currentUserProfile || {};
+  const avatar = document.getElementById('dash-avatar');
+  const name = document.getElementById('dash-name');
+  const email = document.getElementById('dash-email');
+  const phone = document.getElementById('dash-phone');
+  const dest = document.getElementById('dash-dest');
+  const modal = document.getElementById('user-dashboard-modal');
+
+  if (!modal) throw new Error('My Account interface is unavailable.');
+
+  if (avatar) {
+    avatar.src = profile.avatar_url || 'https://via.placeholder.com/100?text=Avatar';
+    avatar.onerror = function() {
+      this.onerror = null;
+      this.src = 'https://via.placeholder.com/100?text=Avatar';
+    };
+  }
+  if (name) name.textContent = profile.full_name || 'N/A';
+  if (email) email.textContent = currentUser.email || 'N/A';
+  if (phone) phone.textContent = profile.phone || 'N/A';
+  if (dest) dest.textContent = profile.delivery_destination || 'N/A';
+
+  modal.classList.add('active');
+  modal.setAttribute('aria-hidden', 'false');
+
+  await loadUserOrders();
+} catch (error) {
+  console.error('My Account error:', error);
+  showToast(error.message || 'Unable to open My Account.', 'error');
+}
 }
 function closeUserDashboard() {
-document.getElementById('user-dashboard-modal').classList.remove('active');
+const modal = document.getElementById('user-dashboard-modal');
+if (modal) {
+  modal.classList.remove('active');
+  modal.setAttribute('aria-hidden', 'true');
+}
 }
 async function loadUserOrders() {
 const tbody = document.getElementById('user-orders-body');
@@ -3689,7 +4051,7 @@ showToast(`Language set to ${e.target.selectedOptions[0].text}. Reload required 
   function mediaMarkup(rawValue, options = {}) {
     const raw = cleanAssetValue(rawValue);
     const url = resolveAssetUrl(raw);
-    const type = detectAssetType(raw, options.mimeType || options.mediaType || "");
+    const type = detectAssetType(raw, options.mimeType || options.mediaType || "") || options.fallbackType || "unknown";
     const mode = options.mode || "card";
     const label = options.label || "Media asset";
     const className = options.className || "";
@@ -3783,7 +4145,7 @@ showToast(`Language set to ${e.target.selectedOptions[0].text}. Reload required 
       const card = document.createElement("article");
       card.className = "product-card";
       card.innerHTML = `${badgeHTML}
-        <div class="product-media-container">${mediaMarkup(mediaValue,{mimeType:mediaType,label:item.title || "Product image"})}</div>
+        <div class="product-media-container" data-mwamini-image-path="${escapeAttribute(mediaValue)}">${mediaMarkup(mediaValue,{mimeType:mediaType,fallbackType:"image",label:item.title || "Product image"})}</div>
         <div class="product-content">
           <div>
             <h4 class="product-title">${escapeHTML(item.title)} <i class="fa-solid fa-circle-check text-success" title="Verified Asset" style="font-size:.75rem;flex-shrink:0;"></i></h4>
@@ -3853,7 +4215,7 @@ showToast(`Language set to ${e.target.selectedOptions[0].text}. Reload required 
         const mediaValue = getMediaValue(a,["image_url","media_url","file_url","asset_url"]);
         const mediaType = getMediaValue(a,["mime_type","media_type","file_type"]);
         card.innerHTML = `<span class="stock-badge bg-update"><i class="fa-solid fa-tower-broadcast"></i> System Broadcast</span>
-          <div class="product-media-container">${mediaMarkup(mediaValue,{mimeType:mediaType,label:"Announcement media"})}</div>
+          <div class="product-media-container">${mediaMarkup(mediaValue,{mimeType:mediaType,fallbackType:"image",label:"Announcement media"})}</div>
           <div class="product-content">
             <div><h4 style="font-size:.68rem;margin:0 0 .35rem;color:var(--text-muted);font-weight:700;text-transform:uppercase;">${escapeHTML(dateStr)}</h4>
               <div style="font-size:.72rem;color:var(--text-main);line-height:1.4;max-height:4.2em;overflow:hidden;">${escapeHTML(richTextPreview(a.content,220))}</div></div>
@@ -4098,7 +4460,7 @@ showToast(`Language set to ${e.target.selectedOptions[0].text}. Reload required 
     const mediaContainer=document.getElementById("details-media");
     const mediaValue=getMediaValue(project,["image_url","media_url","file_url","asset_url"]);
     const mediaType=getMediaValue(project,["mime_type","media_type","file_type"]);
-    mediaContainer.innerHTML=mediaValue?mediaMarkup(mediaValue,{mimeType:mediaType,mode:"detail",label:project.title||"Project media"}):"";
+    mediaContainer.innerHTML=mediaValue?mediaMarkup(mediaValue,{mimeType:mediaType,fallbackType:"image",mode:"detail",label:project.title||"Project media"}):"";
     mediaContainer.style.display=mediaValue?"block":"none";
     document.getElementById("details-desc").innerHTML=DOMPurify.sanitize(project.description||"No detailed project information available.");
     document.getElementById("details-modal").classList.add("active");
@@ -4116,7 +4478,7 @@ showToast(`Language set to ${e.target.selectedOptions[0].text}. Reload required 
         const card=document.createElement("article");card.className="product-card";
         const dateSource=story.updated_at||story.created_at;const date=dateSource?new Date(dateSource).toLocaleDateString():"";
         card.innerHTML=`<span class="stock-badge bg-update"><i class="fa-solid fa-newspaper"></i> Story</span>
-          <div class="product-media-container">${mediaMarkup(mediaValue,{mimeType:mediaType,label:story.title||"Story media"})}</div>
+          <div class="product-media-container">${mediaMarkup(mediaValue,{mimeType:mediaType,fallbackType:"image",label:story.title||"Story media"})}</div>
           <div class="product-content"><div><h3 class="product-title">${escapeHTML(story.title||"Platform Story")}</h3>
           <div style="font-size:.66rem;color:var(--text-muted);margin-bottom:.3rem;">${escapeHTML(date)}</div>
           <div style="font-size:.72rem;color:var(--text-muted);line-height:1.4;max-height:4.2em;overflow:hidden;">${escapeHTML(richTextPreview(story.content,180))}</div></div>
@@ -4170,5 +4532,75 @@ showToast(`Language set to ${e.target.selectedOptions[0].text}. Reload required 
 })();
 
 </script>
+
+<script>
+/* ================================================================
+   MWAMINI V2 RUNTIME GUARD
+   ================================================================ */
+(function () {
+  "use strict";
+
+  /* Fix image_url records whose object names have no detectable extension. */
+  function forceImageMarkup(root) {
+    if (!root) return;
+    root.querySelectorAll(
+      ".product-media-container[data-mwamini-image-path], " +
+      ".mech-media-container[data-mwamini-image-path], " +
+      ".farmer-help-media-container[data-mwamini-image-path], " +
+      ".order-project-media-container[data-mwamini-image-path]"
+    ).forEach(function (box) {
+      if (box.querySelector("img,video,audio,iframe")) return;
+      var path = box.getAttribute("data-mwamini-image-path");
+      if (!path || !window.resolveAssetUrl) return;
+      var url = window.resolveAssetUrl(path);
+      if (!url) return;
+      var img = document.createElement("img");
+      img.src = url;
+      img.alt = "Mwamini media";
+      img.loading = "lazy";
+      img.decoding = "async";
+      img.style.cssText = "width:100%;height:100%;object-fit:cover;background:#eef2f7;";
+      img.onerror = function () {
+        this.onerror = null;
+        box.innerHTML =
+          '<div class="mwamini-media-fallback"><div>' +
+          '<i class="fa-solid fa-image"></i><strong>Image unavailable</strong>' +
+          '<div>Please open View Details to inspect the asset.</div></div></div>';
+      };
+      box.appendChild(img);
+    });
+  }
+
+  /* My Account must never fail silently. */
+  window.mwaminiOpenAccount = function () {
+    if (typeof window.openUserDashboard === "function") {
+      window.openUserDashboard();
+    } else {
+      console.error("openUserDashboard is not available.");
+      if (typeof window.openAuthModal === "function") window.openAuthModal("login");
+    }
+  };
+
+  document.addEventListener("DOMContentLoaded", function () {
+    forceImageMarkup(document);
+  });
+
+  /* Re-check after Supabase-rendered cards arrive. */
+  var observer = new MutationObserver(function () {
+    forceImageMarkup(document);
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
+
+  /* Keep My Account clickable even if another UI layer accidentally overlaps it. */
+  document.addEventListener("click", function (event) {
+    var accountButton = event.target.closest("#user-nav .btn-primary");
+    if (!accountButton) return;
+    event.preventDefault();
+    event.stopPropagation();
+    window.mwaminiOpenAccount();
+  }, true);
+})();
+</script>
+
 </body>
 </html>
