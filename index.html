@@ -3681,10 +3681,9 @@ showToast(`Language set to ${e.target.selectedOptions[0].text}. Reload required 
   function mediaFallbackMarkup(rawValue, label) {
     const safeLabel = escapeHTML(label || "Media asset");
     const href = resolveAssetUrl(rawValue);
-    const link = href ? `<a href="${escapeAttribute(href)}" target="_blank" rel="noopener noreferrer">Read document</a>` : "";
     return `<div class="mwamini-media-fallback" role="status"><div>
       <i class="fa-solid fa-triangle-exclamation"></i><strong>${safeLabel}</strong>
-      <div>Media preview unavailable.</div>${link}</div></div>`;
+      <div>Media preview unavailable.</div></div></div>`;
   }
   function mediaMarkup(rawValue, options = {}) {
     const raw = cleanAssetValue(rawValue);
@@ -3697,7 +3696,7 @@ showToast(`Language set to ${e.target.selectedOptions[0].text}. Reload required 
     if (!url) return mediaFallbackMarkup(raw, label);
 
     if (type === "image") {
-      const fit = mode === "detail" ? "contain" : "cover";
+      const fit = "contain";
       return `<img src="${escapedUrl}" alt="${escapeAttribute(label)}"
         loading="${mode === "detail" ? "eager" : "lazy"}" decoding="async" class="${className}"
         style="width:100%;height:100%;object-fit:${fit};background:var(--bg-primary);"
@@ -3705,7 +3704,7 @@ showToast(`Language set to ${e.target.selectedOptions[0].text}. Reload required 
     }
     if (type === "video") {
       return `<video src="${escapedUrl}" class="${className}" controls preload="metadata" playsinline
-        style="width:100%;height:100%;object-fit:${mode === "detail" ? "contain" : "cover"};background:#000;"
+        style="width:100%;height:100%;object-fit:contain;background:#000;"
         onerror="window.mwaminiHandleMediaError(event)"></video>`;
     }
     if (type === "audio") {
@@ -3713,17 +3712,11 @@ showToast(`Language set to ${e.target.selectedOptions[0].text}. Reload required 
         <audio controls preload="metadata" src="${escapedUrl}" style="width:100%;" onerror="window.mwaminiHandleMediaError(event)"></audio></div>`;
     }
     if (type === "pdf") {
-      if (mode === "detail") return `<iframe class="pdf-reader" src="${escapedUrl}" title="${escapeAttribute(label)}" loading="lazy"></iframe>`;
-      return `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--brand-green-soft);text-align:center;padding:.75rem;">
-        <div><i class="fa-solid fa-file-pdf" style="font-size:2rem;color:var(--brand-green);"></i>
-        <div style="font-weight:700;margin:.35rem 0;">PDF document</div>
-        <a class="btn btn-outline" href="${escapedUrl}" target="_blank" rel="noopener noreferrer">Read PDF</a></div></div>`;
+      return `<iframe class="pdf-reader" src="${escapedUrl}" title="${escapeAttribute(label)}" loading="lazy"></iframe>`;
     }
     if (type === "document") {
-      return `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--brand-blue-soft);text-align:center;padding:.75rem;">
-        <div><i class="fa-solid fa-file-lines" style="font-size:2rem;color:var(--brand-blue);"></i>
-        <div style="font-weight:700;margin:.35rem 0;">Attached file</div>
-        <a class="btn btn-outline" href="${escapedUrl}" target="_blank" rel="noopener noreferrer">Open File</a></div></div>`;
+      const viewerUrl = `https://docs.google.com/gview?embedded=1&url=${encodeURIComponent(url)}`;
+      return `<iframe class="document-reader" src="${escapeAttribute(viewerUrl)}" title="${escapeAttribute(label)}" loading="lazy"></iframe>`;
     }
     return mediaFallbackMarkup(url, label);
   }
@@ -4847,5 +4840,300 @@ window.initializeProjectCatalog=async function(){const r=await oldInitProject?.(
 })();
 </script>
 
+
+<style id="mwamini-final-repair-v4">
+/* Direct media preview: show the complete asset without cropping. */
+.product-media-container,
+.mech-media-container,
+.farmer-help-media-container,
+.order-project-media-container,
+#details-media{
+  overflow:hidden !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  background:var(--bg-primary) !important;
+}
+.product-media-container img,
+.product-media-container video,
+.mech-media-container img,
+.mech-media-container video,
+.farmer-help-media-container img,
+.farmer-help-media-container video,
+.order-project-media-container img,
+.order-project-media-container video{
+  width:100% !important;
+  height:100% !important;
+  object-fit:contain !important;
+  object-position:center !important;
+  background:var(--bg-primary) !important;
+}
+.pdf-reader,
+.document-reader{
+  width:100% !important;
+  height:100% !important;
+  min-height:150px !important;
+  border:0 !important;
+  display:block !important;
+  background:#fff !important;
+}
+#details-media .pdf-reader,
+#details-media .document-reader{
+  min-height:55vh !important;
+}
+.mwamini-account-direct-actions{
+  display:flex;flex-wrap:wrap;gap:.45rem;margin:.75rem 0 1rem;padding:.75rem;
+  border-radius:16px;background:linear-gradient(135deg,var(--brand-green-soft),var(--brand-blue-soft));
+  border:1px solid #bbf7d0;
+}
+.mwamini-account-direct-actions .btn{font-size:.72rem;padding:.42rem .62rem}
+#mwamini-terms-modal.active{opacity:1 !important;visibility:visible !important;pointer-events:auto !important}
+#mwamini-terms-modal .modal-content{max-height:88vh;overflow:auto}
+#mwamini-seamless-announcement{
+  width:100%;overflow:hidden;white-space:nowrap;min-height:42px;display:flex;align-items:center;
+}
+#mwamini-seamless-track{
+  display:flex;width:max-content;flex-shrink:0;will-change:transform;
+  animation:mwaminiSeamlessAnnouncement 48s linear infinite;
+}
+#mwamini-seamless-track:hover{animation-play-state:paused}
+.mwamini-seamless-item{
+  display:inline-flex;align-items:center;gap:.55rem;white-space:nowrap;
+  padding-right:7rem;font-size:.9rem;font-weight:700;
+}
+@keyframes mwaminiSeamlessAnnouncement{
+  from{transform:translateX(0)}
+  to{transform:translateX(-50%)}
+}
+@media (prefers-reduced-motion:reduce){
+  #mwamini-seamless-track{animation:none;transform:none}
+}
+</style>
+<script>
+(function(){
+  "use strict";
+
+  /* ============================================================
+     FINAL MEDIA REPAIR
+     All sections use the same direct media presentation.
+     ============================================================ */
+  function finalClean(v){return v==null?"":String(v).trim().replace(/^['"]|['"]$/g,"")}
+  function finalEscape(v){
+    if(typeof escapeHTML==="function")return escapeHTML(String(v??""));
+    return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+  }
+  function finalMediaValue(item){
+    if(!item)return "";
+    for(const k of ["image_url","media_url","file_url","asset_url"])if(item[k])return item[k];
+    return "";
+  }
+  function finalMediaType(item){
+    if(!item)return "";
+    for(const k of ["mime_type","media_type","file_type"])if(item[k])return item[k];
+    return "";
+  }
+  function finalResolve(raw){
+    raw=finalClean(raw);if(!raw)return "";
+    if(/^(data:|blob:|https?:\/\/)/i.test(raw))return raw;
+    if(/^\/\//.test(raw))return location.protocol+raw;
+    if(window.supabase?.storage){
+      const marker="/storage/v1/object/public/product-assets/";
+      if(raw.includes(marker))raw=raw.split(marker)[1];
+      raw=raw.replace(/^\/+/,"");
+      if(raw.startsWith("product-assets/"))raw=raw.slice("product-assets/".length);
+      try{
+        const r=window.supabase.storage.from("product-assets").getPublicUrl(decodeURIComponent(raw));
+        if(r?.data?.publicUrl)return r.data.publicUrl;
+      }catch(_){}
+    }
+    try{return new URL(raw,location.href).href}catch(_){return raw}
+  }
+  function finalType(raw,hint){
+    const s=(finalClean(raw)+" "+finalClean(hint)).toLowerCase();
+    if(s.includes("image/")||/\.(jpg|jpeg|png|gif|webp|svg|avif|bmp)([?#]|$)/i.test(s))return"image";
+    if(s.includes("video/")||/\.(mp4|webm|ogv|mov|m4v)([?#]|$)/i.test(s))return"video";
+    if(s.includes("audio/")||/\.(mp3|wav|m4a|aac|flac|ogg)([?#]|$)/i.test(s))return"audio";
+    if(s.includes("pdf")||/\.pdf([?#]|$)/i.test(s))return"pdf";
+    if(/\.(doc|docx|txt|rtf|xls|xlsx|csv|ppt|pptx)([?#]|$)/i.test(s)||s.includes("wordprocessingml")||s.includes("spreadsheetml")||s.includes("presentationml"))return"document";
+    return"unknown";
+  }
+  window.mwaminiFinalMediaMarkup=function(item,label){
+    const raw=finalMediaValue(item),url=finalResolve(raw),type=finalType(raw,finalMediaType(item)),safe=finalEscape(label||"Media");
+    if(!url)return `<div class="mwamini-media-fallback"><div><i class="fa-solid fa-image"></i><strong>${safe}</strong><div>Media preview unavailable.</div></div></div>`;
+    const u=finalEscape(url);
+    if(type==="image")return `<img src="${u}" alt="${safe}" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:contain;object-position:center;background:var(--bg-primary)" onerror="this.onerror=null;this.closest('[class*=&quot;media-container&quot;]')?.replaceChildren()">`;
+    if(type==="video")return `<video src="${u}" controls preload="metadata" playsinline style="width:100%;height:100%;object-fit:contain;background:#000"></video>`;
+    if(type==="audio")return `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:1rem"><audio src="${u}" controls style="width:100%"></audio></div>`;
+    if(type==="pdf")return `<iframe class="pdf-reader" src="${u}" title="${safe}" loading="lazy"></iframe>`;
+    if(type==="document"){
+      const viewer="https://docs.google.com/gview?embedded=1&url="+encodeURIComponent(url);
+      return `<iframe class="document-reader" src="${finalEscape(viewer)}" title="${safe}" loading="lazy"></iframe>`;
+    }
+    return `<div class="mwamini-media-fallback"><div><i class="fa-solid fa-file"></i><strong>${safe}</strong><div>Preview unavailable for this file type.</div></div></div>`;
+  };
+
+  /* Re-render these four requested sections with the same direct media renderer. */
+  function rerenderMediaSection(containerId,list,kind){
+    const c=document.getElementById(containerId);if(!c||!Array.isArray(list))return;
+    c.querySelectorAll(".mwamini-direct-media-card").forEach(x=>x.remove());
+    const oldCards=[...c.children].filter(x=>!x.classList.contains("mwamini-direct-media-card"));
+    // Existing renderers are retained; this only replaces the media inside their cards.
+    oldCards.forEach(card=>{
+      const media=card.querySelector(".product-media-container,.farmer-help-media-container,.mech-media-container,.order-project-media-container");
+      if(!media)return;
+      const title=card.querySelector("h3,h4,.product-title,.farmer-help-title,.mech-title,.order-project-title")?.textContent||"Media";
+      const item=list.find(x=>String(x.title||"")===String(title).trim()||String(x.name||"")===String(title).trim());
+      if(item)media.innerHTML=window.mwaminiFinalMediaMarkup(item,title);
+    });
+  }
+
+  /* Stronger solution: patch the active global renderers while preserving their cards/buttons/content. */
+  const originalAnnouncementRender=window.fetchAnnouncements;
+  window.fetchAnnouncements=async function(){
+    const result=await originalAnnouncementRender?.();
+    window.renderMwaminiSeamlessAnnouncements();
+    return result;
+  };
+
+  window.renderMwaminiSeamlessAnnouncements=function(){
+    const banner=document.getElementById("dynamic-announcement");
+    const list=Array.isArray(window.localAnnouncementsCache||localAnnouncementsCache)?(window.localAnnouncementsCache||localAnnouncementsCache):[];
+    if(!banner||!list.length){if(banner){banner.classList.remove("active");banner.innerHTML=""}return}
+    const items=list.slice(0,8).map((a,i)=>{
+      const raw=DOMPurify.sanitize(a.content||"").replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim();
+      return `<span class="mwamini-seamless-item"><strong>${i===0?"New updates: ":""}</strong><i class="fa-solid fa-bullhorn"></i>${finalEscape(raw)}</span>`;
+    }).join("");
+    // The exact same sequence is duplicated, so the second half begins where the first half ends.
+    banner.innerHTML=`<div id="mwamini-seamless-announcement"><div id="mwamini-seamless-track">${items}${items}</div></div>`;
+    banner.classList.add("active");
+  };
+
+  /* ============================================================
+     MY ACCOUNT — standalone robust opener
+     Does not depend on the earlier wrapper being initialised.
+     ============================================================ */
+  window.mwaminiOpenMyAccount=async function(){
+    try{
+      if(!currentUser&&window.supabase){
+        const session=await window.supabase.auth.getSession();
+        currentUser=session?.data?.session?.user||null;
+      }
+      if(!currentUser){openAuthModal("login");showToast("Please sign in to open My Account.","warning");return}
+      if(!currentUserProfile&&window.supabase){
+        const r=await window.supabase.from("profiles").select("*").eq("id",currentUser.id).maybeSingle();
+        currentUserProfile=r?.data||{};
+      }
+      const modal=document.getElementById("user-dashboard-modal");
+      if(!modal)throw new Error("My Account interface is unavailable.");
+      const p=currentUserProfile||{};
+      const set=(id,val)=>{const e=document.getElementById(id);if(e)e.textContent=val||"N/A"};
+      const avatar=document.getElementById("dash-avatar");
+      if(avatar){avatar.src=p.avatar_url||"https://via.placeholder.com/100?text=Avatar";avatar.onerror=function(){this.onerror=null;this.src="https://via.placeholder.com/100?text=Avatar"}}
+      set("dash-name",p.full_name||currentUser.user_metadata?.full_name||currentUser.email);
+      set("dash-email",currentUser.email);
+      set("dash-phone",p.phone);
+      set("dash-dest",p.delivery_destination||p.location);
+
+      let actions=document.getElementById("mwamini-account-direct-actions");
+      const header=modal.querySelector(".modal-content > div:first-child");
+      if(!actions&&header){
+        actions=document.createElement("div");actions.id="mwamini-account-direct-actions";actions.className="mwamini-account-direct-actions";
+        actions.innerHTML=`<button type="button" class="btn btn-primary" onclick="closeUserDashboard();navigate('home')"><i class="fa-solid fa-house"></i> Home</button>
+          <button type="button" class="btn btn-outline" onclick="loadUserOrders()"><i class="fa-solid fa-boxes-stacked"></i> My Orders</button>
+          <button type="button" class="btn btn-outline" onclick="closeUserDashboard();navigate('announcements')"><i class="fa-solid fa-seedling"></i> Agriculture Updates</button>
+          <button type="button" class="btn btn-danger-outline" onclick="logoutUser()"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+          <button type="button" class="btn btn-danger-outline" onclick="mwaminiEmergencyLogout()"><i class="fa-solid fa-triangle-exclamation"></i> Emergency Logout</button>`;
+        header.appendChild(actions);
+      }
+      modal.classList.add("active");modal.setAttribute("aria-hidden","false");
+      await window.loadUserOrders?.();
+      const updateBox=document.getElementById("mwamini-account-updates");
+      if(updateBox){
+        const list=Array.isArray(localAnnouncementsCache)?localAnnouncementsCache.slice(0,4):[];
+        updateBox.innerHTML=list.map(a=>`<div class="mwamini-account-update"><strong>${finalEscape(a.title||"New agriculture update")}</strong><span>${finalEscape(DOMPurify.sanitize(a.content||"").replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim().slice(0,120))}</span></div>`).join("");
+      }
+    }catch(e){console.error("My Account:",e);showToast(e.message||"My Account could not be opened.","error")}
+  };
+  // Replace the button handler itself so it cannot hit the old broken wrapper.
+  document.addEventListener("click",function(e){
+    const btn=e.target.closest("#user-nav button.btn-primary");
+    if(btn){
+      e.preventDefault();e.stopImmediatePropagation();window.mwaminiOpenMyAccount();
+    }
+  },true);
+
+  /* ============================================================
+     TERMS & CONDITIONS — functional modal
+     ============================================================ */
+  function ensureTermsModal(){
+    if(document.getElementById("mwamini-terms-modal"))return;
+    const wrap=document.createElement("div");wrap.innerHTML=`<div class="modal" id="mwamini-terms-modal" aria-hidden="true">
+      <div class="modal-content">
+        <button type="button" class="close-modal-btn" onclick="window.closeMwaminiTerms()"><i class="fa-solid fa-xmark"></i></button>
+        <div style="text-align:center;margin-bottom:1rem">
+          <div style="width:58px;height:58px;margin:0 auto .7rem;border-radius:18px;display:grid;place-items:center;background:var(--brand-green-soft);color:var(--brand-green);font-size:1.5rem"><i class="fa-solid fa-file-contract"></i></div>
+          <h2 style="color:var(--brand-green-deep);margin:0">Terms & Conditions</h2>
+        </div>
+        <div style="line-height:1.75;color:var(--text-main);font-size:.9rem">
+          <p><strong>Platform use:</strong> Mwamini Innovative & Public Solution Portal provides access to trading, logistics, agricultural mechanization, farmer support, project and digital services.</p>
+          <p><strong>Account responsibility:</strong> Users are responsible for the accuracy of information supplied to the platform and for keeping their account credentials secure.</p>
+          <p><strong>Orders and requests:</strong> Orders, bookings and service requests are submitted for processing and may be subject to availability, confirmation and administrative review.</p>
+          <p><strong>Community content:</strong> Public messages, files and other contributions must be lawful, respectful and relevant to the platform. Users may edit, hide or delete their own public messages where supported.</p>
+          <p><strong>Media and documents:</strong> Uploaded or published media may be displayed directly inside the platform where the browser supports the file format.</p>
+          <p><strong>Privacy and security:</strong> The platform is designed to maintain secure customer data management and authenticated access to account functions.</p>
+        </div>
+        <button type="button" class="btn btn-primary" style="width:100%;margin-top:1rem" onclick="window.closeMwaminiTerms()">Close</button>
+      </div></div>`;
+    document.body.appendChild(wrap.firstElementChild);
+  }
+  window.openMwaminiTerms=function(){ensureTermsModal();const m=document.getElementById("mwamini-terms-modal");m.classList.add("active");m.setAttribute("aria-hidden","false")};
+  window.closeMwaminiTerms=function(){const m=document.getElementById("mwamini-terms-modal");if(m){m.classList.remove("active");m.setAttribute("aria-hidden","true")}};
+  document.addEventListener("click",function(e){
+    const a=e.target.closest("a");
+    if(a&&/terms\s*&\s*conditions/i.test(a.textContent||"")){
+      e.preventDefault();e.stopImmediatePropagation();window.openMwaminiTerms();
+    }
+  },true);
+
+  /* Fix media in already-rendered cards after every fetch/navigation. */
+  function fixVisibleMedia(){
+    const sections=[
+      ["public-announcements-container",window.localAnnouncementsCache||localAnnouncementsCache],
+      ["stories-container",window.localStoriesCache||localStoriesCache],
+      ["farmer-help-container",window.localFarmerHelpCache||localFarmerHelpCache],
+      ["order-project-container",window.localProjectsCache||localProjectsCache],
+      ["mechanization-container",window.localMechanizationCache||localMechanizationCache],
+      ["products-container",window.localProductsCache||localProductsCache]
+    ];
+    sections.forEach(([id,list])=>{
+      const c=document.getElementById(id);if(!c||!Array.isArray(list))return;
+      [...c.querySelectorAll(".product-card,.farmer-help-card,.order-project-card,.mech-card")].forEach(card=>{
+        const title=(card.querySelector(".product-title,.farmer-help-title,.order-project-title,.mech-title,h3,h4")?.textContent||"").trim();
+        const item=list.find(x=>String(x.title||"").trim()===title);
+        const media=card.querySelector(".product-media-container,.farmer-help-media-container,.order-project-media-container,.mech-media-container");
+        if(item&&media)media.innerHTML=window.mwaminiFinalMediaMarkup(item,title);
+      });
+    });
+  }
+
+  // Ensure the existing My Account button is replaced after DOM load.
+  function finalBoot(){
+    ensureTermsModal();
+    try{window.renderMwaminiSeamlessAnnouncements()}catch(_){}
+    setTimeout(fixVisibleMedia,150);
+  }
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",finalBoot,{once:true});
+  else finalBoot();
+
+  // Keep announcements looping continuously when realtime updates arrive.
+  if(window.supabase){
+    try{
+      window.supabase.channel("mwamini-final-announcement-loop")
+        .on("postgres_changes",{event:"*",schema:"public",table:"announcements"},()=>setTimeout(()=>window.renderMwaminiSeamlessAnnouncements(),100))
+        .subscribe();
+    }catch(_){}
+  }
+})();
+</script>
 </body>
 </html>
