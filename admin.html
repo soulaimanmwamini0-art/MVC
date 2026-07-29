@@ -544,6 +544,17 @@
                     <h3 class="mb-4">System Telemetry & Operational Flow</h3>
                     <div style="height: 350px; width: 100%;">
                         <canvas id="mainTelemetryChart"></canvas>
+<div class="card mt-8">
+  <div class="flex justify-between items-center mb-4" style="gap:1rem;flex-wrap:wrap;">
+    <div>
+      <h3 class="text-primary"><i class="fa-solid fa-chart-column"></i> Order Amount Analysis</h3>
+      <p class="text-sm text-muted">Order value = unit amount × requested quantity.</p>
+    </div>
+    <button class="btn btn-outline" onclick="mwaminiRenderAmountChart()"><i class="fa-solid fa-rotate"></i> Refresh</button>
+  </div>
+  <div style="height:300px;position:relative;"><canvas id="mwaminiOrderAmountChart"></canvas></div>
+</div>
+
                     </div>
                 </div>
             </section>
@@ -991,6 +1002,27 @@
 
             <!-- FARMER HELP PORTAL -->
             <section id="farmer-help-view" class="tab-content">
+
+<div class="card mb-8 mwamini-service-request-inbox" style="border:1px solid #bbf7d0;">
+  <div class="flex justify-between items-center mb-6" style="gap:1rem;flex-wrap:wrap;">
+    <div>
+      <h3 class="text-primary"><i class="fa-solid fa-inbox"></i> User Service Requests</h3>
+      <p class="text-sm text-muted">Project Service Request and Farmer Assistance Request submissions from the public portal.</p>
+    </div>
+    <div class="flex gap-2" style="flex-wrap:wrap;">
+      <select class="form-control mwamini-request-filter" style="width:auto;">
+        <option value="All">All Requests</option>
+        <option value="Project Request">Project Service Requests</option>
+        <option value="Farmer Help Request">Farmer Assistance Requests</option>
+      </select>
+      <button class="btn btn-outline mwamini-request-refresh"><i class="fa-solid fa-rotate"></i> Refresh</button>
+      <button class="btn btn-success" onclick="mwaminiExportServiceRequestsExcel()"><i class="fa-solid fa-file-excel"></i> Excel</button>
+    </div>
+  </div>
+  <div class="mwamini-service-request-list"></div>
+</div>
+
+
                 <div class="flex justify-between items-center mb-8">
                     <div>
                         <h2 class="text-success">Farmer Help Publishing Node</h2>
@@ -1108,6 +1140,27 @@
 
             <!-- ORDER PROJECT OPS -->
             <section id="order-project-view" class="tab-content">
+
+<div class="card mb-8 mwamini-service-request-inbox" style="border:1px solid #bbf7d0;">
+  <div class="flex justify-between items-center mb-6" style="gap:1rem;flex-wrap:wrap;">
+    <div>
+      <h3 class="text-primary"><i class="fa-solid fa-inbox"></i> User Service Requests</h3>
+      <p class="text-sm text-muted">Project Service Request and Farmer Assistance Request submissions from the public portal.</p>
+    </div>
+    <div class="flex gap-2" style="flex-wrap:wrap;">
+      <select class="form-control mwamini-request-filter" style="width:auto;">
+        <option value="All">All Requests</option>
+        <option value="Project Request">Project Service Requests</option>
+        <option value="Farmer Help Request">Farmer Assistance Requests</option>
+      </select>
+      <button class="btn btn-outline mwamini-request-refresh"><i class="fa-solid fa-rotate"></i> Refresh</button>
+      <button class="btn btn-success" onclick="mwaminiExportServiceRequestsExcel()"><i class="fa-solid fa-file-excel"></i> Excel</button>
+    </div>
+  </div>
+  <div class="mwamini-service-request-list"></div>
+</div>
+
+
                 <div class="flex justify-between items-center mb-8">
                     <div>
                         <h2 class="text-special">Project Orchestration Center</h2>
@@ -3033,6 +3086,163 @@ function boot(){
 }
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});
 else boot();
+
+})();
+</script>
+
+
+<script id="mwamini-v8-final-integration">
+(function(){
+"use strict";
+
+const REQUEST_TABLE="inquiries";
+let mwRequests=[];
+
+function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));}
+function plain(v){return String(v??"").replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim();}
+function requestType(r){return r.category==="Project Request"?"Project Request":(r.category==="Farmer Help Request"?"Farmer Help Request":null);}
+function field(message,label){
+  const re=new RegExp("<strong>\\s*"+label+"\\s*:\\s*</strong>\\s*([^<]*)","i");
+  const m=String(message||"").match(re); return m?plain(m[1]):"";
+}
+function budget(message){
+  const x=field(message,"Budget").replace(/,/g,"").match(/[-+]?\d*\.?\d+/);
+  return x?Number(x[0]):0;
+}
+function currency(message){
+  const x=field(message,"Budget").trim().split(/\s+/); return x[x.length-1]||"RWF";
+}
+function attachments(r){
+  const keys=["image_url","media_url","file_url","attachment_url","photo_url","asset_url","document_url","screenshot_url"];
+  let urls=keys.map(k=>r[k]).filter(v=>typeof v==="string"&&v.trim());
+  urls=urls.concat((String(r.message||"").match(/https?:\/\/[^"' <>)]+/gi)||[]));
+  return [...new Set(urls)];
+}
+function media(r){
+  const urls=attachments(r);
+  if(!urls.length)return '<span class="text-xs text-muted">No attachment</span>';
+  return urls.map((u,i)=>{
+    const s=esc(u), l=u.split("?")[0].toLowerCase();
+    if(/\.(jpg|jpeg|png|gif|webp|avif|svg|bmp)$/i.test(l))
+      return `<a href="${s}" target="_blank" rel="noopener"><img src="${s}" title="Open image" style="width:68px;height:68px;object-fit:contain;border:1px solid var(--border-color);border-radius:8px;background:#f8fafc;"></a>`;
+    if(/\.(mp4|webm|mov|m4v)$/i.test(l))
+      return `<video src="${s}" controls style="width:95px;height:68px;object-fit:contain;border-radius:8px;background:#071a0e;"></video>`;
+    return `<a class="btn btn-outline" href="${s}" target="_blank" rel="noopener"><i class="fa-solid fa-file"></i> Open file ${i+1}</a>`;
+  }).join("");
+}
+
+async function loadRequests(){
+  if(!window.supabase)return;
+  const hosts=[...document.querySelectorAll(".mwamini-service-request-list")];
+  hosts.forEach(h=>h.innerHTML='<div class="p-6 text-center text-muted"><i class="fa-solid fa-spinner fa-spin"></i> Loading requests…</div>');
+  try{
+    const {data,error}=await window.supabase.from(REQUEST_TABLE).select("*").order("created_at",{ascending:false}).limit(1000);
+    if(error)throw error;
+    mwRequests=(data||[]).filter(r=>requestType(r));
+    renderRequests();
+  }catch(e){
+    hosts.forEach(h=>h.innerHTML=`<div class="p-6 text-center text-muted">Could not load requests: ${esc(e.message||"Database error")}</div>`);
+  }
+}
+function renderRequests(){
+  document.querySelectorAll(".mwamini-service-request-inbox").forEach(box=>{
+    const filter=box.querySelector(".mwamini-request-filter")?.value||"All";
+    const rows=mwRequests.filter(r=>filter==="All"||requestType(r)===filter);
+    const host=box.querySelector(".mwamini-service-request-list");
+    if(!rows.length){host.innerHTML='<div class="p-8 text-center text-muted">No requests found.</div>';return;}
+    host.innerHTML=`<div class="table-container"><table class="data-table"><thead><tr>
+      <th>Type</th><th>Requester</th><th>Service / Help</th><th>Details</th><th>Budget</th><th>Photo / File</th><th>Status</th><th>Action</th>
+    </tr></thead><tbody>${rows.map(r=>{
+      const b=budget(r.message);
+      return `<tr>
+        <td><span class="badge">${esc(requestType(r))}</span></td>
+        <td><strong>${esc(r.name||"Unknown")}</strong><div class="text-xs text-muted">${esc(r.email||"")}</div><div class="text-xs text-muted">${esc(r.phone||"")}</div></td>
+        <td><strong>${esc(r.subject||"—")}</strong><div class="text-xs text-muted">${esc(field(r.message,"Needed date"))}</div></td>
+        <td style="max-width:300px;white-space:normal"><div class="text-xs">${esc(plain(r.message).slice(0,550))}</div></td>
+        <td><strong>${b.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</strong> ${esc(currency(r.message))}</td>
+        <td>${media(r)}</td>
+        <td><select class="form-control text-xs" style="width:auto" onchange="mwaminiUpdateRequestStatus('${esc(r.id)}',this.value)">
+          ${["Pending","Processing","Approved","Completed","Rejected"].map(s=>`<option ${String(r.status||"Pending")===s?"selected":""}>${s}</option>`).join("")}
+        </select></td>
+        <td><button class="btn btn-danger btn-icon" onclick="mwaminiDeleteServiceRequest('${esc(r.id)}')" title="Delete"><i class="fa-solid fa-trash"></i></button></td>
+      </tr>`;
+    }).join("")}</tbody></table></div>`;
+  });
+}
+window.mwaminiLoadServiceRequests=loadRequests;
+window.mwaminiUpdateRequestStatus=async function(id,status){
+  const {error}=await window.supabase.from(REQUEST_TABLE).update({status}).eq("id",id);
+  if(error){showToast(error.message||"Status update failed.","error");return;}
+  showToast("Request status updated.","success");loadRequests();
+};
+window.mwaminiDeleteServiceRequest=async function(id){
+  if(!confirm("Delete this request permanently?"))return;
+  const {error}=await window.supabase.from(REQUEST_TABLE).delete().eq("id",id);
+  if(error){showToast(error.message||"Delete failed.","error");return;}
+  showToast("Request deleted.","success");loadRequests();
+};
+window.mwaminiExportServiceRequestsExcel=function(){
+  if(!window.XLSX){showToast("Excel library unavailable.","error");return;}
+  if(!mwRequests.length){showToast("No requests to export.","warning");return;}
+  const rows=mwRequests.map(r=>({
+    type:requestType(r),name:r.name||"",email:r.email||"",phone:r.phone||"",
+    service_or_help:r.subject||"",needed_date:field(r.message,"Needed date"),
+    budget:budget(r.message),currency:currency(r.message),
+    location:field(r.message,"Location"),details:field(r.message,"Details"),
+    status:r.status||"Pending",created_at:r.created_at||"",user_id:r.user_id||""
+  }));
+  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(rows),"Service Requests");
+  XLSX.writeFile(wb,`Mwamini_Service_Requests_${Date.now()}.xlsx`);
+};
+
+/* Correct financial semantics: price is the unit amount; value is unit amount × quantity. */
+function unitPrice(o){return Number(o.price??o.unit_price??o.item_price??o.product_price??o.amount??0)||0;}
+function qty(o){const q=parseInt(o.quantity??o.qty??o.requested_quantity??1,10);return q>0?q:1;}
+function orderValue(o){return unitPrice(o)*qty(o);}
+window.mwaminiOrderValue=orderValue;
+
+const originalRender=window.renderOrdersTable;
+if(typeof originalRender==="function"){
+  window.renderOrdersTable=function(){
+    originalRender.apply(this,arguments);
+    const tbody=document.getElementById("admin-orders-list");
+    if(!tbody||!Array.isArray(window.rawOrdersCache))return;
+    const search=(document.getElementById("order-search")?.value||"").toLowerCase();
+    const type=document.getElementById("order-type-filter")?.value||"All";
+    const status=document.getElementById("order-status-filter")?.value||"All";
+    const filtered=window.rawOrdersCache.filter(o=>
+      (!search||String(o.id||"").toLowerCase().includes(search)||String(o.item_name||o.title||"").toLowerCase().includes(search)||String(o.user_id||"").toLowerCase().includes(search)) &&
+      (type==="All"||o.order_type===type)&&(status==="All"||o.status===status)
+    );
+    [...tbody.querySelectorAll("tr")].forEach((tr,i)=>{
+      const o=filtered[i];if(!o)return;
+      const cell=tr.querySelectorAll("td")[3];if(!cell)return;
+      cell.innerHTML=`<strong class="text-success">$${orderValue(o).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</strong>
+      <div class="text-xs text-muted">Unit: $${unitPrice(o).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})} × Qty: ${qty(o)}</div>`;
+    });
+  };
+}
+
+/* Bar chart uses amount, not number of orders. */
+window.mwaminiRenderAmountChart=function(){
+  const c=document.getElementById("mwaminiOrderAmountChart");if(!c||!window.Chart)return;
+  const orders=Array.isArray(window.rawOrdersCache)?window.rawOrdersCache:[];
+  const days=[...Array(7)].map((_,i)=>{const d=new Date();d.setDate(d.getDate()-i);return d.toISOString().slice(0,10)}).reverse();
+  const values=days.map(day=>orders.filter(o=>String(o.created_at||"").startsWith(day)).reduce((s,o)=>s+orderValue(o),0));
+  if(window.mwaminiAmountChart)window.mwaminiAmountChart.destroy();
+  window.mwaminiAmountChart=new Chart(c.getContext("2d"),{
+    type:"bar",data:{labels:days,datasets:[{label:"Order Amount",data:values,borderWidth:1}]},
+    options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:true,title:{display:true,text:"Amount"}},x:{title:{display:true,text:"Date"}}}}
+  });
+};
+
+function boot(){
+  document.querySelectorAll(".mwamini-request-filter").forEach(x=>x.addEventListener("change",renderRequests));
+  document.querySelectorAll(".mwamini-request-refresh").forEach(x=>x.addEventListener("click",loadRequests));
+  loadRequests();
+  setTimeout(()=>{try{mwaminiRenderAmountChart()}catch(_){}},900);
+}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
 
 })();
 </script>
