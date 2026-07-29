@@ -1,6 +1,6 @@
 // supabase-config.js
-const SUPABASE_URL = "https://bkyyenirpeznjkmmcutf.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJreXllbmlycGV6bmprbW1jdXRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUwMTE0NjcsImV4cCI6MjEwMDU4NzQ2N30.eO3D4_s3FgHM8Be1FSyhIGNGK7WPWJKpRNPp99kNyTc";
+const SUPABASE_URL = "https://yqiezkgjdzdafyuduqvu.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlxaWV6a2dqZHpkYWZ5dWR1cXZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzMDEzMjQsImV4cCI6MjEwMDg3NzMyNH0.gzVOkhJPe0Uvu74oHHdt742Eaa8jOVNmK-lfkwjeM1E";
 
 try {
     const configOptions = {
