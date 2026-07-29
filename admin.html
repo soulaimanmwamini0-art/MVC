@@ -453,10 +453,6 @@
             <button class="nav-item" data-target="payments-view">
                 <i class="fa-solid fa-money-bill-transfer"></i><span>Payment Gateways</span>
             </button>
-            
-            <button class="nav-item" data-target="contacts-view">
-                <i class="fa-solid fa-address-book"></i><span>Contact & Socials</span>
-            </button>
         </aside>
 
         <main class="admin-content-area">
@@ -468,9 +464,14 @@
                         <h2 class="text-primary">Core Analytics Ecosystem</h2>
                         <p>Real-time system telemetry, transactional volumes, and global operational metrics.</p>
                     </div>
-                    <button class="btn btn-outline" onclick="loadAnalyticsDashboard()">
-                        <i class="fa-solid fa-rotate-right"></i> Sync Data
-                    </button>
+                    <div class="flex gap-2" style="flex-wrap:wrap;">
+                        <button class="btn btn-outline" onclick="loadAnalyticsDashboard()">
+                            <i class="fa-solid fa-rotate-right"></i> Sync Data
+                        </button>
+                        <button class="btn btn-success" onclick="mwaminiExportAllExcel()">
+                            <i class="fa-solid fa-file-excel"></i> Export All Excel
+                        </button>
+                    </div>
                 </div>
 
                 <div class="stat-grid">
@@ -795,8 +796,8 @@
                         
                         <div class="flex gap-4">
                             <div class="form-group" style="flex: 2; margin: 0;">
-                                <label class="form-label">Marquee Sentence Segment (Short & Direct)</label>
-                                <input type="text" id="announce-sentence" class="form-control" placeholder="e.g. System upgrade scheduled for 0200h UTC." required>
+                                <label class="form-label">Announcement Title / Short Label (Optional)</label>
+                                <input type="text" id="announce-sentence" class="form-control" placeholder="Optional title or short label.">
                             </div>
                             <div class="form-group" style="flex: 1; margin: 0;">
                                 <label class="form-label">Broadcast Type</label>
@@ -814,8 +815,8 @@
                             </div>
                         </div>
 
-                        <div class="form-group mt-4 hidden" id="announce-full-text-container">
-                            <label class="form-label">Card Extended Payload (Only for Card Type)</label>
+                        <div class="form-group mt-4" id="announce-full-text-container">
+                            <label class="form-label">Announcement Description / Full Content (Rich Text)</label>
                             <div id="announce-text-editor"></div>
                         </div>
                         
@@ -955,9 +956,14 @@
                             <i class="fa-solid fa-shield-check"></i> System Rule Updated: Terms & Conditions mandatory for auth. Manual avatar configuration enforced.
                         </div>
                     </div>
-                    <button class="btn btn-primary" onclick="openUserFormModal()">
-                        <i class="fa-solid fa-user-plus"></i> Provision New Identity
-                    </button>
+                    <div class="flex gap-2" style="flex-wrap:wrap;">
+                        <button class="btn btn-success" onclick="mwaminiExportUsersExcel()">
+                            <i class="fa-solid fa-file-excel"></i> Export Users
+                        </button>
+                        <button class="btn btn-primary" onclick="openUserFormModal()">
+                            <i class="fa-solid fa-user-plus"></i> Provision New Identity
+                        </button>
+                    </div>
                 </div>
 
                 <div class="card mb-6">
@@ -1264,6 +1270,37 @@
                             </form>
                         </div>
                     </div>
+
+                </div>
+
+                <div class="card mt-8" id="mwamini-admin-public-chat-panel">
+                    <div class="flex justify-between items-center mb-4" style="gap:1rem;flex-wrap:wrap;">
+                        <div>
+                            <h3 class="text-primary" style="margin-bottom:.25rem;">
+                                <i class="fa-solid fa-earth-africa"></i> Public Chat Community
+                            </h3>
+                            <p class="text-sm text-muted">Registered users, public messages, media and moderation controls.</p>
+                        </div>
+                        <div class="flex gap-2" style="flex-wrap:wrap;">
+                            <button class="btn btn-outline" onclick="mwaminiLoadPublicChatAdmin()">
+                                <i class="fa-solid fa-rotate"></i> Refresh
+                            </button>
+                            <button class="btn btn-danger" onclick="mwaminiDeleteAllPublicChat()">
+                                <i class="fa-solid fa-trash-can"></i> Clear Public Chat
+                            </button>
+                        </div>
+                    </div>
+                    <div style="display:grid;grid-template-columns:minmax(240px,.75fr) minmax(0,1.7fr);gap:1rem;">
+                        <div style="border:1px solid var(--border-color);border-radius:var(--radius-md);overflow:auto;max-height:460px;">
+                            <div style="padding:.75rem 1rem;font-weight:800;background:var(--bg-primary);border-bottom:1px solid var(--border-color);">
+                                Registered Users
+                            </div>
+                            <div id="mwamini-public-chat-users"></div>
+                        </div>
+                        <div style="border:1px solid var(--border-color);border-radius:var(--radius-md);overflow:hidden;">
+                            <div id="mwamini-public-chat-admin-list" style="max-height:460px;overflow:auto;padding:1rem;"></div>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -1293,51 +1330,6 @@
                         </thead>
                         <tbody id="payments-table-body"></tbody>
                     </table>
-                </div>
-            </section>
-
-            <!-- CONTACTS & SOCIALS VIEW -->
-            <section id="contacts-view" class="tab-content">
-                <div class="flex justify-between items-center mb-8">
-                    <div>
-                        <h2 class="text-primary">Global Environmental Variables (Contact & Socials)</h2>
-                        <p>Dynamically manage frontend routing, social telemetry, and physical presence definitions.</p>
-                    </div>
-                </div>
-
-                <div class="card mb-8">
-                    <form id="contact-settings-form" class="form-grid">
-                        <div class="form-group">
-                            <label class="form-label"><i class="fa-brands fa-whatsapp text-success"></i> Secure Line (WhatsApp)</label>
-                            <input type="text" id="contact-whatsapp" class="form-control" placeholder="+250 780 000 000">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label"><i class="fa-brands fa-facebook" style="color: #1877F2;"></i> Facebook Vector</label>
-                            <input type="url" id="contact-facebook" class="form-control" placeholder="https://facebook.com/mwamini">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label"><i class="fa-brands fa-instagram" style="color: #E4405F;"></i> Instagram Vector</label>
-                            <input type="url" id="contact-instagram" class="form-control" placeholder="https://instagram.com/mwamini">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label"><i class="fa-solid fa-phone text-muted"></i> Direct Voice Channel</label>
-                            <input type="text" id="contact-phone" class="form-control" placeholder="+250 780 000 000">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label"><i class="fa-solid fa-envelope text-muted"></i> Primary Email Relay</label>
-                            <input type="email" id="contact-email" class="form-control" placeholder="operations@mwamini.com">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label"><i class="fa-solid fa-map-location-dot text-muted"></i> Physical Base Matrix</label>
-                            <input type="text" id="contact-address" class="form-control" placeholder="Kigali City, Rwanda">
-                        </div>
-                        
-                        <div class="flex gap-4 mt-4" style="grid-column: 1 / -1;">
-                            <button type="submit" id="contact-submit-btn" class="btn btn-primary w-full">
-                                <i class="fa-solid fa-hard-drive"></i> Synchronize Environmental Variables
-                            </button>
-                        </div>
-                    </form>
                 </div>
             </section>
 
@@ -1497,7 +1489,6 @@
             loadAnnouncements();
             loadStories();
             loadPayments();
-            loadContactSettings();
         }
 
         function initializeEventListeners() {
@@ -1523,7 +1514,6 @@
             document.getElementById('project-management-form')?.addEventListener('submit', handleProjectSubmit);
             document.getElementById('user-management-form')?.addEventListener('submit', handleUserSubmit);
             document.getElementById('payment-management-form')?.addEventListener('submit', handlePaymentSubmit);
-            document.getElementById('contact-settings-form')?.addEventListener('submit', handleContactSubmit);
             document.getElementById('admin-chat-form')?.addEventListener('submit', sendAdminChatMessage);
 
             document.getElementById('announce-type')?.addEventListener('change', (e) => {
@@ -2786,47 +2776,7 @@
                 loadPayments();
             } catch (err) { showToast(err.message || "Deletion failed.", "error"); }
         }
-
-        /* ==========================================================================
-           CONTACT & SOCIALS CONFIGURATION
-           ========================================================================== */
-        async function loadContactSettings() {
-            try {
-                const { data } = await window.supabase.from('contact_settings').select('*').single();
-                if (data) {
-                    document.getElementById('contact-whatsapp').value = data.whatsapp || '';
-                    document.getElementById('contact-facebook').value = data.facebook || '';
-                    document.getElementById('contact-instagram').value = data.instagram || '';
-                    document.getElementById('contact-phone').value = data.phone || '';
-                    document.getElementById('contact-email').value = data.email || '';
-                    document.getElementById('contact-address').value = data.address || '';
-                }
-            } catch (e) { console.warn("Contact settings load error/missing."); }
-        }
-
-        async function handleContactSubmit(e) {
-            e.preventDefault();
-            const btn = document.getElementById('contact-submit-btn');
-            btn.disabled = true;
-            try {
-                const payload = {
-                    whatsapp: document.getElementById('contact-whatsapp').value,
-                    facebook: document.getElementById('contact-facebook').value,
-                    instagram: document.getElementById('contact-instagram').value,
-                    phone: document.getElementById('contact-phone').value,
-                    email: document.getElementById('contact-email').value,
-                    address: document.getElementById('contact-address').value,
-                    updated_at: new Date()
-                };
-
-                const { error } = await window.supabase.from('contact_settings').upsert([payload]);
-                if (error) throw error;
-                showToast("Environmental variables synchronized.", "success");
-            } catch (err) { showToast(err.message || "Synchronization failure.", "error"); }
-            finally { btn.disabled = false; }
-        }
-
-        /* ==========================================================================
+/* ==========================================================================
            UTILITIES & GLOBAL EVENT SUBSCRIBERS
            ========================================================================== */
         function showToast(message, type = 'info') {
@@ -2865,5 +2815,227 @@
                 .subscribe();
         }
     </script>
+
+<script id="mwamini-admin-final-v7-patch">
+(function(){
+"use strict";
+
+const MW_ADMIN_TABLES = [
+  ["profiles","Registered Users"],
+  ["orders","Orders"],
+  ["products","Shop Inventory"],
+  ["mechanization","Mechanization"],
+  ["farmer_help","Farmer Help"],
+  ["stories","Stories"],
+  ["announcements","Announcements"],
+  ["project_requests","Project Requests"],
+  ["reviews","Reviews"],
+  ["inquiries","Support Tickets"],
+  ["chat_messages","Private Support Messages"],
+  ["public_chatting","Public Chat"]
+];
+
+function mwEsc(v){
+  if(v===null||v===undefined)return "";
+  return String(v).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+}
+function mwPlain(v){return String(v||"").replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim();}
+function mwExcel(rows,name){
+  if(!window.XLSX){showToast("Excel export library is unavailable.","error");return;}
+  const safeRows=Array.isArray(rows)?rows:[];
+  if(!safeRows.length){showToast("No records available for export.","warning");return;}
+  const normalized=safeRows.map(row=>{
+    const o={};
+    Object.entries(row||{}).forEach(([k,v])=>o[k]=(typeof v==="object"&&v!==null)?JSON.stringify(v):(v??""));
+    return o;
+  });
+  const ws=XLSX.utils.json_to_sheet(normalized);
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,String(name).slice(0,31));
+  XLSX.writeFile(wb,`Mwamini_${name}_${Date.now()}.xlsx`);
+}
+window.mwaminiExportUsersExcel=()=>mwExcel(window.rawUsersCache||[],"Users");
+window.mwaminiExportOrdersExcel=()=>mwExcel(window.rawOrdersCache||[],"Orders");
+
+window.mwaminiExportAllExcel=async function(){
+  if(!window.supabase){showToast("Database connection unavailable.","error");return;}
+  const wb=XLSX.utils.book_new(), used=new Set(); let count=0;
+  for(const [table,label] of MW_ADMIN_TABLES){
+    try{
+      const {data,error}=await window.supabase.from(table).select("*").limit(5000);
+      if(error||!data?.length)continue;
+      let sheet=label.slice(0,31);
+      while(used.has(sheet))sheet=(sheet.slice(0,27)+"_"+used.size).slice(0,31);
+      used.add(sheet);
+      const rows=data.map(row=>{
+        const o={};
+        Object.entries(row).forEach(([k,v])=>o[k]=(typeof v==="object"&&v!==null)?JSON.stringify(v):(v??""));
+        return o;
+      });
+      XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(rows),sheet);
+      count+=rows.length;
+    }catch(_){}
+  }
+  if(!count){showToast("No database records available for export.","warning");return;}
+  XLSX.writeFile(wb,`Mwamini_Admin_Complete_Export_${Date.now()}.xlsx`);
+  showToast("Complete admin data exported to Excel.","success");
+};
+
+/* Announcement description is free-form; if title is blank, derive a short marquee label. */
+function normalizeAnnouncement(){
+  const q=window.announceQuill, title=document.getElementById("announce-sentence");
+  if(!q||!title)return;
+  const text=mwPlain(q.root.innerHTML);
+  if(!title.value.trim()&&text)title.value=text.slice(0,180);
+}
+const oldAnnouncementSubmit=window.handleAnnouncementSubmit;
+if(typeof oldAnnouncementSubmit==="function"){
+  window.handleAnnouncementSubmit=async function(e){
+    normalizeAnnouncement();
+    return oldAnnouncementSubmit.call(this,e);
+  };
+}
+
+/* Registered profiles are resolved into private support conversations. */
+let mwProfileMap=new Map();
+async function mwLoadProfiles(){
+  try{
+    const {data,error}=await window.supabase.from("profiles").select("id,full_name,name,email,phone,avatar_url,status,role");
+    if(error)throw error;
+    mwProfileMap=new Map((data||[]).map(p=>[String(p.id),p]));
+  }catch(e){console.warn("Profile lookup:",e);}
+}
+
+window.loadChatUsers=async function(){
+  await mwLoadProfiles();
+  try{
+    const {data,error}=await window.supabase.from("chat_messages").select("*").order("created_at",{ascending:false}).limit(1000);
+    if(error)throw error;
+    chatUsersMap.clear();
+    (data||[]).forEach(msg=>{
+      const otherId=msg.sender_id==="admin"?msg.receiver_id:msg.sender_id;
+      if(!otherId||chatUsersMap.has(String(otherId)))return;
+      const p=mwProfileMap.get(String(otherId))||{};
+      chatUsersMap.set(String(otherId),{
+        lastMessage:mwPlain(msg.message),timestamp:msg.created_at,userId:String(otherId),
+        name:p.full_name||p.name||p.email||"Registered User",email:p.email||"",avatar:p.avatar_url||""
+      });
+    });
+    renderChatUsersList();
+  }catch(e){console.error("Enhanced support users:",e);}
+};
+
+window.renderChatUsersList=function(){
+  const el=document.getElementById("admin-chat-users-list");if(!el)return;
+  if(!chatUsersMap.size){
+    el.innerHTML='<div class="p-4 text-center text-muted text-xs">No authenticated support conversations.</div>';return;
+  }
+  el.innerHTML=Array.from(chatUsersMap.values()).map(u=>`
+    <div onclick="selectChatUser('${mwEsc(u.userId)}')" style="padding:1rem 1.25rem;border-bottom:1px solid var(--border-color);cursor:pointer;${activeChatUserId===u.userId?'background:var(--bg-surface-hover);border-left:4px solid var(--primary);':''}">
+      <div style="display:flex;align-items:center;gap:.7rem;">
+        <div style="width:38px;height:38px;border-radius:50%;overflow:hidden;background:var(--bg-surface-hover);display:flex;align-items:center;justify-content:center;flex:0 0 auto;">
+          ${u.avatar?`<img src="${mwEsc(u.avatar)}" style="width:100%;height:100%;object-fit:cover;">`:'<i class="fa-solid fa-user text-primary"></i>'}
+        </div>
+        <div style="min-width:0;">
+          <div style="font-weight:800;font-size:.82rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${mwEsc(u.name)}</div>
+          <div class="text-xs text-muted" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${mwEsc(u.email||u.userId)}</div>
+        </div>
+      </div>
+      <div class="text-xs text-muted" style="margin:.45rem 0 0 45px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${mwEsc(u.lastMessage||"")}</div>
+    </div>`).join("");
+};
+
+/* Public Chat administration and registered-user visibility. */
+window.mwaminiLoadPublicChatAdmin=async function(){
+  const list=document.getElementById("mwamini-public-chat-admin-list");
+  const users=document.getElementById("mwamini-public-chat-users");
+  if(!list||!users||!window.supabase)return;
+  list.innerHTML='<div class="p-4 text-center text-muted">Loading public messages…</div>';
+  users.innerHTML='<div class="p-4 text-center text-muted">Loading registered users…</div>';
+  try{
+    const [{data:messages,error:mErr},{data:profiles,error:pErr}]=await Promise.all([
+      window.supabase.from("public_chatting").select("*").order("created_at",{ascending:false}).limit(300),
+      window.supabase.from("profiles").select("id,full_name,name,email,avatar_url,status,role,created_at").order("created_at",{ascending:false}).limit(1000)
+    ]);
+    if(mErr)throw mErr;if(pErr)throw pErr;
+    const byId=new Map((profiles||[]).map(p=>[String(p.id),p]));
+
+    users.innerHTML=(profiles||[]).map(p=>`
+      <div style="padding:.65rem .8rem;border-bottom:1px solid var(--border-color);display:flex;gap:.65rem;align-items:center;">
+        <div style="width:34px;height:34px;border-radius:50%;overflow:hidden;background:var(--bg-surface-hover);display:flex;align-items:center;justify-content:center;">
+          ${p.avatar_url?`<img src="${mwEsc(p.avatar_url)}" style="width:100%;height:100%;object-fit:cover;">`:'<i class="fa-solid fa-user text-primary"></i>'}
+        </div>
+        <div style="min-width:0;">
+          <div style="font-weight:800;font-size:.76rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${mwEsc(p.full_name||p.name||"Unnamed User")}</div>
+          <div class="text-xs text-muted" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${mwEsc(p.email||p.id)}</div>
+        </div>
+      </div>`).join("")||'<div class="p-4 text-center text-muted">No registered profiles found.</div>';
+
+    list.innerHTML=(messages||[]).map(m=>{
+      const p=byId.get(String(m.user_id))||{};
+      const author=m.user_name||m.sender_name||p.full_name||p.name||p.email||"Registered User";
+      const hidden=!!m.is_hidden;
+      return `<article style="border:1px solid var(--border-color);border-radius:12px;padding:.85rem;margin-bottom:.7rem;background:var(--bg-surface);">
+        <div style="display:flex;justify-content:space-between;gap:.75rem;">
+          <div><strong>${mwEsc(author)}</strong><div class="text-xs text-muted">${mwEsc(p.email||"")}</div></div>
+          <div class="text-xs text-muted">${m.created_at?new Date(m.created_at).toLocaleString():""}</div>
+        </div>
+        <div style="margin:.65rem 0;line-height:1.5;${hidden?'opacity:.6;font-style:italic;':''}">${mwEsc(hidden?"Message hidden by author.":mwPlain(m.message))}</div>
+        ${m.media_url?'<div class="text-xs text-muted mb-2"><i class="fa-solid fa-paperclip"></i> Media attached</div>':""}
+        <div class="flex gap-2" style="justify-content:flex-end;flex-wrap:wrap;">
+          <button class="btn btn-danger-outline" onclick="mwaminiDeletePublicChatMessage('${mwEsc(m.id)}')"><i class="fa-solid fa-trash"></i> Delete</button>
+          <button class="btn btn-outline" onclick="mwaminiSetPublicChatHidden('${mwEsc(m.id)}',${!hidden})">${hidden?"Show":"Hide"}</button>
+        </div>
+      </article>`;
+    }).join("")||'<div class="p-6 text-center text-muted">No public messages yet.</div>';
+  }catch(e){
+    list.innerHTML=`<div class="p-6 text-center text-muted">Public_chatting is not available: ${mwEsc(e.message||"database error")}</div>`;
+  }
+};
+window.mwaminiDeletePublicChatMessage=async function(id){
+  if(!confirm("Delete this public message permanently?"))return;
+  const {error}=await window.supabase.from("public_chatting").delete().eq("id",id);
+  if(error){showToast(error.message,"error");return;}
+  showToast("Public message deleted.","success");mwaminiLoadPublicChatAdmin();
+};
+window.mwaminiSetPublicChatHidden=async function(id,value){
+  const {error}=await window.supabase.from("public_chatting").update({is_hidden:value}).eq("id",id);
+  if(error){showToast(error.message,"error");return;}
+  mwaminiLoadPublicChatAdmin();
+};
+window.mwaminiDeleteAllPublicChat=async function(){
+  if(!confirm("Delete all public chat messages? This cannot be undone."))return;
+  const {error}=await window.supabase.from("public_chatting").delete().neq("id","__never__");
+  if(error){showToast(error.message,"error");return;}
+  showToast("Public chat cleared.","success");mwaminiLoadPublicChatAdmin();
+};
+
+function addOrderExportButton(){
+  if(document.getElementById("mwamini-order-export"))return;
+  const section=document.getElementById("orders-view");if(!section)return;
+  const header=section.querySelector(".flex.justify-between.items-center.mb-8");if(!header)return;
+  const b=document.createElement("button");
+  b.id="mwamini-order-export";b.className="btn btn-success";
+  b.innerHTML='<i class="fa-solid fa-file-excel"></i> Export Excel';
+  b.onclick=mwaminiExportOrdersExcel;
+  const target=header.querySelector(".flex.gap-2")||header;target.appendChild(b);
+}
+function hookAdminRouter(){
+  document.querySelectorAll(".nav-item[data-target='chat-view']").forEach(btn=>{
+    if(btn.dataset.mwPublicHook==="1")return;
+    btn.dataset.mwPublicHook="1";
+    btn.addEventListener("click",()=>setTimeout(mwaminiLoadPublicChatAdmin,100));
+  });
+}
+function boot(){
+  addOrderExportButton();hookAdminRouter();mwLoadProfiles();
+  setTimeout(mwaminiLoadPublicChatAdmin,600);
+}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});
+else boot();
+
+})();
+</script>
+
 </body>
 </html>
