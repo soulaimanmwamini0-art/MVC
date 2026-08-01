@@ -3106,53 +3106,57 @@ btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Transmit Ticket to Help
 // CATALOG & INVENTORY SYSTEM
 // ==========================================
 async function initializePublicCatalog() {
-const container = document.getElementById("products-container");
-if (!window.supabase) return;
-try {
-const { data, error } = await window.supabase.from('products').select('*').order('created_at', { ascending: false });
-if (error) throw error;
-localProductsCache = data || [];
-window.productCacheMap = {};
-localProductsCache.forEach(p => window.productCacheMap[p.id] = p);
-document.getElementById("search-input").dispatchEvent(new Event("input"));
-initializeRealtimeCatalogUpdates();
-} catch (err) {
-console.error("Catalog fetch error:", err);
-container.innerHTML = `<div style="grid-column: 1/-1; text-align:center; color: var(--danger); padding: 4rem;"><i class="fa-solid fa-triangle-exclamation" style="font-size:3rem; margin-bottom:1rem;"></i><p>System Fault: Unable to synchronize inventory matrix.</p></div>`;
+    const container = document.getElementById("products-container");
+    if (!window.supabase) return;
+    try {
+        const { data, error } = await window.supabase.from('products').select('*').order('created_at', {
+            ascending: false
+        });
+        if (error) throw error;
+        localProductsCache = data || [];
+        window.productCacheMap = {};
+        localProductsCache.forEach(p => window.productCacheMap[p.id] = p);
+        document.getElementById("search-input").dispatchEvent(new Event("input"));
+        initializeRealtimeCatalogUpdates();
+    } catch (err) {
+        console.error("Catalog fetch error:", err);
+        container.innerHTML = `<div style="grid-column: 1/-1; text-align:center; color: var(--danger); padding: 4rem;"><i class="fa-solid fa-triangle-exclamation" style="font-size:3rem; margin-bottom:1rem;"></i><p>System Fault: Unable to synchronize inventory matrix.</p></div>`;
+    }
 }
-}
+
 function renderCatalogGrid(productsList) {
-const container = document.getElementById("products-container");
-const targetCurrency = document.getElementById("currency-select").value;
-container.innerHTML = "";
-if(productsList.length === 0) {
-container.innerHTML = `<div style="grid-column: 1/-1; text-align:center; color: var(--text-muted); padding: 4rem;"><i class="fa-solid fa-box-open" style="font-size:3rem; margin-bottom:1rem; opacity:0.5;"></i><p>No inventory matches current search vectors.</p></div>`;
-return;
-}
-const fragment = document.createDocumentFragment();
-productsList.forEach(item => {
-const sourceCurrencyMatch = item.description?.match(/\[CURRENCY:([A-Z]{3})\]/);
-const sourceCurrency = sourceCurrencyMatch ? sourceCurrencyMatch[1] : "USD";
-const baseValUSD = item.price / (exchangeRates[sourceCurrency] || 1);
-const priceVal = baseValUSD * (exchangeRates[targetCurrency] || 1);
-let currencySymbol = "$";
-if(targetCurrency === "RWF") currencySymbol = "Fr "; else if(targetCurrency === "KES") currencySymbol = "KSh "; else if(targetCurrency === "UGX") currencySymbol = "USh "; else if(targetCurrency === "TZS") currencySymbol = "TSh "; else if(targetCurrency === "BIF") currencySymbol = "FBu "; else if(targetCurrency === "SSP") currencySymbol = "£ "; else if(targetCurrency === "CDF") currencySymbol = "FC "; else if(targetCurrency === "EUR") currencySymbol = "€ "; else if(targetCurrency === "GBP") currencySymbol = "£ "; else if(targetCurrency === "AED") currencySymbol = "إ.د "; else if(targetCurrency === "SAR") currencySymbol = "س.ر "; else if(targetCurrency === "CNY") currencySymbol = "¥ "; else if(targetCurrency === "INR") currencySymbol = "₹ "; else if(targetCurrency === "JPY") currencySymbol = "¥ "; else if(targetCurrency === "ZAR") currencySymbol = "R "; else if(targetCurrency === "CAD") currencySymbol = "$ ";
-const isOutOfStock = item.quantity <= 0;
-const isLowStock = item.quantity > 0 && item.quantity <= 3;
-let mediaElement = `<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:var(--bg-primary); color:var(--text-muted);"><i class="fa-solid fa-image" style="font-size:3rem;"></i></div>`;
-if (item.image_url) {
-let url = item.image_url.startsWith('http') ? item.image_url : window.supabase.storage.from('product-assets').getPublicUrl(item.image_url).data.publicUrl;
-if (url.match(/\.(jpeg|jpg|gif|png)$/i)) mediaElement = `<img src="${url}" style="width:100%; height:100%; object-fit:cover;">`;
-else if (url.match(/\.(mp4|webm|ogg)$/i)) mediaElement = `<video src="${url}" style="width:100%; height:100%; object-fit:cover; background:#000;" muted onmouseover="this.play()" onmouseout="this.pause()"></video>`;
-else mediaElement = `<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:#e2e8f0; text-align:center; padding:1rem;"><a href="${url}" target="_blank" style="text-decoration:none; color:var(--accent); font-weight:bold; font-size:14px;"><i class="fa-solid fa-file-pdf"></i> Asset Document</a></div>`;
-}
-let badgeHTML = '';
-if (isOutOfStock) badgeHTML = '<span class="stock-badge bg-danger"><i class="fa-solid fa-ban"></i> Depleted</span>';
-else if (isLowStock) badgeHTML = '<span class="stock-badge bg-warning"><i class="fa-solid fa-triangle-exclamation"></i> Low Stock</span>';
-else badgeHTML = '<span class="stock-badge bg-success"><i class="fa-solid fa-check"></i> Available</span>';
-const cardNode = document.createElement("div");
-cardNode.className = `product-card`;
-cardNode.innerHTML = `
+    const container = document.getElementById("products-container");
+    const targetCurrency = document.getElementById("currency-select").value;
+    container.innerHTML = "";
+    if (productsList.length === 0) {
+        container.innerHTML = `<div style="grid-column: 1/-1; text-align:center; color: var(--text-muted); padding: 4rem;"><i class="fa-solid fa-box-open" style="font-size:3rem; margin-bottom:1rem; opacity:0.5;"></i><p>No inventory matches current search vectors.</p></div>`;
+        return;
+    }
+    const fragment = document.createDocumentFragment();
+    productsList.forEach(item => {
+        const sourceCurrencyMatch = item.description?.match(/\[CURRENCY:([A-Z]{3})\]/);
+        const sourceCurrency = sourceCurrencyMatch ? sourceCurrencyMatch[1] : "USD";
+        const baseValUSD = item.price / (exchangeRates[sourceCurrency] || 1);
+        const priceVal = baseValUSD * (exchangeRates[targetCurrency] || 1);
+        let currencySymbol = "$";
+        if (targetCurrency === "RWF") currencySymbol = "Fr "; else if (targetCurrency === "KES") currencySymbol = "KSh "; else if (targetCurrency === "UGX") currencySymbol = "USh "; else if (targetCurrency === "TZS") currencySymbol = "TSh "; else if (targetCurrency === "BIF") currencySymbol = "FBu "; else if (targetCurrency === "SSP") currencySymbol = "£ "; else if (targetCurrency === "CDF") currencySymbol = "FC "; else if (targetCurrency === "EUR") currencySymbol = "€ "; else if (targetCurrency === "GBP") currencySymbol = "£ "; else if (targetCurrency === "AED") currencySymbol = "د.إ "; else if (targetCurrency === "SAR") currencySymbol = "ر.س "; else if (targetCurrency === "CNY") currencySymbol = "¥ "; else if (targetCurrency === "INR") currencySymbol = "₹ "; else if (targetCurrency === "JPY") currencySymbol = "¥ "; else if (targetCurrency === "ZAR") currencySymbol = "R "; else if (targetCurrency === "CAD") currencySymbol = "$ ";
+        const isOutOfStock = item.quantity <= 0;
+        const isLowStock = item.quantity > 0 && item.quantity <= 3;
+
+        let mediaElement = `<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:var(--bg-primary); color:var(--text-muted);"><i class="fa-solid fa-image" style="font-size:3rem;"></i></div>`;
+        if (item.image_url) {
+            let url = item.image_url.startsWith('http') ? item.image_url : window.supabase.storage.from('product-assets').getPublicUrl(item.image_url).data.publicUrl;
+            if (url.match(/\.(jpeg|jpg|gif|png)$/i)) mediaElement = `<img src="${url}" style="width:100%; height:100%; object-fit:cover;">`;
+            else if (url.match(/\.(mp4|webm|ogg)$/i)) mediaElement = `<video src="${url}" style="width:100%; height:100%; object-fit:cover; background:#000;" muted onmouseover="this.play()" onmouseout="this.pause()"></video>`;
+            else mediaElement = `<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:#e2e8f0; text-align:center; padding:1rem;"><a href="${url}" target="_blank" style="text-decoration:none; color:var(--accent); font-weight:bold; font-size:14px;"><i class="fa-solid fa-file-pdf"></i> Asset Document</a></div>`;
+        }
+        let badgeHTML = '';
+        if (isOutOfStock) badgeHTML = '<span class="stock-badge bg-danger"><i class="fa-solid fa-ban"></i> Depleted</span>';
+        else if (isLowStock) badgeHTML = '<span class="stock-badge bg-warning"><i class="fa-solid fa-triangle-exclamation"></i> Low Stock</span>';
+        else badgeHTML = '<span class="stock-badge bg-success"><i class="fa-solid fa-check"></i> Available</span>';
+        const cardNode = document.createElement("div");
+        cardNode.className = `product-card`;
+        cardNode.innerHTML = `
 ${badgeHTML}
 <div class="product-media-container">${mediaElement}</div>
 <div class="product-content">
@@ -3177,56 +3181,57 @@ ${badgeHTML}
 </div>
 </div>
 `;
-fragment.appendChild(cardNode);
-});
-container.appendChild(fragment);
+        fragment.appendChild(cardNode);
+    });
+    container.appendChild(fragment);
 }
+
 // ==========================================
 // DYNAMIC CHECKOUT & ORDER FULFILLMENT
 // ==========================================
 window.openOrderModal = (id) => {
-if(!currentUser) {
-openAuthModal('login');
-showToast("Secure connection required. Please authenticate.", "warning");
-return;
-}
-const product = localProductsCache.find(p => String(p.id) === String(id));
-if(!product) return;
-document.getElementById('form-product-id').value = id;
-document.getElementById('form-product-title-val').value = product.title;
-document.getElementById('modal-product-title').innerText = product.title;
-const sourceCurrencyMatch = product.description?.match(/\[CURRENCY:([A-Z]{3})\]/);
-activeOrderCurrency = sourceCurrencyMatch ? sourceCurrencyMatch[1] : "USD";
-activeOrderPriceVal = product.price || 0;
-calculateOrderTotal();
-if(currentUserProfile) {
-document.getElementById('cust-name').value = currentUserProfile.full_name || '';
-document.getElementById('cust-phone').value = currentUserProfile.phone || '';
-document.getElementById('cust-location').value = currentUserProfile.delivery_destination || '';
-}
-document.getElementById('cust-qty').value = 1;
-document.getElementById('cust-notes').value = '';
-const paymentSelect = document.getElementById('checkout-payment_gateways');
-paymentSelect.innerHTML = '<option value="" disabled selected>Select Gateway...</option>';
-localPaymentMethods.forEach(p => {
-paymentSelect.innerHTML += `<option value="${p.id}">${p.name} (${p.provider_type})</option>`;
-});
-document.getElementById('payment-instructions').style.display = 'none';
-document.getElementById('order-modal').classList.add('active');
+    if (!currentUser) {
+        openAuthModal('login');
+        showToast("Secure connection required. Please authenticate.", "warning");
+        return;
+    }
+    const product = localProductsCache.find(p => String(p.id) === String(id));
+    if (!product) return;
+    document.getElementById('form-product-id').value = id;
+    document.getElementById('form-product-title-val').value = product.title;
+    document.getElementById('modal-product-title').innerText = product.title;
+    const sourceCurrencyMatch = product.description?.match(/\[CURRENCY:([A-Z]{3})\]/);
+    activeOrderCurrency = sourceCurrencyMatch ? sourceCurrencyMatch[1] : "USD";
+    activeOrderPriceVal = product.price || 0;
+    calculateOrderTotal();
+    if (currentUserProfile) {
+        document.getElementById('cust-name').value = currentUserProfile.full_name || '';
+        document.getElementById('cust-phone').value = currentUserProfile.phone || '';
+        document.getElementById('cust-location').value = currentUserProfile.delivery_destination || '';
+    }
+    document.getElementById('cust-qty').value = 1;
+    document.getElementById('cust-notes').value = '';
+    const paymentSelect = document.getElementById('checkout-payment_gateways');
+    paymentSelect.innerHTML = '<option value="" disabled selected>Select Gateway...</option>';
+    localPaymentMethods.forEach(p => {
+        paymentSelect.innerHTML += `<option value="${p.id}">${p.name} (${p.provider_type})</option>`;
+    });
+    document.getElementById('payment-instructions').style.display = 'none';
+    document.getElementById('order-modal').classList.add('active');
 };
 window.closeOrderModal = () => document.getElementById('order-modal').classList.remove('active');
 window.calculateOrderTotal = () => {
-const qty = parseInt(document.getElementById('cust-qty').value) || 1;
-const total = activeOrderPriceVal * qty;
-document.getElementById('order-total-display').innerText = `${activeOrderCurrency} ${new Intl.NumberFormat('en-US').format(total)}`;
+    const qty = parseInt(document.getElementById('cust-qty').value) || 1;
+    const total = activeOrderPriceVal * qty;
+    document.getElementById('order-total-display').innerText = `${activeOrderCurrency} ${new Intl.NumberFormat('en-US').format(total)}`;
 }
 window.updatePaymentInstructions = () => {
-const selId = document.getElementById('checkout-payment_gateways').value;
-const method = localPaymentMethods.find(m => String(m.id) === selId);
-const instBox = document.getElementById('payment-instructions');
-if(method) {
-let icon = method.provider_type === 'Mobile Money' ? '<i class="fa-solid fa-mobile-screen-button"></i>' : '<i class="fa-solid fa-building-columns"></i>';
-instBox.innerHTML = `
+    const selId = document.getElementById('checkout-payment_gateways').value;
+    const method = localPaymentMethods.find(m => String(m.id) === selId);
+    const instBox = document.getElementById('payment-instructions');
+    if (method) {
+        let icon = method.provider_type === 'Mobile Money' ? '<i class="fa-solid fa-mobile-screen-button"></i>' : '<i class="fa-solid fa-building-columns"></i>';
+        instBox.innerHTML = `
 <div style="font-weight: 700; margin-bottom: 0.5rem; color: var(--accent);">${icon} Transfer Instructions</div>
 Please send the total computed amount to the following credential:<br>
 <strong>Account Name:</strong> ${escapeHTML(method.account_name)}<br>
@@ -3234,68 +3239,82 @@ Please send the total computed amount to the following credential:<br>
 ${escapeHTML(method.account_number)}<br>
 <div style="margin-top: 0.5rem; font-size: 0.8rem; opacity: 0.8;">Your order will be verified against this transaction before logistics dispatch.</div>
 `;
-instBox.style.display = 'block';
-} else {
-instBox.style.display = 'none';
+        instBox.style.display = 'block';
+    } else {
+        instBox.style.display = 'none';
+    }
 }
-}
+
 function initializeOrderFulfillmentEngine() {
-document.getElementById("order-submission-form").addEventListener("submit", async (e) => {
-e.preventDefault();
-const btn = document.getElementById("submit-order-btn");
-btn.disabled = true;
-btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Establishing Uplink...';
-try {
-const productId = document.getElementById("form-product-id").value;
-const requestedQty = parseInt(document.getElementById("cust-qty").value, 10);
-const paymentId = document.getElementById("checkout-payment_gateways").value;
-if(!paymentId) throw new Error("A secure payment gateway must be selected.");
-const { data: targetedProduct, error: prodErr } = await window.supabase.from('products').select('*').eq('id', productId).single();
-if(prodErr) throw prodErr;
-if (!targetedProduct || targetedProduct.quantity < requestedQty) {
-throw new Error(`Inventory Deficit: Only ${targetedProduct?.quantity || 0} units available.`);
-}
-const payload = {
-product_id: productId,
-product_title: document.getElementById("form-product-title-val").value,
-customer_name: document.getElementById("cust-name").value.trim(),
-customer_phone: document.getElementById("cust-phone").value.trim(),
-quantity: requestedQty,
-location: document.getElementById("cust-location").value.trim(),
-notes: document.getElementById("cust-notes").value.trim() + `\n[PAYMENT_GW_ID:${paymentId}]`,
-status: 'Processing',
-user_id: currentUser.id
-};
-const { data: orderData, error: orderErr } = await window.supabase.from('orders').insert([payload]).select();
-if (orderErr) throw orderErr;
-const updatedQty = targetedProduct.quantity - requestedQty;
-const { error: updateErr } = await window.supabase.from('products').update({ quantity: updatedQty }).eq('id', productId);
-if(updateErr) console.warn("Non-fatal: Stock deduction desync.");
-try {
-const emailPayload = {
-order_number: orderData[0].id,
-customer_name: payload.customer_name,
-products: payload.product_title,
-quantities: payload.quantity,
-total_amount: `${activeOrderCurrency} ${activeOrderPriceVal * requestedQty}`,
-status: payload.status,
-date: new Date().toISOString()
-};
-window.supabase.functions.invoke('send-order-email', { body: emailPayload }).then().catch(e => console.log('Edge func log:', e));
-} catch(emailError) {
-console.log("Email dispatch module offline.");
-}
-showToast("Order transaction successfully confirmed and logged.", "success");
-closeOrderModal();
-e.target.reset();
-openUserDashboard();
-} catch (err) {
-showToast(err.message, "error");
-} finally {
-btn.disabled = false;
-btn.innerHTML = '<i class="fa-solid fa-check-double"></i> Confirm & Submit Order';
-}
-});
+    document.getElementById("order-submission-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById("submit-order-btn");
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Establishing Uplink...';
+        try {
+            const productId = document.getElementById("form-product-id").value;
+            const requestedQty = parseInt(document.getElementById("cust-qty").value, 10);
+            const paymentId = document.getElementById("checkout-payment_gateways").value;
+            if (!paymentId) throw new Error("A secure payment gateway must be selected.");
+            const {
+                data: targetedProduct,
+                error: prodErr
+            } = await window.supabase.from('products').select('*').eq('id', productId).single();
+            if (prodErr) throw prodErr;
+            if (!targetedProduct || targetedProduct.quantity < requestedQty) {
+                throw new Error(`Inventory Deficit: Only ${targetedProduct?.quantity || 0} units available.`);
+            }
+            const payload = {
+                product_id: productId,
+                product_title: document.getElementById("form-product-title-val").value,
+                customer_name: document.getElementById("cust-name").value.trim(),
+                customer_phone: document.getElementById("cust-phone").value.trim(),
+                quantity: requestedQty,
+                location: document.getElementById("cust-location").value.trim(),
+                notes: document.getElementById("cust-notes").value.trim() +
+                    `\n[PAYMENT_GW_ID:${paymentId}]`,
+                status: 'Processing',
+                user_id: currentUser.id
+            };
+            const {
+                data: orderData,
+                error: orderErr
+            } = await window.supabase.from('orders').insert([payload]).select();
+            if (orderErr) throw orderErr;
+            const updatedQty = targetedProduct.quantity - requestedQty;
+            const {
+                error: updateErr
+            } = await window.supabase.from('products').update({
+                quantity: updatedQty
+            }).eq('id', productId);
+            if (updateErr) console.warn("Non-fatal: Stock deduction desync.");
+            try {
+                const emailPayload = {
+                    order_number: orderData[0].id,
+                    customer_name: payload.customer_name,
+                    products: payload.product_title,
+                    quantities: payload.quantity,
+                    total_amount: `${activeOrderCurrency} ${activeOrderPriceVal * requestedQty}`,
+                    status: payload.status,
+                    date: new Date().toISOString()
+                };
+                window.supabase.functions.invoke('send-order-email', {
+                    body: emailPayload
+                }).then().catch(e => console.log('Edge func log:', e));
+            } catch (emailError) {
+                console.log("Email dispatch module offline.");
+            }
+            showToast("Order transaction successfully confirmed and logged.", "success");
+            closeOrderModal();
+            e.target.reset();
+            openUserDashboard();
+        } catch (err) {
+            showToast(err.message, "error");
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-check-double"></i> Confirm & Submit Order';
+        }
+    });
 }
 // ==========================================
 // UTILITIES & REALTIME
